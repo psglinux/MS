@@ -1,0 +1,8 @@
+Add the make recipe 
+To compile : make all 
+To clean : make all
+
+TODO : 
+i. parsing of the body
+ii. formatted print of the values
+

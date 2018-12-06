@@ -2,9 +2,8 @@
 #include "scf.h"
 
 extern int errno;
-uint16_t scf_hdr_len = 0;
+long scf_hdr_len = 0;
 bool scf_hdr_len_found = false;
-bool scf_hdr_parsing_done = false;
 
 struct slisthead *headp;
 
@@ -83,7 +82,7 @@ const scfh_parse_t scf_parse_hdr [SCFH_END] = {
     }, 
     {
         .type.h = SCFH_0X0D, 
-        .has_value = true,
+        .has_value = false,
         .type_str = "Unknown",
         .dtype = BYTE,
     }, 
@@ -225,12 +224,29 @@ static bool check_scf_hdr_len_type(uint8_t type)
     }
     return (false);
 }
+static bool check_scfb_record_len_type(uint8_t type) 
+{
+    if (type == SCFB_RECORD_LENGTH) {
+        return (true);
+    }
+    return (false);
+}
 
 static bool is_hdr_value_present(scfh_type_e e) 
 {
     for (uint32_t i = 0; i < SCFH_END; i++) {
         if (scf_parse_hdr[i].type.h == e) {
             return (scf_parse_hdr[i].has_value);
+        }
+    }
+    return (false);
+}
+
+static bool is_body_value_present(scfb_type_e e) 
+{
+    for (uint32_t i = 0; i < SCFB_END; i++) {
+        if (scf_parse_body[i].type.b == e) {
+            return (scf_parse_body[i].has_value);
         }
     }
     return (false);
@@ -263,11 +279,13 @@ void scf_body_print(uint8_t type, uint16_t len, void *value)
 int scf_parse_file(const char*pathname) 
 {
     FILE *fp = NULL;
-    size_t sz;
+    size_t sz = 0;
     uint8_t type;
-    uint16_t len;
-    void *value;
+    uint16_t len = 0;
+    void *value = NULL;
     long offset = 0;
+    long scfb_record_len = 0;
+    
 
     fp = fopen(pathname, "r");
     if (!fp) {
@@ -279,6 +297,7 @@ int scf_parse_file(const char*pathname)
     while (true) {
         bzero((void*)&type, sizeof(type));
         bzero((void*)&len, sizeof(len));
+        value = NULL;
 
         sz = fread((void*)&type, sizeof(type), 1, fp);
         PRINT_DBG(" type : 0x%02x sizeof(type) : %ld\n", type, sizeof(type));
@@ -316,23 +335,81 @@ int scf_parse_file(const char*pathname)
 
         if (check_scf_hdr_len_type(type)) {
             scf_hdr_len = be16toh(*(uint16_t*)(value)); 
-            PRINT_DBG("scf header length : %u\n", scf_hdr_len);
+            PRINT_DBG("scf header length : %ld\n", scf_hdr_len);
         }
 
-        if (!scf_hdr_parsing_done) {
-            PRINT_DBG("+++ in scf header\n");
-            scf_hdr_print(type, len, value);
-        } else {
-            PRINT_DBG("+++ in scf body\n");
-            scf_body_print(type, len, value);
-        }
+        scf_hdr_print(type, len, value);
+
         if (value) {
             free(value);
         }
 
-        PRINT_DBG("offset : %ld scf_hdr_len : %d scf_hdr_parsing_done : %d\n", offset, scf_hdr_len, scf_hdr_parsing_done);
+        PRINT_DBG("offset : %ld scf_hdr_len : %ld\n", offset, scf_hdr_len);
         if ((offset >= scf_hdr_len) && scf_hdr_len_found) {
-            scf_hdr_parsing_done = true;
+            offset = 0;
+            printf("parsing of header is complete\n\n");
+            break;
+        }
+
+    }
+    /* Parse the body */
+    while (true) {
+        bzero((void*)&type, sizeof(type));
+        bzero((void*)&len, sizeof(len));
+        value = NULL;
+
+        sz = fread((void*)&type, sizeof(type), 1, fp);
+        PRINT_DBG(" type : 0x%02x sizeof(type) : %ld\n", type, sizeof(type));
+        PRINT_DBG("file pos : %ld\n", ftell(fp));
+
+        offset += sizeof(type); 
+        sz = fread((void*)&len, sizeof(len), 1, fp);
+        if (!sz) {
+            if (feof(fp)) {
+                printf ("reading of file is complete\n");
+                break;
+            } else {
+                printf ("reading file encounteded error : %s\n", strerror(errno));
+                exit(EXIT_FAILURE);
+            }
+        }
+        len = be16toh(len);
+        PRINT_DBG(" len : 0x%02x sizeof(type) : %ld\n", len, sizeof(len));
+        PRINT_DBG("file pos : %ld\n", ftell(fp));
+        offset += sizeof(len); 
+
+        /* some TLV does not have value*/
+        if (is_body_value_present(type)) {
+            value = calloc(1, len);
+            if (!value) {
+                printf("calloc error : %s\n", strerror(errno));
+                exit(EXIT_FAILURE);
+            }
+
+            sz = fread(value, len, 1, fp);
+            PRINT_DBG(" value : 0x%02x sizeof(type) : %ld\n", *(char*)value, sizeof(len));
+            PRINT_DBG("file pos : %ld\n", ftell(fp));
+            offset += len;
+        }
+
+        if (check_scfb_record_len_type(type)) {
+            scfb_record_len = be16toh(*(uint16_t*)(value)); 
+            PRINT_DBG("scf body record length : %ld\n", scfb_record_len);
+        }
+
+        scf_body_print(type, len, value);
+
+        if (value) {
+            free(value);
+        }
+
+        printf("offset : %ld scfb_record_len : %ld\n", offset, scfb_record_len);
+        if (offset >= scfb_record_len) {
+            /* reset the record len and offset as we are done with parsing of 
+             * the body for this cert */
+            scfb_record_len = 0;
+            offset = 0;
+            printf("finished parsing the body \n\n");
         }
     }
 

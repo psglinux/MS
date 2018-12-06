@@ -242,6 +242,15 @@ static bool is_hdr_value_present(scfh_type_e e)
     return (false);
 }
 
+static bool is_parsable(scfh_type_e e)
+{
+    if (e == SCFH_0X0D) {
+        return (false);
+    } else {
+        return (true);
+    }
+}
+
 static bool is_body_value_present(scfb_type_e e) 
 {
     for (uint32_t i = 0; i < SCFB_END; i++) {
@@ -302,8 +311,11 @@ int scf_parse_file(const char*pathname)
         sz = fread((void*)&type, sizeof(type), 1, fp);
         PRINT_DBG(" type : 0x%02x sizeof(type) : %ld\n", type, sizeof(type));
         PRINT_DBG("file pos : %ld\n", ftell(fp));
-
         offset += sizeof(type); 
+        if (!is_parsable(type)) {
+            printf("parsing of header is complete\n\n");
+            break;
+        }
         sz = fread((void*)&len, sizeof(len), 1, fp);
         if (!sz) {
             if (feof(fp)) {
@@ -346,12 +358,12 @@ int scf_parse_file(const char*pathname)
 
         PRINT_DBG("offset : %ld scf_hdr_len : %ld\n", offset, scf_hdr_len);
         if ((offset >= scf_hdr_len) && scf_hdr_len_found) {
-            offset = 0;
             printf("parsing of header is complete\n\n");
             break;
         }
 
     }
+    offset = 0;
     /* Parse the body */
     while (true) {
         bzero((void*)&type, sizeof(type));

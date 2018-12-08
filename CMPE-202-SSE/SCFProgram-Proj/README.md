@@ -1,8 +1,7 @@
 # CMPE-202 : System Software Engineering Project
-This code is part of the system software engineering course project. The goal 
-of this project is to demonstrate
- i. parsing of a certificate file
-ii. Perform static Analysis on the code
+This code is part of the system software engineering course project. The goal of this project is to demonstrate
+ 1. parsing of a certificate file
+ 2. Perform static Analysis on the code
 
 ## Parser
 The parser code has 3 part

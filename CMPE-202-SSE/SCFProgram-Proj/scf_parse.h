@@ -155,6 +155,8 @@ BYTEPOS TAG             LENGTH  VALUE
 #define CTL_RECORD_HDR "CTL Record  #:" 
 #define UNKNOWN_STR "Unknown"
 
+#define MAX_PRINT_LEN 32 
+
 typedef enum {
     SCFH_START = 0x01,
     SCFH_REVISION = SCFH_START,
@@ -202,11 +204,13 @@ typedef enum {
     UINT64,
     BYTE,
     STRING,
+    IPADDR,
+    VERSION,
     NONE
 } datatype_e;
 
 
-typedef struct scfh_parse_ {
+typedef struct scf_parse_ {
     union {
         scfh_type_e h;
         scfb_type_e b;
@@ -214,12 +218,14 @@ typedef struct scfh_parse_ {
     bool has_value;
     const char *type_str;
     datatype_e dtype; 
-} scfh_parse_t;
+} scf_parse_t;
 
 typedef struct scf_tlv_ {
     scf_type_e n_type;
     uint8_t type;
     uint16_t length;
+    bool has_value;
+    datatype_e dtype;
     void *value;
 } scf_tlv_t;
 

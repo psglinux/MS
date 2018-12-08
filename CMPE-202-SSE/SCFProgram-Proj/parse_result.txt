@@ -1,0 +1,103 @@
+parsing of header is complete
+
+Type	Tag			Length	Value
+----	---			------	-----
+1       Version                 2       513     
+2       Header Length           2       14337   
+3       Signer Identity         127     (None)
+4       Signer Name             55      CN=gigantic-6.cisco.com;OU=VTG;O=Alpha;L=SJ;ST=CA;C=US
+5       Cert Serial Number      8       11234861970968496420
+6       CA Name                 55      CN=gigantic-6.cisco.com;OU=VTG;O=Alpha;L=SJ;ST=CA;C=US
+7       SIGNATUREINFO           15      (None)
+8       Digest Algo             1       1       
+9       Signature Algo Info     8       (None)
+10      Signature Algo          1       0       
+11      Signature Modulus       1       1       
+12      SIGNATURE               128     35 6d f0 f8 aa f1 5 6e f7 ab 1b 5d 3e df 84 5e f3 49 5b 4f 39 95 76 99 bb 6 16 80 e8 de fb 8 
+14      FILENAME                12      CTLFile.tlv
+15      TIMESTAMP               4       55 4a d7 b7 
+Type	Tag			Length	Value
+----	---			------	-----
+1       RECORDLENGTH            2       31492   
+2       DNSNAME                 11      gigantic-6
+3       SUBJECTNAME             55      CN=gigantic-6.cisco.com;OU=VTG;O=Alpha;L=SJ;ST=CA;C=US
+4       FUNCTION                2       0       
+5       ISSUERNAME              55      CN=gigantic-6.cisco.com;OU=VTG;O=Alpha;L=SJ;ST=CA;C=US
+6       SERIAL NUMBER           8       24 49 1f 10 70 3f ea 9b 
+7       PUBLICKEY               140     30 81 89 2 81 81 0 b0 c4 73 45 ce e5 1d 2d 16 dc ad 7f bb 8 32 21 3 a2 b f4 3 f5 ae 1b fa 
+8       SIGNATURE               128     50 4e 52 ac 7b 3 fd ee 2 ce d5 b4 9e 27 39 dc 29 4b 59 1e b9 66 29 7a ed e8 51 dc e 31 c1 63 
+9       CERTIFICATE             712     30 82 2 c4 30 82 2 2d a0 3 2 1 2 2 8 24 49 1f 10 70 3f ea 9b 30 d 6 9 2a 86 48 86 f7 
+10      IPADDRESS               4       10.35.48.106
+finished parsing the body 
+
+Type	Tag			Length	Value
+----	---			------	-----
+1       RECORDLENGTH            2       31492   
+2       DNSNAME                 11      gigantic-6
+3       SUBJECTNAME             55      CN=gigantic-6.cisco.com;OU=VTG;O=Alpha;L=SJ;ST=CA;C=US
+4       FUNCTION                2       512     
+5       ISSUERNAME              55      CN=gigantic-6.cisco.com;OU=VTG;O=Alpha;L=SJ;ST=CA;C=US
+6       SERIAL NUMBER           8       24 49 1f 10 70 3f ea 9b 
+7       PUBLICKEY               140     30 81 89 2 81 81 0 b0 c4 73 45 ce e5 1d 2d 16 dc ad 7f bb 8 32 21 3 a2 b f4 3 f5 ae 1b fa 
+8       SIGNATURE               128     50 4e 52 ac 7b 3 fd ee 2 ce d5 b4 9e 27 39 dc 29 4b 59 1e b9 66 29 7a ed e8 51 dc e 31 c1 63 
+9       CERTIFICATE             712     30 82 2 c4 30 82 2 2d a0 3 2 1 2 2 8 24 49 1f 10 70 3f ea 9b 30 d 6 9 2a 86 48 86 f7 
+10      IPADDRESS               4       10.35.48.106
+finished parsing the body 
+
+Type	Tag			Length	Value
+----	---			------	-----
+1       RECORDLENGTH            2       37636   
+2       DNSNAME                 11      gigantic-7
+3       SUBJECTNAME             61      CN=gigantic-7.cisco.com;OU=vtg;O=cisco;L=san jose;ST=ca;C=US
+4       FUNCTION                2       512     
+5       ISSUERNAME              61      CN=gigantic-7.cisco.com;OU=vtg;O=cisco;L=san jose;ST=ca;C=US
+6       SERIAL NUMBER           8       63 30 98 1c 1 7c 47 43 
+7       PUBLICKEY               140     30 81 89 2 81 81 0 ac 9 c3 4 74 d9 25 c e5 d7 83 ea 6c 39 7d c4 a1 77 dc 79 cc 38 5d be 2b 
+8       SIGNATURE               128     92 5f f1 62 66 b5 be 6 a4 eb 5c bb db 57 f2 24 9f 1e 27 51 e4 d1 86 61 35 2f 1e d9 a fd 22 d1 
+9       CERTIFICATE             724     30 82 2 d0 30 82 2 39 a0 3 2 1 2 2 8 63 30 98 1c 1 7c 47 43 30 d 6 9 2a 86 48 86 f7 
+10      IPADDRESS               4       10.35.150.151
+finished parsing the body 
+
+Type	Tag			Length	Value
+----	---			------	-----
+1       RECORDLENGTH            2       15620   
+2       DNSNAME                 11      gigantic-6
+3       SUBJECTNAME             48      CN=CAPF-2076a1a2;OU=VTG;O=Alpha;L=SJ;ST=CA;C=US
+4       FUNCTION                2       1024    
+5       ISSUERNAME              48      CN=CAPF-2076a1a2;OU=VTG;O=Alpha;L=SJ;ST=CA;C=US
+6       SERIAL NUMBER           16      61 5d d8 84 a 63 eb 41 19 be 84 3e 20 15 50 e0 
+7       PUBLICKEY               140     30 81 89 2 81 81 0 d4 d8 a7 3e 4a 42 9c 18 6b 68 c2 eb 1b 9f d2 6e 18 b8 dc 91 cd 46 8e 49 dd 
+8       SIGNATURE               128     9b a9 41 74 e0 c4 b2 f5 da b2 5 d9 23 55 b1 59 e1 a7 db 4e aa 1f 75 5 91 cb ef f ce a1 94 ad 
+9       CERTIFICATE             656     30 82 2 8c 30 82 1 f5 a0 3 2 1 2 2 10 61 5d d8 84 a 63 eb 41 19 be 84 3e 20 15 50 e0 30 
+10      IPADDRESS               4       10.35.48.106
+finished parsing the body 
+
+Type	Tag			Length	Value
+----	---			------	-----
+1       RECORDLENGTH            2       35076   
+2       DNSNAME                 11      gigantic-6
+3       SUBJECTNAME             67      CN=ITLRECOVERY_gigantic-6.cisco.com;OU=CTG;O=Alpha;L=SJ;ST=CA;C=US
+4       FUNCTION                2       0       
+5       ISSUERNAME              67      CN=ITLRECOVERY_gigantic-6.cisco.com;OU=CTG;O=Alpha;L=SJ;ST=CA;C=US
+6       SERIAL NUMBER           16      5b 73 28 d0 a0 29 32 d8 16 d5 9e ee f6 ec 9d 18 
+7       PUBLICKEY               140     30 81 89 2 81 81 0 97 55 5 7d e6 d0 84 98 6d 2d f7 a0 46 5f 30 f9 53 d6 0 bf db 8 88 fe 5b 
+8       SIGNATURE               128     f f2 85 33 e7 bd e2 d9 cd 32 4a 4b de 32 3e 63 8a 3b a2 d8 2e df c2 c1 85 8c f5 50 18 63 14 72 
+9       CERTIFICATE             694     30 82 2 b2 30 82 2 1b a0 3 2 1 2 2 10 5b 73 28 d0 a0 29 32 d8 16 d5 9e ee f6 ec 9d 18 30 
+10      IPADDRESS               4       10.35.48.106
+finished parsing the body 
+
+Type	Tag			Length	Value
+----	---			------	-----
+1       RECORDLENGTH            2       30468   
+2       DNSNAME                 15      ccm-sjcctg-013
+3       SUBJECTNAME             59      CN=ccm-sjcctg-013.cisco.com;OU=CTG;O=Alpha;L=SJ;ST=CA;C=US
+4       FUNCTION                2       512     
+5       ISSUERNAME              59      CN=ccm-sjcctg-013.cisco.com;OU=CTG;O=Alpha;L=SJ;ST=CA;C=US
+6       SERIAL NUMBER           16      41 8c 54 9a bc 25 1e 2f 26 9 ec f6 a0 92 d2 2f 
+7       PUBLICKEY               140     30 81 89 2 81 81 0 c2 e5 a3 3a eb 15 ff 4 e4 80 cb a0 21 ce b6 69 cc 14 52 49 ab 73 73 c4 82 
+8       SIGNATURE               128     58 e7 e 5c dd 6e e8 49 2c fe fa 6e b4 ca 9b 4b f7 5e 4b b5 6f 36 af 8b f9 f3 d4 40 a2 30 fc 2f 
+9       CERTIFICATE             688     30 82 2 ac 30 82 2 15 a0 3 2 1 2 2 10 41 8c 54 9a bc 25 1e 2f 26 9 ec f6 a0 92 d2 2f 30 
+10      IPADDRESS               4       10.32.134.77
+finished parsing the body 
+
+reading of file is complete

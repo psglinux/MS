@@ -7,12 +7,12 @@ bool scf_hdr_len_found = false;
 
 struct slisthead *headp;
 
-const scfh_parse_t scf_parse_hdr [SCFH_END] = {
+const scf_parse_t scf_parse_hdr [SCFH_END] = {
     {
         .type.h = SCFH_REVISION, 
         .has_value = true,
         .type_str = "Version",
-        .dtype = UINT16,
+        .dtype = VERSION,
     }, 
     {
         .type.h = SCFH_HDR_LEN, 
@@ -24,7 +24,7 @@ const scfh_parse_t scf_parse_hdr [SCFH_END] = {
         .type.h = SCFH_SIGNER_ID, 
         .has_value = false,
         .type_str = "Signer Identity",
-        .dtype = NONE ,
+        .dtype = NONE,
     }, 
     {
         .type.h = SCFH_SIGNER_NAME, 
@@ -36,7 +36,7 @@ const scfh_parse_t scf_parse_hdr [SCFH_END] = {
         .type.h = SCFH_SERIAL_NUM, 
         .has_value = true,
         .type_str = "Cert Serial Number",
-        .dtype = STRING,
+        .dtype = UINT64,
     }, 
     {
         .type.h = SCFH_CA_NAME, 
@@ -96,11 +96,11 @@ const scfh_parse_t scf_parse_hdr [SCFH_END] = {
         .type.h = SCFH_TIMESTAMP, 
         .has_value = true,
         .type_str = "TIMESTAMP",
-        .dtype = STRING,
+        .dtype = BYTE,
     } 
 };
 
-const scfh_parse_t scf_parse_body [SCFB_END] = {
+const scf_parse_t scf_parse_body [SCFB_END] = {
     {
         .type.b = SCFB_RECORD_LENGTH, 
         .has_value = true,
@@ -123,7 +123,7 @@ const scfh_parse_t scf_parse_body [SCFB_END] = {
         .type.b = SCFB_FUNCTION, 
         .has_value = true,
         .type_str = "FUNCTION",
-        .dtype = STRING,
+        .dtype = UINT16,
     }, 
     {
         .type.b = SCFB_ISSUERNAME, 
@@ -135,7 +135,7 @@ const scfh_parse_t scf_parse_body [SCFB_END] = {
         .type.b = SCFB_SERIAL_NUMBER, 
         .has_value = true,
         .type_str = "SERIAL NUMBER",
-        .dtype = STRING,
+        .dtype = BYTE,
     }, 
     {
         .type.b = SCFB_PUBLIC_KEY, 
@@ -159,43 +159,28 @@ const scfh_parse_t scf_parse_body [SCFB_END] = {
         .type.b = SCFB_IP_ADDRESS, 
         .has_value = true,
         .type_str = "IPADDRESS",
-        .dtype = STRING,
+        .dtype = IPADDR,
     } 
 };
 
-
-const char *scfh_type_str[] = {
-    "",
-    "Version",
-    "HeaderLength",
-    "SIGNERID",
-    "SIGNERNAME",
-    "SERIALNUMBER",
-    "CANAME",
-    "SIGNATUREINFO",
-    "DIGESTALGO",
-    "SIGNATUREALGOINFO",
-    "SIGNATUREALGO",
-    "SIGNATUREMODULUS",
-    "SIGNATURE",
-    "Unknown",
-    "FILENAME",
-    "TIMESTAMP",
-};
-
-const char *scfb_type_str[] = {
-    "",
-    "RECORDLENGTH",
-    "DNSNAME",
-    "SUBJECTNAME",
-    "FUNCTION",
-    "ISSUERNAME",
-    "SERIAL NUMBER",
-    "PUBLICKEY",
-    "SIGNATURE",
-    "CERTIFICATE",
-    "IPADDRESS"
-};
+static const datatype_e scf_hdr_data_type_get(scfh_type_e e) 
+{
+    for (uint32_t i = 0; i < SCFH_END; i++) {
+        if (scf_parse_hdr[i].type.h == e) {
+            return (scf_parse_hdr[i].dtype); 
+        }
+    }
+    return (NONE);
+}
+static const datatype_e scf_body_data_type_get(scfb_type_e e) 
+{
+    for (uint32_t i = 0; i < SCFB_END; i++) {
+        if (scf_parse_body[i].type.b == e) {
+            return (scf_parse_body[i].dtype); 
+        }
+    }
+    return (NONE); 
+}
 
 const char *scfh_type_to_str(scfh_type_e e) 
 {
@@ -261,17 +246,6 @@ static bool is_body_value_present(scfb_type_e e)
     return (false);
 }
 
-void print_hex_value(uint16_t len, void *value)
-{
-    uint16_t i;
-    for (i = 0; i < len; i++) {
-        printf("%x ", *(uint8_t*)(value+i));
-        if (!(i%8)) {
-            printf("\n");
-        }
-    }
-    printf("\n");
-}
 
 typedef int (*print_data)(scf_type_e e, scf_tlv_t *t);
 
@@ -294,14 +268,22 @@ int scf_parse_file(const char*pathname)
     void *value = NULL;
     long offset = 0;
     long scfb_record_len = 0;
-    
+    struct tailq_entry *tq_entry = NULL;
+    struct tailq_entry *ltq_entry = NULL;
+    struct tailq_entry *rec_entry = NULL;
+    struct tailq_entry *lrec_entry = NULL;
+    bool hdr_val_present;
+    bool body_val_present;
+
+    struct queuehead h_head = TAILQ_HEAD_INITIALIZER(h_head); 
+    TAILQ_INIT(&h_head);
+
 
     fp = fopen(pathname, "r");
     if (!fp) {
         printf("error opening file (%s) : %s\n", pathname, strerror(errno));
         exit(EXIT_FAILURE);
     } 
-
 
     while (true) {
         bzero((void*)&type, sizeof(type));
@@ -332,7 +314,8 @@ int scf_parse_file(const char*pathname)
         offset += sizeof(len); 
 
         /* some TLV does not have value*/
-        if (is_hdr_value_present(type)) {
+        hdr_val_present = is_hdr_value_present(type);
+        if (hdr_val_present) {
             value = calloc(1, len);
             if (!value) {
                 printf("calloc error : %s\n", strerror(errno));
@@ -350,7 +333,18 @@ int scf_parse_file(const char*pathname)
             PRINT_DBG("scf header length : %ld\n", scf_hdr_len);
         }
 
-        scf_hdr_print(type, len, value);
+        /* store */
+        tq_entry = allocate_tailq_entry();
+        if (update_data_tlv(&tq_entry->tlv, SCF_HEADER, type, len, scf_hdr_data_type_get(type), hdr_val_present, value?value:NULL)) {
+            exit(EXIT_FAILURE);
+        }
+        if (insert_tailq_entry(&h_head, ltq_entry, tq_entry)) {
+            exit(EXIT_FAILURE);
+        }
+
+        ltq_entry = tq_entry;
+
+        //scf_hdr_print(type, len, value);
 
         if (value) {
             free(value);
@@ -363,8 +357,19 @@ int scf_parse_file(const char*pathname)
         }
 
     }
+    print_tailq_entry(&h_head);
     offset = 0;
+
+    /* prepare btailq */
+
+    struct bqueuehead bhead = TAILQ_HEAD_INITIALIZER(bhead);
+    TAILQ_INIT(&bhead);
+    struct queuehead rec_head = TAILQ_HEAD_INITIALIZER(rec_head); 
+    TAILQ_INIT(&rec_head);
+
     /* Parse the body */
+
+
     while (true) {
         bzero((void*)&type, sizeof(type));
         bzero((void*)&len, sizeof(len));
@@ -391,7 +396,8 @@ int scf_parse_file(const char*pathname)
         offset += sizeof(len); 
 
         /* some TLV does not have value*/
-        if (is_body_value_present(type)) {
+        body_val_present = is_body_value_present(type);
+        if (body_val_present) {
             value = calloc(1, len);
             if (!value) {
                 printf("calloc error : %s\n", strerror(errno));
@@ -408,19 +414,31 @@ int scf_parse_file(const char*pathname)
             scfb_record_len = be16toh(*(uint16_t*)(value)); 
             PRINT_DBG("scf body record length : %ld\n", scfb_record_len);
         }
+        /* store */
+        rec_entry = allocate_tailq_entry();
+        if (update_data_tlv(&rec_entry->tlv, SCF_BODY, type, len, scf_body_data_type_get(type), body_val_present, value?value:NULL)) {
+            exit(EXIT_FAILURE);
+        }
+        if (insert_tailq_entry(&rec_head, lrec_entry, rec_entry)) {
+            exit(EXIT_FAILURE);
+        }
 
-        scf_body_print(type, len, value);
+        lrec_entry = rec_entry;
+
+        //scf_body_print(type, len, value);
 
         if (value) {
             free(value);
         }
 
-        printf("offset : %ld scfb_record_len : %ld\n", offset, scfb_record_len);
+        PRINT_DBG("offset : %ld scfb_record_len : %ld\n", offset, scfb_record_len);
         if (offset >= scfb_record_len) {
             /* reset the record len and offset as we are done with parsing of 
              * the body for this cert */
             scfb_record_len = 0;
             offset = 0;
+            print_tailq_entry(&rec_head);
+            TAILQ_INIT(&rec_head);
             printf("finished parsing the body \n\n");
         }
     }

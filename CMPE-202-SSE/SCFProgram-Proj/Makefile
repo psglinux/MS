@@ -4,9 +4,10 @@
 #
 #
 #------------------------------------------------------------------------------
-CC = gcc
+CC = clang
 CFLAGS = -g -Wall
 SCFPRG = scfprg
+SCANBLD = scan-build
 
 $(DEPHDR) :  scf.h scf_glibc.h 
 
@@ -31,3 +32,7 @@ clean :
 #objdir : 
 
 all : $(SCFPRG)
+
+sa : main.c scf_parse.c scf_parse_test.c scf_data.c
+	$(SCANBLD) $(CC) main.c scf_parse.c scf_data.c scf_parse_test.c
+	

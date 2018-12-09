@@ -259,6 +259,19 @@ void scf_body_print(uint8_t type, uint16_t len, void *value)
     printf("%d\t%s\t%d\tTBD\n",type, scfb_type_to_str(type), len);
 }
 
+#define FILE_READ_ERR_CHECK(sz) \
+    do { \
+        if (!sz) { \
+            if (feof(fp)) { \
+                printf ("reading of file is complete\n"); \
+                break; \
+            } else { \
+                printf ("reading file encounteded error : %s\n", strerror(errno)); \
+                exit(EXIT_FAILURE); \
+            } \
+        } \
+    } while (0); \
+
 int scf_parse_file(const char*pathname) 
 {
     FILE *fp = NULL;
@@ -291,6 +304,7 @@ int scf_parse_file(const char*pathname)
         value = NULL;
 
         sz = fread((void*)&type, sizeof(type), 1, fp);
+        FILE_READ_ERR_CHECK(sz)
         PRINT_DBG(" type : 0x%02x sizeof(type) : %ld\n", type, sizeof(type));
         PRINT_DBG("file pos : %ld\n", ftell(fp));
         offset += sizeof(type); 
@@ -299,15 +313,7 @@ int scf_parse_file(const char*pathname)
             break;
         }
         sz = fread((void*)&len, sizeof(len), 1, fp);
-        if (!sz) {
-            if (feof(fp)) {
-                printf ("reading of file is complete\n");
-                break;
-            } else {
-                printf ("reading file encounteded error : %s\n", strerror(errno));
-                exit(EXIT_FAILURE);
-            }
-        }
+        FILE_READ_ERR_CHECK(sz) 
         len = be16toh(len);
         PRINT_DBG(" len : 0x%02x sizeof(type) : %ld\n", len, sizeof(len));
         PRINT_DBG("file pos : %ld\n", ftell(fp));
@@ -323,6 +329,7 @@ int scf_parse_file(const char*pathname)
             }
 
             sz = fread(value, len, 1, fp);
+            FILE_READ_ERR_CHECK(sz)
             PRINT_DBG(" value : 0x%02x sizeof(type) : %ld\n", *(char*)value, sizeof(len));
             PRINT_DBG("file pos : %ld\n", ftell(fp));
             offset += len;
@@ -376,20 +383,14 @@ int scf_parse_file(const char*pathname)
         value = NULL;
 
         sz = fread((void*)&type, sizeof(type), 1, fp);
+        FILE_READ_ERR_CHECK(sz)
         PRINT_DBG(" type : 0x%02x sizeof(type) : %ld\n", type, sizeof(type));
         PRINT_DBG("file pos : %ld\n", ftell(fp));
 
         offset += sizeof(type); 
         sz = fread((void*)&len, sizeof(len), 1, fp);
-        if (!sz) {
-            if (feof(fp)) {
-                printf ("reading of file is complete\n");
-                break;
-            } else {
-                printf ("reading file encounteded error : %s\n", strerror(errno));
-                exit(EXIT_FAILURE);
-            }
-        }
+        FILE_READ_ERR_CHECK(sz)
+
         len = be16toh(len);
         PRINT_DBG(" len : 0x%02x sizeof(type) : %ld\n", len, sizeof(len));
         PRINT_DBG("file pos : %ld\n", ftell(fp));
@@ -410,7 +411,7 @@ int scf_parse_file(const char*pathname)
             offset += len;
         }
 
-        if (check_scfb_record_len_type(type)) {
+        if (check_scfb_record_len_type(type) && value) {
             scfb_record_len = be16toh(*(uint16_t*)(value)); 
             PRINT_DBG("scf body record length : %ld\n", scfb_record_len);
         }

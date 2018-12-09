@@ -12,6 +12,9 @@ The parser code has 3 part
 ### compilation
 To compile the code run `make all`
 To clean the existing obj `make clean`
+to perform static analysis `make sa`
+    - compiler used is clang 
+    - for static analysis *scan-build* is used
 
 ### Demonstrate key principles of programming
     - Static Analysis

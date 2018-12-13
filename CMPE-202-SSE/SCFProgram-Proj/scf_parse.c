@@ -260,17 +260,16 @@ void scf_body_print(uint8_t type, uint16_t len, void *value)
 }
 
 #define FILE_READ_ERR_CHECK(sz) \
-    do { \
-        if (!sz) { \
-            if (feof(fp)) { \
-                printf ("reading of file is complete\n"); \
-                break; \
-            } else { \
-                printf ("reading file encounteded error : %s\n", strerror(errno)); \
-                exit(EXIT_FAILURE); \
-            } \
+    if (!sz) { \
+        if (feof(fp)) { \
+            printf ("reading of file is complete\n"); \
+            break; \
+        } else { \
+            printf ("reading file encounteded error : %s\n", strerror(errno)); \
+            exit(EXIT_FAILURE); \
         } \
-    } while (0); \
+    } \
+    
 
 int scf_parse_file(const char*pathname) 
 {

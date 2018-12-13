@@ -5,7 +5,7 @@
 #
 #------------------------------------------------------------------------------
 CC = clang
-CFLAGS = -g -Wall
+CFLAGS = -g -Wall -fprofile-instr-generate -fcoverage-mapping
 SCFPRG = scfprg
 SCANBLD = scan-build
 

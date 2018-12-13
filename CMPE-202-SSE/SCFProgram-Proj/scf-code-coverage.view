@@ -1,0 +1,986 @@
+/home/psg/working/MS/MS/CMPE-202-SSE/SCFProgram-Proj/main.c:
+    1|       |#include "scf_glibc.h"
+    2|       |#include "scf.h"
+    3|       |
+    4|       |typedef struct scf_opts_ {
+    5|       |    bool debug;
+    6|       |    bool parse;
+    7|       |    bool verbose;
+    8|       |    bool output;
+    9|       |    bool test;
+   10|       |} scf_opts_t;
+   11|       |
+   12|       |int
+   13|       |main(int argc, char **argv)
+   14|      1|{
+   15|      1|    int c;
+   16|      1|    //int digit_optind = 0;
+   17|      1|    scf_opts_t scf_op;
+   18|      1|    bzero((void*)(&scf_op), sizeof(scf_op));
+   19|      1|
+   20|      1|    while (1) {
+   21|      1|        //int this_option_optind = optind ? optind : 1;
+   22|      1|        int option_index = 0;
+   23|      1|        static struct option long_options[] = {
+   24|      1|            {"parse",  required_argument, 0, 'p' },
+   25|      1|            {"debug",  no_argument,       0, 'd' },
+   26|      1|            {"verbose", no_argument,      0, 'v' },
+   27|      1|            {"output", required_argument, 0, 'o' },
+   28|      1|            {"test", no_argument,         0, 't' },
+   29|      1|            {"help", no_argument,         0, 'h' },
+   30|      1|            {0,         0,                0,  0 }
+   31|      1|        };
+   32|      1|
+   33|      1|        c = getopt_long(argc, argv, "dho:p:tv",
+   34|      1|                 long_options, &option_index);
+   35|      1|        if (c == -1)
+   36|      1|            break;
+   37|      0|
+   38|      0|        switch (c) {
+   39|      0|
+   40|      0|        case 'd':
+   41|      0|            printf("option d\n");
+   42|      0|            scf_op.debug = true;
+   43|      0|            break;
+   44|      0|
+   45|      0|        case 'h':
+   46|      0|            printf("option h\n");
+   47|      0|            exit(EXIT_SUCCESS);
+   48|      0| 
+   49|      0|        case 'o':
+   50|      0|            printf("option o with value '%s'\n", optarg);
+   51|      0|            scf_op.output = true;
+   52|      0|            break;
+   53|      0|
+   54|      0|        case 'p':
+   55|      0|            printf("option p with value '%s'\n", optarg);
+   56|      0|            scf_op.parse = true;
+   57|      0|            break;
+   58|      0|
+   59|      0|        case 't':
+   60|      0|            printf("option t with value '%s'\n", optarg);
+   61|      0|            scf_op.test = true;
+   62|      0|            break;
+   63|      0| 
+   64|      0|        case 'v':
+   65|      0|            printf("option v\n");
+   66|      0|            break;
+   67|      0|
+   68|      0|        case '?':
+   69|      0|            break;
+   70|      0|
+   71|      0|        default:
+   72|      0|            printf("?? getopt returned character code 0%o ??\n", c);
+   73|      0|        }
+   74|      0|    }
+   75|      1|
+   76|      1|    if (optind < argc) {
+   77|      0|        printf("non-option ARGV-elements: ");
+   78|      0|        while (optind < argc)
+   79|      0|            printf("%s ", argv[optind++]);
+   80|      0|        printf("\n");
+   81|      0|    }
+   82|      1|
+   83|      1|    if (scf_op.test) {
+   84|      0|        scfb_test();
+   85|      0|    }
+   86|      1|
+   87|      1|    scf_parse_file(TLV_FNAME);
+   88|      1|
+   89|      1|    exit(EXIT_SUCCESS);
+   90|      0|}
+   91|       |
+
+/home/psg/working/MS/MS/CMPE-202-SSE/SCFProgram-Proj/scf_data.c:
+    1|       |#include "scf_glibc.h"
+    2|       |#include "scf.h"
+    3|       |
+    4|       |struct tailq_entry *allocate_tailq_entry(void)
+    5|     74|{
+    6|     74|    struct tailq_entry *t;
+    7|     74|    t = calloc(1, sizeof(struct tailq_entry));
+    8|     74|    if (!t) {
+    9|      0|        printf("failed to allocate memory : %s\n", strerror(errno));
+   10|      0|        exit(EXIT_FAILURE);
+   11|      0|    }
+   12|     74|    return (t);
+   13|     74|}
+   14|       |void free_tailq_entry(struct tailq_entry *t)
+   15|      0|{
+   16|      0|    if (t) {
+   17|      0|        if (t->tlv.value) {
+   18|      0|            free(t->tlv.value);
+   19|      0|        }
+   20|      0|        free(t);
+   21|      0|    }
+   22|      0|}
+   23|       |
+   24|       |int update_data_tlv(scf_tlv_t *tlv, scf_type_e t, uint8_t type, uint16_t len, 
+   25|       |                    datatype_e dt, bool has_val, void *val) 
+   26|     74|{
+   27|     74|    if (!tlv) return (EXIT_FAILURE);
+   28|     74|
+   29|     74|    tlv->n_type = t;
+   30|     74|    tlv->type = type;  
+   31|     74|    tlv->length = len;
+   32|     74|    tlv->has_value = has_val;
+   33|     74|    tlv->dtype = dt;
+   34|     74|    if (has_val) {
+   35|     71|        tlv->value = calloc(1, len);
+   36|     71|        if (!tlv->value) {
+   37|      0|            printf("failed to allocate memory : %s\n", strerror(errno));
+   38|      0|            exit(EXIT_FAILURE);
+   39|      0|        }
+   40|     71|        memcpy(tlv->value, val, len);
+   41|     71|    }
+   42|     74|    return (EXIT_SUCCESS);  
+   43|     74|}
+   44|       |
+   45|       |int insert_tailq_entry(struct queuehead *qhead, struct tailq_entry *lelem, 
+   46|       |                        struct tailq_entry *elem)
+   47|     74|{
+   48|     74|    if (!elem) {
+   49|      0|        printf("element is not present\n");
+   50|      0|        return (EXIT_FAILURE);
+   51|      0|    }
+   52|     74|    if (TAILQ_EMPTY(qhead)) {
+   53|      7|        TAILQ_INSERT_HEAD(qhead, elem, tailq_entries);
+   54|     67|    } else {
+   55|     67|        if (!lelem) {
+   56|      0|            printf("last element is empty");
+   57|      0|            return (EXIT_FAILURE);
+   58|      0|        }
+   59|     67|        TAILQ_INSERT_AFTER(qhead, lelem, elem, tailq_entries);
+   60|     67|    }
+   61|     74|    return (EXIT_SUCCESS);
+   62|     74|}
+   63|       |
+   64|       |void print_hex_value(uint32_t len, void *value)
+   65|     26|{
+   66|     26|    uint16_t i, l;
+   67|     26|    if (len > MAX_PRINT_LEN) {
+   68|     19|        l = MAX_PRINT_LEN;
+   69|     19|    } else {
+   70|      7|        l = len;
+   71|      7|    }
+   72|    710|    for (i = 0; i < l; i++) {
+   73|    684|        printf("%x ", *(uint8_t*)(value+i));
+   74|    684|    }
+   75|     26|}
+   76|       |void print_ip_addr(void *data)
+   77|      6|{
+   78|      6|    uint8_t ip[4];
+   79|      6|    memcpy(&ip, data, sizeof(uint32_t));
+   80|      6|    printf("%d.%d.%d.%d", ip[0], ip[1], ip[2], ip[3]);
+   81|      6|}
+   82|       |
+   83|       |void print_data_value(datatype_e dt, uint32_t len, void *data)
+   84|     74|{
+   85|     74|    switch(dt) {
+   86|     74|        case UINT8:
+   87|      1|            printf("%-8u", *(uint8_t*)data);
+   88|      1|            break;
+   89|     74|        case UINT16:
+   90|     16|        case VERSION:
+   91|     16|            printf("%-8u", *(uint16_t*)data);
+   92|     16|            break;
+   93|     16|        case UINT32:
+   94|      0|            printf("%-8u", *(uint32_t*)data);
+   95|      0|            break;
+   96|     16|        case UINT64:
+   97|      1|            printf("%-8lu", *(uint64_t*)data);
+   98|      1|            break;
+   99|     26|        case BYTE:
+  100|     26|            print_hex_value(len, data);
+  101|     26|            break;
+  102|     21|        case STRING:
+  103|     21|            printf("%-8s", (char*)data);
+  104|     21|            break;
+  105|     16|        case IPADDR:
+  106|      6|            print_ip_addr(data);
+  107|      6|            break;
+  108|     16|        case NONE:
+  109|      3|            printf("(None)");
+  110|      3|            break;
+  111|     74|    }
+  112|     74|}
+  113|       |
+  114|       |void print_tailq_entry(struct queuehead *qhead)
+  115|      7|{
+  116|      7|    struct tailq_entry *elem;
+  117|      7|
+  118|      7|    if (!qhead) {
+  119|      0|        printf("queue is empty\n");
+  120|      0|        return;
+  121|      0|    }
+  122|      7|    printf("Type\tTag\t\t\tLength\tValue\n");
+  123|      7|    printf("----\t---\t\t\t------\t-----\n");
+  124|     74|    TAILQ_FOREACH(elem, qhead, tailq_entries) {
+  125|     74|        printf("%-8d%-24s%-8d", 
+  126|     74|               elem->tlv.type, 
+  127|     74|               (elem->tlv.n_type == SCF_HEADER)?scfh_type_to_str(elem->tlv.type):scfb_type_to_str(elem->tlv.type), 
+  128|     74|               elem->tlv.length);
+  129|     74|        print_data_value(elem->tlv.dtype, elem->tlv.length, elem->tlv.value);
+  130|     74|        printf("\n");
+  131|     74|    }
+  132|      7|}
+  133|       |
+  134|       |struct btailq_entry *allocate_btailq_entry(void)
+  135|      0|{
+  136|      0|    struct btailq_entry *t;
+  137|      0|    t = calloc(1, sizeof(struct btailq_entry));
+  138|      0|    if (!t) {
+  139|      0|        printf("failed to allocate memory : %s\n", strerror(errno));
+  140|      0|        exit(EXIT_FAILURE);
+  141|      0|    }
+  142|      0|    return (t);
+  143|      0|}
+  144|       |void free_btailq_entry(struct btailq_entry *t)
+  145|      0|{
+  146|      0|    if (t) {
+  147|      0|        /*TBD Free each list present*/
+  148|      0|        free(t);
+  149|      0|    }
+  150|      0|}
+  151|       |int insert_btailq_entry(struct bqueuehead *qhead, struct btailq_entry *lelem, struct btailq_entry *elem)
+  152|      0|{
+  153|      0|    return (EXIT_FAILURE);
+  154|      0|}
+  155|       |void print_btailq_entry(struct bqueuehead *bqhead)
+  156|      0|{
+  157|       |#if 0
+  158|       |    struct btailq_entry *belem;
+  159|       |    struct tailq_entry *elem;
+  160|       |
+  161|       |    if (!bqhead) {
+  162|       |        printf("body queue is empty\n");
+  163|       |        return;
+  164|       |    }
+  165|       |
+  166|       |    TAILQ_FOREACH(belem, bqhead, btailq_entries) {
+  167|       |        printf ("printing record\n");
+  168|       |        print_tailq_entry(belem->btailq_entry_head);
+  169|       |    }
+  170|       |#endif
+  171|       |}
+
+/home/psg/working/MS/MS/CMPE-202-SSE/SCFProgram-Proj/scf_parse.c:
+    1|       |#include "scf_glibc.h"
+    2|       |#include "scf.h"
+    3|       |
+    4|       |extern int errno;
+    5|       |long scf_hdr_len = 0;
+    6|       |bool scf_hdr_len_found = false;
+    7|       |
+    8|       |struct slisthead *headp;
+    9|       |
+   10|       |const scf_parse_t scf_parse_hdr [SCFH_END] = {
+   11|       |    {
+   12|       |        .type.h = SCFH_REVISION, 
+   13|       |        .has_value = true,
+   14|       |        .type_str = "Version",
+   15|       |        .dtype = VERSION,
+   16|       |    }, 
+   17|       |    {
+   18|       |        .type.h = SCFH_HDR_LEN, 
+   19|       |        .has_value = true,
+   20|       |        .type_str = "Header Length",
+   21|       |        .dtype = UINT16,
+   22|       |    }, 
+   23|       |    {
+   24|       |        .type.h = SCFH_SIGNER_ID, 
+   25|       |        .has_value = false,
+   26|       |        .type_str = "Signer Identity",
+   27|       |        .dtype = NONE,
+   28|       |    }, 
+   29|       |    {
+   30|       |        .type.h = SCFH_SIGNER_NAME, 
+   31|       |        .has_value = true,
+   32|       |        .type_str = "Signer Name",
+   33|       |        .dtype = STRING,
+   34|       |    }, 
+   35|       |    {
+   36|       |        .type.h = SCFH_SERIAL_NUM, 
+   37|       |        .has_value = true,
+   38|       |        .type_str = "Cert Serial Number",
+   39|       |        .dtype = UINT64,
+   40|       |    }, 
+   41|       |    {
+   42|       |        .type.h = SCFH_CA_NAME, 
+   43|       |        .has_value = true,
+   44|       |        .type_str = "CA Name",
+   45|       |        .dtype = STRING,
+   46|       |    }, 
+   47|       |    {
+   48|       |        .type.h = SCFH_SIGNATURE_INFO, 
+   49|       |        .has_value = false,
+   50|       |        .type_str = "SIGNATUREINFO",
+   51|       |        .dtype = NONE,
+   52|       |    }, 
+   53|       |    {
+   54|       |        .type.h = SCFH_DIGEST_ALGO, 
+   55|       |        .has_value = true,
+   56|       |        .type_str = "Digest Algo",
+   57|       |        .dtype = UINT16,
+   58|       |    }, 
+   59|       |    {
+   60|       |        .type.h = SCFH_SIGNATURE_ALGO_INFO, 
+   61|       |        .has_value = false,
+   62|       |        .type_str = "Signature Algo Info",
+   63|       |        .dtype = NONE,
+   64|       |    }, 
+   65|       |    {
+   66|       |        .type.h = SCFH_SIGNATURE_ALGO, 
+   67|       |        .has_value = true,
+   68|       |        .type_str = "Signature Algo",
+   69|       |        .dtype = UINT16,
+   70|       |    }, 
+   71|       |    {
+   72|       |        .type.h = SCFH_SIGNATURE_MODULUS, 
+   73|       |        .has_value = true,
+   74|       |        .type_str = "Signature Modulus",
+   75|       |        .dtype = UINT8,
+   76|       |    }, 
+   77|       |    {
+   78|       |        .type.h = SCFH_SIGNATURE, 
+   79|       |        .has_value = true,
+   80|       |        .type_str = "SIGNATURE",
+   81|       |        .dtype = BYTE,
+   82|       |    }, 
+   83|       |    {
+   84|       |        .type.h = SCFH_0X0D, 
+   85|       |        .has_value = false,
+   86|       |        .type_str = "Unknown",
+   87|       |        .dtype = BYTE,
+   88|       |    }, 
+   89|       |    {
+   90|       |        .type.h = SCFH_FILENAME, 
+   91|       |        .has_value = true,
+   92|       |        .type_str = "FILENAME",
+   93|       |        .dtype = STRING,
+   94|       |    }, 
+   95|       |    {
+   96|       |        .type.h = SCFH_TIMESTAMP, 
+   97|       |        .has_value = true,
+   98|       |        .type_str = "TIMESTAMP",
+   99|       |        .dtype = BYTE,
+  100|       |    } 
+  101|       |};
+  102|       |
+  103|       |const scf_parse_t scf_parse_body [SCFB_END] = {
+  104|       |    {
+  105|       |        .type.b = SCFB_RECORD_LENGTH, 
+  106|       |        .has_value = true,
+  107|       |        .type_str = "RECORDLENGTH",
+  108|       |        .dtype = UINT16,
+  109|       |    }, 
+  110|       |    {
+  111|       |        .type.b = SCFB_DNSNAME, 
+  112|       |        .has_value = true,
+  113|       |        .type_str = "DNSNAME",
+  114|       |        .dtype = STRING,
+  115|       |    }, 
+  116|       |    {
+  117|       |        .type.b = SCFB_SUBJECTNAME, 
+  118|       |        .has_value = true,
+  119|       |        .type_str = "SUBJECTNAME",
+  120|       |        .dtype = STRING,
+  121|       |    }, 
+  122|       |    {
+  123|       |        .type.b = SCFB_FUNCTION, 
+  124|       |        .has_value = true,
+  125|       |        .type_str = "FUNCTION",
+  126|       |        .dtype = UINT16,
+  127|       |    }, 
+  128|       |    {
+  129|       |        .type.b = SCFB_ISSUERNAME, 
+  130|       |        .has_value = true,
+  131|       |        .type_str = "ISSUERNAME",
+  132|       |        .dtype = STRING,
+  133|       |    }, 
+  134|       |    {
+  135|       |        .type.b = SCFB_SERIAL_NUMBER, 
+  136|       |        .has_value = true,
+  137|       |        .type_str = "SERIAL NUMBER",
+  138|       |        .dtype = BYTE,
+  139|       |    }, 
+  140|       |    {
+  141|       |        .type.b = SCFB_PUBLIC_KEY, 
+  142|       |        .has_value = true,
+  143|       |        .type_str = "PUBLICKEY",
+  144|       |        .dtype = BYTE,
+  145|       |    }, 
+  146|       |    {
+  147|       |        .type.b = SCFB_SIGNATURE, 
+  148|       |        .has_value = true,
+  149|       |        .type_str = "SIGNATURE",
+  150|       |        .dtype = BYTE,
+  151|       |    }, 
+  152|       |    {
+  153|       |        .type.b = SCFB_CERTIFICATE, 
+  154|       |        .has_value = true,
+  155|       |        .type_str = "CERTIFICATE",
+  156|       |        .dtype = BYTE,
+  157|       |    }, 
+  158|       |    {
+  159|       |        .type.b = SCFB_IP_ADDRESS, 
+  160|       |        .has_value = true,
+  161|       |        .type_str = "IPADDRESS",
+  162|       |        .dtype = IPADDR,
+  163|       |    } 
+  164|       |};
+  165|       |
+  166|       |static const datatype_e scf_hdr_data_type_get(scfh_type_e e) 
+  167|     14|{
+  168|    107|    for (uint32_t i = 0; i < SCFH_END; i++) {
+  169|    107|        if (scf_parse_hdr[i].type.h == e) {
+  170|     14|            return (scf_parse_hdr[i].dtype); 
+  171|     14|        }
+  172|    107|    }
+  173|     14|    return (NONE);
+  174|     14|}
+  175|       |static const datatype_e scf_body_data_type_get(scfb_type_e e) 
+  176|     60|{
+  177|    330|    for (uint32_t i = 0; i < SCFB_END; i++) {
+  178|    330|        if (scf_parse_body[i].type.b == e) {
+  179|     60|            return (scf_parse_body[i].dtype); 
+  180|     60|        }
+  181|    330|    }
+  182|     60|    return (NONE); 
+  183|     60|}
+  184|       |
+  185|       |const char *scfh_type_to_str(scfh_type_e e) 
+  186|     14|{
+  187|    107|    for (uint32_t i = 0; i < SCFH_END; i++) {
+  188|    107|        if (scf_parse_hdr[i].type.h == e) {
+  189|     14|            return (scf_parse_hdr[i].type_str); 
+  190|     14|        }
+  191|    107|    }
+  192|     14|    return (UNKNOWN_STR);
+  193|     14|}
+  194|       |const char *scfb_type_to_str(scfb_type_e e) 
+  195|     60|{
+  196|    330|    for (uint32_t i = 0; i < SCFB_END; i++) {
+  197|    330|        if (scf_parse_body[i].type.b == e) {
+  198|     60|            return (scf_parse_body[i].type_str); 
+  199|     60|        }
+  200|    330|    }
+  201|     60|    return (UNKNOWN_STR);
+  202|     60|}
+  203|       |
+  204|       |static bool check_scf_hdr_len_type(uint8_t type) 
+  205|     14|{
+  206|     14|    if ((!scf_hdr_len_found) && (type == SCFH_HDR_LEN)) {
+  207|      1|        scf_hdr_len_found = true;
+  208|      1|        return (true);
+  209|      1|    }
+  210|     13|    return (false);
+  211|     13|}
+  212|       |static bool check_scfb_record_len_type(uint8_t type) 
+  213|     60|{
+  214|     60|    if (type == SCFB_RECORD_LENGTH) {
+  215|      6|        return (true);
+  216|      6|    }
+  217|     54|    return (false);
+  218|     54|}
+  219|       |
+  220|       |static bool is_hdr_value_present(scfh_type_e e) 
+  221|     14|{
+  222|    107|    for (uint32_t i = 0; i < SCFH_END; i++) {
+  223|    107|        if (scf_parse_hdr[i].type.h == e) {
+  224|     14|            return (scf_parse_hdr[i].has_value);
+  225|     14|        }
+  226|    107|    }
+  227|     14|    return (false);
+  228|     14|}
+  229|       |
+  230|       |static bool is_parsable(scfh_type_e e)
+  231|     15|{
+  232|     15|    if (e == SCFH_0X0D) {
+  233|      1|        return (false);
+  234|     14|    } else {
+  235|     14|        return (true);
+  236|     14|    }
+  237|     15|}
+  238|       |
+  239|       |static bool is_body_value_present(scfb_type_e e) 
+  240|     60|{
+  241|    330|    for (uint32_t i = 0; i < SCFB_END; i++) {
+  242|    330|        if (scf_parse_body[i].type.b == e) {
+  243|     60|            return (scf_parse_body[i].has_value);
+  244|     60|        }
+  245|    330|    }
+  246|     60|    return (false);
+  247|     60|}
+  248|       |
+  249|       |
+  250|       |typedef int (*print_data)(scf_type_e e, scf_tlv_t *t);
+  251|       |
+  252|       |void scf_hdr_print(uint8_t type, uint16_t len, void *value)
+  253|      0|{
+  254|      0|    printf("%d\t%s\t%d\tTBD\n",type, scfh_type_to_str(type), len);
+  255|      0|}
+  256|       |
+  257|       |void scf_body_print(uint8_t type, uint16_t len, void *value)
+  258|      0|{
+  259|      0|    printf("%d\t%s\t%d\tTBD\n",type, scfb_type_to_str(type), len);
+  260|      0|}
+  261|       |
+  262|       |#define FILE_READ_ERR_CHECK(sz) \
+  263|    161|    if (!sz) { \
+  264|      1|        if (feof(fp)) { \
+  265|      1|            printf ("reading of file is complete\n"); \
+  266|      1|            break; \
+  267|      1|        } else { \
+  268|      0|            printf ("reading file encounteded error : %s\n", strerror(errno)); \
+  269|      0|            exit(EXIT_FAILURE); \
+  270|      0|        } \
+  271|      1|    } \
+  272|       |    
+  273|       |
+  274|       |int scf_parse_file(const char*pathname) 
+  275|      1|{
+  276|      1|    FILE *fp = NULL;
+  277|      1|    size_t sz = 0;
+  278|      1|    uint8_t type;
+  279|      1|    uint16_t len = 0;
+  280|      1|    void *value = NULL;
+  281|      1|    long offset = 0;
+  282|      1|    long scfb_record_len = 0;
+  283|      1|    struct tailq_entry *tq_entry = NULL;
+  284|      1|    struct tailq_entry *ltq_entry = NULL;
+  285|      1|    struct tailq_entry *rec_entry = NULL;
+  286|      1|    struct tailq_entry *lrec_entry = NULL;
+  287|      1|    bool hdr_val_present;
+  288|      1|    bool body_val_present;
+  289|      1|
+  290|      1|    struct queuehead h_head = TAILQ_HEAD_INITIALIZER(h_head); 
+  291|      1|    TAILQ_INIT(&h_head);
+  292|      1|
+  293|      1|
+  294|      1|    fp = fopen(pathname, "r");
+  295|      1|    if (!fp) {
+  296|      0|        printf("error opening file (%s) : %s\n", pathname, strerror(errno));
+  297|      0|        exit(EXIT_FAILURE);
+  298|      0|    } 
+  299|      1|
+  300|     15|    while (true) {
+  301|     15|        bzero((void*)&type, sizeof(type));
+  302|     15|        bzero((void*)&len, sizeof(len));
+  303|     15|        value = NULL;
+  304|     15|
+  305|     15|        sz = fread((void*)&type, sizeof(type), 1, fp);
+  306|     15|        FILE_READ_ERR_CHECK(sz)
+  307|     15|        PRINT_DBG(" type : 0x%02x sizeof(type) : %ld\n", type, sizeof(type));
+  308|     15|        PRINT_DBG("file pos : %ld\n", ftell(fp));
+  309|     15|        offset += sizeof(type); 
+  310|     15|        if (!is_parsable(type)) {
+  311|      1|            printf("parsing of header is complete\n\n");
+  312|      1|            break;
+  313|      1|        }
+  314|     14|        sz = fread((void*)&len, sizeof(len), 1, fp);
+  315|     14|        FILE_READ_ERR_CHECK(sz) 
+  316|     14|        len = be16toh(len);
+  317|     14|        PRINT_DBG(" len : 0x%02x sizeof(type) : %ld\n", len, sizeof(len));
+  318|     14|        PRINT_DBG("file pos : %ld\n", ftell(fp));
+  319|     14|        offset += sizeof(len); 
+  320|     14|
+  321|     14|        /* some TLV does not have value*/
+  322|     14|        hdr_val_present = is_hdr_value_present(type);
+  323|     14|        if (hdr_val_present) {
+  324|     11|            value = calloc(1, len);
+  325|     11|            if (!value) {
+  326|      0|                printf("calloc error : %s\n", strerror(errno));
+  327|      0|                exit(EXIT_FAILURE);
+  328|      0|            }
+  329|     11|
+  330|     11|            sz = fread(value, len, 1, fp);
+  331|     11|            FILE_READ_ERR_CHECK(sz)
+  332|     11|            PRINT_DBG(" value : 0x%02x sizeof(type) : %ld\n", *(char*)value, sizeof(len));
+  333|     11|            PRINT_DBG("file pos : %ld\n", ftell(fp));
+  334|     11|            offset += len;
+  335|     11|        }
+  336|     14|
+  337|     14|        if (check_scf_hdr_len_type(type)) {
+  338|      1|            scf_hdr_len = be16toh(*(uint16_t*)(value)); 
+  339|      1|            PRINT_DBG("scf header length : %ld\n", scf_hdr_len);
+  340|      1|        }
+  341|     14|
+  342|     14|        /* store */
+  343|     14|        tq_entry = allocate_tailq_entry();
+  344|     14|        if (update_data_tlv(&tq_entry->tlv, SCF_HEADER, type, len, scf_hdr_data_type_get(type), hdr_val_present, value?value:NULL)) {
+  345|      0|            exit(EXIT_FAILURE);
+  346|      0|        }
+  347|     14|        if (insert_tailq_entry(&h_head, ltq_entry, tq_entry)) {
+  348|      0|            exit(EXIT_FAILURE);
+  349|      0|        }
+  350|     14|
+  351|     14|        ltq_entry = tq_entry;
+  352|     14|
+  353|     14|        //scf_hdr_print(type, len, value);
+  354|     14|
+  355|     14|        if (value) {
+  356|     11|            free(value);
+  357|     11|        }
+  358|     14|
+  359|     14|        PRINT_DBG("offset : %ld scf_hdr_len : %ld\n", offset, scf_hdr_len);
+  360|     14|        if ((offset >= scf_hdr_len) && scf_hdr_len_found) {
+  361|      0|            printf("parsing of header is complete\n\n");
+  362|      0|            break;
+  363|      0|        }
+  364|     14|
+  365|     14|    }
+  366|      1|    print_tailq_entry(&h_head);
+  367|      1|    offset = 0;
+  368|      1|
+  369|      1|    /* prepare btailq */
+  370|      1|
+  371|      1|    struct bqueuehead bhead = TAILQ_HEAD_INITIALIZER(bhead);
+  372|      1|    TAILQ_INIT(&bhead);
+  373|      1|    struct queuehead rec_head = TAILQ_HEAD_INITIALIZER(rec_head); 
+  374|      1|    TAILQ_INIT(&rec_head);
+  375|      1|
+  376|      1|    /* Parse the body */
+  377|      1|
+  378|      1|
+  379|     61|    while (true) {
+  380|     61|        bzero((void*)&type, sizeof(type));
+  381|     61|        bzero((void*)&len, sizeof(len));
+  382|     61|        value = NULL;
+  383|     61|
+  384|     61|        sz = fread((void*)&type, sizeof(type), 1, fp);
+  385|     61|        FILE_READ_ERR_CHECK(sz)
+  386|     61|        PRINT_DBG(" type : 0x%02x sizeof(type) : %ld\n", type, sizeof(type));
+  387|     60|        PRINT_DBG("file pos : %ld\n", ftell(fp));
+  388|     60|
+  389|     60|        offset += sizeof(type); 
+  390|     60|        sz = fread((void*)&len, sizeof(len), 1, fp);
+  391|     60|        FILE_READ_ERR_CHECK(sz)
+  392|     60|
+  393|     60|        len = be16toh(len);
+  394|     60|        PRINT_DBG(" len : 0x%02x sizeof(type) : %ld\n", len, sizeof(len));
+  395|     60|        PRINT_DBG("file pos : %ld\n", ftell(fp));
+  396|     60|        offset += sizeof(len); 
+  397|     60|
+  398|     60|        /* some TLV does not have value*/
+  399|     60|        body_val_present = is_body_value_present(type);
+  400|     60|        if (body_val_present) {
+  401|     60|            value = calloc(1, len);
+  402|     60|            if (!value) {
+  403|      0|                printf("calloc error : %s\n", strerror(errno));
+  404|      0|                exit(EXIT_FAILURE);
+  405|      0|            }
+  406|     60|
+  407|     60|            sz = fread(value, len, 1, fp);
+  408|     60|            PRINT_DBG(" value : 0x%02x sizeof(type) : %ld\n", *(char*)value, sizeof(len));
+  409|     60|            PRINT_DBG("file pos : %ld\n", ftell(fp));
+  410|     60|            offset += len;
+  411|     60|        }
+  412|     60|
+  413|     60|        if (check_scfb_record_len_type(type) && value) {
+  414|      6|            scfb_record_len = be16toh(*(uint16_t*)(value)); 
+  415|      6|            PRINT_DBG("scf body record length : %ld\n", scfb_record_len);
+  416|      6|        }
+  417|     60|        /* store */
+  418|     60|        rec_entry = allocate_tailq_entry();
+  419|     60|        if (update_data_tlv(&rec_entry->tlv, SCF_BODY, type, len, scf_body_data_type_get(type), body_val_present, value?value:NULL)) {
+  420|      0|            exit(EXIT_FAILURE);
+  421|      0|        }
+  422|     60|        if (insert_tailq_entry(&rec_head, lrec_entry, rec_entry)) {
+  423|      0|            exit(EXIT_FAILURE);
+  424|      0|        }
+  425|     60|
+  426|     60|        lrec_entry = rec_entry;
+  427|     60|
+  428|     60|        //scf_body_print(type, len, value);
+  429|     60|
+  430|     60|        if (value) {
+  431|     60|            free(value);
+  432|     60|        }
+  433|     60|
+  434|     60|        PRINT_DBG("offset : %ld scfb_record_len : %ld\n", offset, scfb_record_len);
+  435|     60|        if (offset >= scfb_record_len) {
+  436|      6|            /* reset the record len and offset as we are done with parsing of 
+  437|      6|             * the body for this cert */
+  438|      6|            scfb_record_len = 0;
+  439|      6|            offset = 0;
+  440|      6|            print_tailq_entry(&rec_head);
+  441|      6|            TAILQ_INIT(&rec_head);
+  442|      6|            printf("finished parsing the body \n\n");
+  443|      6|        }
+  444|     60|    }
+  445|      1|
+  446|      1|    if (fclose(fp)) {
+  447|      0|        printf("error closing file (%s) : %s\n", pathname, strerror(errno));
+  448|      0|        exit(EXIT_FAILURE);
+  449|      0|    }
+  450|      1|    return (0);
+  451|      1|}
+
+/home/psg/working/MS/MS/CMPE-202-SSE/SCFProgram-Proj/scf_parse.h:
+    1|       |#ifndef __SCF_PARSE_H__
+    2|       |#define __SCF_PARSE_H__
+    3|       |
+    4|       |/*
+    5|       |C:\Users\gargi-partha\Desktop\SCFProgram>SCFParser.exe -h
+    6|       |
+    7|       |        Parse CTL File
+    8|       |
+    9|       |        --------------
+   10|       |
+   11|       |Version:        1.2
+   12|       |HeaderLength:   312 (BYTES)
+   13|       |
+   14|       |BYTEPOS TAG             LENGTH  VALUE
+   15|       |------- ---             ------  -----
+   16|       |3       SIGNERID        2       127
+   17|       |4       SIGNERNAME      55
+   18|       |5       SERIALNUMBER    8
+   19|       |6       CANAME  55
+   20|       |7       SIGNATUREINFO   2       55
+   21|       |8       DIGESTALGO      2
+   22|       |9       SIGNATUREALGOINFO       2
+   23|       |10      SIGNATUREALGO   2
+   24|       |11      SIGNATUREMODULUS        2
+   25|       |12      SIGNATURE       128
+   26|       |                35  6d  f0  f8  aa  f1  05  6e
+   27|       |                f7  ab  1b  5d  3e  df  84  5e
+   28|       |                f3  49  5b  4f  39  95  76  99
+   29|       |                bb  06  16  80  e8  de  fb  08
+   30|       |                a4  4f  b4  c3  f7  2a  be  86
+   31|       |                0a  70  88  36  ab  0a  17  52
+   32|       |                b0  cd  1a  60  80  29  ae  7a
+   33|       |                47  a8  95  3e  ef  27  65  3e
+   34|       |                7c  70  db  e0  53  aa  6e  9f
+   35|       |                26  77  e5  5e  83  7c  d6  d9
+   36|       |                66  ae  c5  bb  6e  bc  a2  03
+   37|       |                ee  3d  07  7a  90  04  a2  15
+   38|       |                8b  9b  c3  f5  b2  cd  46  e7
+   39|       |                e3  a2  27  c9  19  7c  65  e9
+   40|       |                2e  9f  bc  02  f3  99  ab  78
+   41|       |                c3  be  5c  e9  2d  72  50  bc
+   42|       |14      FILENAME        12
+   43|       |15      TIMESTAMP       4
+   44|       |
+   45|       |        Start CTL Records
+   46|       |        -----------------
+   47|       |
+   48|       |        CTL Record  #: 1
+   49|       |                     ----
+   50|       |BYTEPOS TAG             LENGTH  VALUE
+   51|       |------- ---             ------  -----
+   52|       |1       RECORDLENGTH    2       1147
+   53|       |2       DNSNAME         11      gigantic-6
+   54|       |3       SUBJECTNAME     55      CN=gigantic-6.cisco.com;OU=VTG;O=Alpha;L=SJ;ST=CA;C=US
+   55|       |4       FUNCTION        2       Security Token
+   56|       |5       ISSUERNAME      55      CN=gigantic-6.cisco.com;OU=VTG;O=Alpha;L=SJ;ST=CA;C=US
+   57|       |6       SERIAL NUMBER   8
+   58|       |7       PUBLICKEY       140
+   59|       |8       SIGNATURE       128
+   60|       |9       CERTIFICATE     712
+   61|       |Signature Verified successfully
+   62|       |10      IPADDRESS       4
+   63|       |
+   64|       |        CTL Record  #: 2
+   65|       |                     ----
+   66|       |BYTEPOS TAG             LENGTH  VALUE
+   67|       |------- ---             ------  -----
+   68|       |1       RECORDLENGTH    2       1147
+   69|       |2       DNSNAME         11      gigantic-6
+   70|       |3       SUBJECTNAME     55      CN=gigantic-6.cisco.com;OU=VTG;O=Alpha;L=SJ;ST=CA;C=US
+   71|       |4       FUNCTION        2       CCM+TFTP
+   72|       |5       ISSUERNAME      55      CN=gigantic-6.cisco.com;OU=VTG;O=Alpha;L=SJ;ST=CA;C=US
+   73|       |6       SERIAL NUMBER   8
+   74|       |7       PUBLICKEY       140
+   75|       |8       SIGNATURE       128
+   76|       |9       CERTIFICATE     712
+   77|       |10      IPADDRESS       4
+   78|       |
+   79|       |        CTL Record  #: 3
+   80|       |                     ----
+   81|       |BYTEPOS TAG             LENGTH  VALUE
+   82|       |------- ---             ------  -----
+   83|       |1       RECORDLENGTH    2       1171
+   84|       |2       DNSNAME         11      gigantic-7
+   85|       |3       SUBJECTNAME     61      CN=gigantic-7.cisco.com;OU=vtg;O=cisco;L=san jose;ST=ca;C=US
+   86|       |4       FUNCTION        2       CCM+TFTP
+   87|       |5       ISSUERNAME      61      CN=gigantic-7.cisco.com;OU=vtg;O=cisco;L=san jose;ST=ca;C=US
+   88|       |6       SERIAL NUMBER   8
+   89|       |7       PUBLICKEY       140
+   90|       |8       SIGNATURE       128
+   91|       |9       CERTIFICATE     724
+   92|       |10      IPADDRESS       4
+   93|       |
+   94|       |        CTL Record  #: 4
+   95|       |                     ----
+   96|       |BYTEPOS TAG             LENGTH  VALUE
+   97|       |------- ---             ------  -----
+   98|       |1       RECORDLENGTH    2       1085
+   99|       |2       DNSNAME         11      gigantic-6
+  100|       |3       SUBJECTNAME     48      CN=CAPF-2076a1a2;OU=VTG;O=Alpha;L=SJ;ST=CA;C=US
+  101|       |4       FUNCTION        2       CAPF
+  102|       |5       ISSUERNAME      48      CN=CAPF-2076a1a2;OU=VTG;O=Alpha;L=SJ;ST=CA;C=US
+  103|       |6       SERIAL NUMBER   16
+  104|       |7       PUBLICKEY       140
+  105|       |8       SIGNATURE       128
+  106|       |9       CERTIFICATE     656
+  107|       |10      IPADDRESS       4
+  108|       |
+  109|       |        CTL Record  #: 5
+  110|       |                     ----
+  111|       |BYTEPOS TAG             LENGTH  VALUE
+  112|       |------- ---             ------  -----
+  113|       |1       RECORDLENGTH    2       1161
+  114|       |2       DNSNAME         11      gigantic-6
+  115|       |3       SUBJECTNAME     67      CN=ITLRECOVERY_gigantic-6.cisco.com;OU=CTG;O=Alpha;L=SJ;ST=CA;C=US
+  116|       |4       FUNCTION        2       Security Token
+  117|       |5       ISSUERNAME      67      CN=ITLRECOVERY_gigantic-6.cisco.com;OU=CTG;O=Alpha;L=SJ;ST=CA;C=US
+  118|       |6       SERIAL NUMBER   16
+  119|       |7       PUBLICKEY       140
+  120|       |8       SIGNATURE       128
+  121|       |9       CERTIFICATE     694
+  122|       |Signature verification failed,openssl reason=106
+  123|       |10      IPADDRESS       4
+  124|       |
+  125|       |        CTL Record  #: 6
+  126|       |                     ----
+  127|       |BYTEPOS TAG             LENGTH  VALUE
+  128|       |------- ---             ------  -----
+  129|       |1       RECORDLENGTH    2       1143
+  130|       |2       DNSNAME         15      ccm-sjcctg-013
+  131|       |3       SUBJECTNAME     59      CN=ccm-sjcctg-013.cisco.com;OU=CTG;O=Alpha;L=SJ;ST=CA;C=US
+  132|       |4       FUNCTION        2       CCM+TFTP
+  133|       |5       ISSUERNAME      59      CN=ccm-sjcctg-013.cisco.com;OU=CTG;O=Alpha;L=SJ;ST=CA;C=US
+  134|       |6       SERIAL NUMBER   16
+  135|       |7       PUBLICKEY       140
+  136|       |8       SIGNATURE       128
+  137|       |9       CERTIFICATE     688
+  138|       |10      IPADDRESS       4
+  139|       |
+  140|       | * */
+  141|       |
+  142|       |#define PRINT_DBG(...)
+  143|       |//#define PRINT_DBG printf
+  144|       |
+  145|      1|#define TLV_FNAME "SCFFile.tlv"
+  146|       |#define LEN_STR "LENGTH"
+  147|       |#define VAL_STR "VALUE"
+  148|       |#define BYTE_POS_STR "BYTEPOS"
+  149|       |#define TAG_STR "TAG"
+  150|       |
+  151|       |#define BYTES_STR "(BYTES)"
+  152|       |
+  153|       |#define PARSE_CTL_FILE "Parse CTL File"
+  154|       |#define START_CTL_STR "Start CTL Records"
+  155|       |#define CTL_RECORD_HDR "CTL Record  #:" 
+  156|      0|#define UNKNOWN_STR "Unknown"
+  157|       |
+  158|     45|#define MAX_PRINT_LEN 32 
+  159|       |
+  160|       |typedef enum {
+  161|       |    SCFH_START = 0x01,
+  162|       |    SCFH_REVISION = SCFH_START,
+  163|       |    SCFH_HDR_LEN = 0x02,
+  164|       |    SCFH_SIGNER_ID = 0x03,
+  165|       |    SCFH_SIGNER_NAME = 0x04,
+  166|       |    SCFH_SERIAL_NUM = 0x05,
+  167|       |    SCFH_CA_NAME = 0x06,
+  168|       |    SCFH_SIGNATURE_INFO = 0x07,
+  169|       |    SCFH_DIGEST_ALGO = 0x08,
+  170|       |    SCFH_SIGNATURE_ALGO_INFO = 0x09,
+  171|       |    SCFH_SIGNATURE_ALGO = 0x0a,
+  172|       |    SCFH_SIGNATURE_MODULUS = 0x0b,
+  173|       |    SCFH_SIGNATURE = 0x0c,
+  174|       |    SCFH_0X0D = 0x0d, /* Unknown*/
+  175|       |    SCFH_FILENAME = 0x0e,
+  176|       |    SCFH_TIMESTAMP = 0x0f,
+  177|       |    SCFH_END = SCFH_TIMESTAMP
+  178|       |} scfh_type_e;
+  179|       |
+  180|       |typedef enum {
+  181|       |    SCFB_START = 0x01,
+  182|       |    SCFB_RECORD_LENGTH = SCFB_START,
+  183|       |    SCFB_DNSNAME = 0x02,
+  184|       |    SCFB_SUBJECTNAME = 0x03,
+  185|       |    SCFB_FUNCTION = 0x04,
+  186|       |    SCFB_ISSUERNAME = 0x05,
+  187|       |    SCFB_SERIAL_NUMBER = 0x06,
+  188|       |    SCFB_PUBLIC_KEY = 0x07,
+  189|       |    SCFB_SIGNATURE = 0x08,
+  190|       |    SCFB_CERTIFICATE = 0x09,
+  191|       |    SCFB_IP_ADDRESS = 0x0a,
+  192|       |    SCFB_END = SCFB_IP_ADDRESS 
+  193|       |} scfb_type_e;
+  194|       |
+  195|       |typedef enum {
+  196|       |    SCF_HEADER = 1,
+  197|       |    SCF_BODY = 2
+  198|       |} scf_type_e;
+  199|       |
+  200|       |typedef enum {
+  201|       |    UINT8,
+  202|       |    UINT16,
+  203|       |    UINT32,
+  204|       |    UINT64,
+  205|       |    BYTE,
+  206|       |    STRING,
+  207|       |    IPADDR,
+  208|       |    VERSION,
+  209|       |    NONE
+  210|       |} datatype_e;
+  211|       |
+  212|       |
+  213|       |typedef struct scf_parse_ {
+  214|       |    union {
+  215|       |        scfh_type_e h;
+  216|       |        scfb_type_e b;
+  217|       |    } type;
+  218|       |    bool has_value;
+  219|       |    const char *type_str;
+  220|       |    datatype_e dtype; 
+  221|       |} scf_parse_t;
+  222|       |
+  223|       |typedef struct scf_tlv_ {
+  224|       |    scf_type_e n_type;
+  225|       |    uint8_t type;
+  226|       |    uint16_t length;
+  227|       |    bool has_value;
+  228|       |    datatype_e dtype;
+  229|       |    void *value;
+  230|       |} scf_tlv_t;
+  231|       |
+  232|       |
+  233|       |
+  234|       |const char *scfh_type_to_str(scfh_type_e e); 
+  235|       |const char *scfb_type_to_str(scfb_type_e e); 
+  236|       |int scf_parse_file(const char*pathname); 
+  237|       |
+  238|       |#endif /* __SCF_PARSE_H__*/
+
+/home/psg/working/MS/MS/CMPE-202-SSE/SCFProgram-Proj/scf_parse_test.c:
+    1|       |#include "scf_glibc.h"
+    2|       |#include "scf.h"
+    3|       |
+    4|       |void scfh_print_all(void)
+    5|      0|{
+    6|      0|    uint32_t i;
+    7|      0|    printf("HEDER TAG\n");
+    8|      0|    for (i = SCFH_START; i <= SCFH_END; i++) {
+    9|      0|        printf("0x%02x => %s \n", i , scfh_type_to_str(i-1));
+   10|      0|    }
+   11|      0|}
+   12|       |void scfb_print_all(void)
+   13|      0|{
+   14|      0|    uint32_t i;
+   15|      0|    printf("BODY TAG\n");
+   16|      0|    for (i = SCFB_START; i <= SCFB_END; i++) {
+   17|      0|        printf("0x%02x => %s \n", i , scfb_type_to_str(i-1));
+   18|      0|    }
+   19|      0|}
+   20|       |
+   21|       |void scfb_test(void) 
+   22|      0|{
+   23|      0|    scfh_print_all();
+   24|      0|    scfb_print_all();
+   25|      0|}
+

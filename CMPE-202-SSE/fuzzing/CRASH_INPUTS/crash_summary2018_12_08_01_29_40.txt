@@ -1,0 +1,12 @@
+
+	Parse CTL File
+
+	--------------
+
+Version:	27.44
+HeaderLength:	31799 (BYTES)
+
+BYTEPOS	TAG		LENGTH	VALUE
+-------	---		------	-----
+10	SIGNATUREALGO	2	
+Buffer Overflow.. Error parsing CTL File

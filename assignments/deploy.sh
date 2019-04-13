@@ -49,7 +49,12 @@ EOF
 }
 
 function main() {
-
+    
+    if [[ $# -eq 0 ]] ; then
+        usage
+        exit 0
+    fi
+    
     while getopts "bcih" o; do
         case "${o}" in
         b)

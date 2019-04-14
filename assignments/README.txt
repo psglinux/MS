@@ -1,4 +1,8 @@
 Assignemnt1: Bringing up the uWSGI server and routing the traffic through Nginx
+-------------------------------------------------------------------------------
+
+Manual Steps to create a web application stack using nginx-uWSGI-flask
+----------------------------------------------------------------------
 
 Step 1: Create a requirments.txt file with dependencies for python application
 Step 2: Create an app.py file with web application logic
@@ -13,3 +17,8 @@ Step 8: Run the below command for building and deploying
 	docker network create my-network
 	docker run -d --name flask --net my-network -v "./app" my-flask
 	docker run -d --name nginx --net my-network -p "80:80" my-nginx	
+
+Build, deploy and Clean
+-----------------------
+./deploy.sh -h 
+

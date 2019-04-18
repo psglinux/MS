@@ -1,5 +1,11 @@
 #All the JSON format for DB creation for Assignment 2
-
+#Authors
+{
+    "author": {
+             "author-id":<int>,
+             "name":"string"
+             }
+}
 ## Books Json
 Add details of the book
 {
@@ -7,7 +13,7 @@ Add details of the book
             "isbn": "string",
             "title": "string",
             "subtitle": "string",
-            "author": [""],
+            "author-id": [""],
             "edition": "",
             "published": "date-time",
             "publisher": "string",

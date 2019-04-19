@@ -13,7 +13,7 @@ DCRMONGODB=elfs-mongodb
 DCRNGNXNAME=nginx
 DCRFLASKNAME=flask
 DCRMONGODBNAME=mongodb
-MONGODBPERSIST=/tmp/mongodb #/var/www/mongodb
+MONGODBPERSIST=/var/www/mongodb
 
 function create_mongo_db_dir() {
     if [ ! -d $MONGODBPERSIST ]; then

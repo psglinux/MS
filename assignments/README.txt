@@ -18,6 +18,17 @@ Step 8: Run the below command for building and deploying
 	docker run -d --name flask --net my-network -v "./app" my-flask
 	docker run -d --name nginx --net my-network -p "80:80" my-nginx	
 
+
+Assignemnt2: Design and Build an Online Bookstore Enterprise Database
+---------------------------------------------------------------------
+
+Manual Steps to bring up the mongodb container
+----------------------------------------------
+
+docker build -t my-mongodb -f Dockerfile-mongodb .
+docker run -d --name mongodb  -d -v /tmp/mongodb:/data/db -p 27017:27017 my-mongodb
+
+
 Build, deploy and Clean
 -----------------------
 ./deploy.sh -h 

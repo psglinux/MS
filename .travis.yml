@@ -13,3 +13,14 @@ jobs:
 
 os:
   - linux
+
+
+notifications:
+  email:
+    recipients:
+      - ezhilkani.govindarajan@sjsu.edu
+      - chaitanya.lala@sjsu.edu
+      - venkatasatyaphanipavan.chitturikumar@sjsu.edu
+      - parthasarathi.ghosh@sjsu.edu
+    on_success: always # default: change
+    on_failure: always # default: always

@@ -54,7 +54,7 @@ function main() {
         exit 0
     fi
 
-    while getopts "bcth" o; do
+    while getopts "bdth" o; do
         case "${o}" in
         b)
             travis_build

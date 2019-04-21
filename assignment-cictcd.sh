@@ -10,29 +10,41 @@ ADIR=assignments
 
 function travis_build() {
     echo "Building using Travis..."
-    pushd $ADIR 
+    pushd $ADIR
     echo $PWD
     ./deploy.sh -b
-    popd 
+    popd
 }
 
 function travis_deploy() {
     echo "Deplying using Travis..."
 }
 
-function travis_unit_test() {
+function travis_unit_test_container_deployment() {
     echo "Unit Testing Using Travis..."
+    pushd $ADIR
+    echo $PWD
+    ./deploy.sh -i
+    sleep 3
+    ./deploy.sh -s
+    sleep 3
+    ./deploy.sh -c
+    popd
+}
+
+function travis_unit_test() {
+    travis_unit_test_container_deployment
 }
 
 # Usage info
 usage() {
 cat << EOF
 Usage: ${0##*/} [-b] [-d] [-t] [-h]
-This script is for build, deply and test using Travis 
+This script is for build, deply and test using Travis
 
-    -b          build the assignment 
-    -d          deploy assignemnt 
-    -t          unit test assignments  
+    -b          build the assignment
+    -d          deploy assignemnt
+    -t          unit test assignments
     -h          help
 EOF
     exit 1;
@@ -54,7 +66,7 @@ function main() {
             travis_deploy
             ;;
         t)
-            travis_unit_test 
+            travis_unit_test
             ;;
         h)
             usage

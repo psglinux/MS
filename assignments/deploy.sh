@@ -66,7 +66,7 @@ This script is for build and deploy webserver and application
     -b          build the containers needed for deployment
     -c          clean the containers, (stop and clean the container images)
     -i          start the containers  webserver, uwsgi, app server and mongodb
-    -s          stop the running containers 
+    -s          stop the running containers
     -h          help
 EOF
     exit 1;

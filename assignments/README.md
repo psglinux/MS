@@ -1,6 +1,6 @@
-#Assignemnt1: Bringing up the uWSGI server and routing the traffic through Nginx
+# Assignemnt1: Bringing up the uWSGI server and routing the traffic through Nginx
 
-##Manual Steps to create a web application stack using nginx-uWSGI-flask
+## Manual Steps to create a web application stack using nginx-uWSGI-flask
 
 Step 1: Create a requirments.txt file with dependencies for python application
 Step 2: Create an app.py file with web application logic
@@ -17,15 +17,15 @@ Step 8: Run the below command for building and deploying
 	docker run -d --name nginx --net my-network -p "80:80" my-nginx
 
 
-#Assignemnt2: Design and Build an Online Bookstore Enterprise Database
+# Assignemnt2: Design and Build an Online Bookstore Enterprise Database
 
-##Manual Steps to bring up the mongodb container
+## Manual Steps to bring up the mongodb container
 
 docker build -t my-mongodb -f Dockerfile-mongodb .
 docker run -d --name mongodb  -d -v /tmp/mongodb:/data/db -p 27017:27017 my-mongodb
 
 
-#Build, deploy and Clean
+# Build, deploy and Clean
 ./deploy.sh -h
 
 

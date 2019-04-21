@@ -8,8 +8,8 @@ jobs:
       script: ./assignment-cictcd.sh -b
     - stage: test-deploy
       script: ./assignment-cictcd.sh -d
-	- stage: unit-test
-	  script: ./assignment-cictcd.sh -t
+    - stage: unit-test
+      script: ./assignment-cictcd.sh -t
 
 os:
   - linux

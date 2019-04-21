@@ -1,7 +1,15 @@
 language: python
 python:
     - '2.7'
-script: ./assignment-cictcd.sh -b
+
+jobs:
+  include:
+    - stage: build-containers
+      script: ./assignment-cictcd.sh -b
+    - stage: test-deploy
+      script: ./assignment-cictcd.sh -d
+	- stage: unit-test
+	  script: ./assignment-cictcd.sh -t
 
 os:
   - linux

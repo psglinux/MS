@@ -16,12 +16,8 @@ function travis_build() {
     popd
 }
 
-function travis_deploy() {
-    echo "Deplying using Travis..."
-}
-
-function travis_unit_test_container_deployment() {
-    echo "Unit Testing Using Travis..."
+function travis_test_deploy() {
+    echo "Deploy Testing Using Travis..."
     pushd $ADIR
     echo $PWD
     ./deploy.sh -i
@@ -30,10 +26,11 @@ function travis_unit_test_container_deployment() {
     sleep 3
     ./deploy.sh -c
     popd
+
 }
 
 function travis_unit_test() {
-    travis_unit_test_container_deployment
+	echo "TO Be Done!!"
 }
 
 # Usage info
@@ -43,7 +40,7 @@ Usage: ${0##*/} [-b] [-d] [-t] [-h]
 This script is for build, deply and test using Travis
 
     -b          build the assignment
-    -d          deploy assignemnt
+    -d          test deploy assignemnt
     -t          unit test assignments
     -h          help
 EOF
@@ -62,8 +59,8 @@ function main() {
         b)
             travis_build
             ;;
-        c)
-            travis_deploy
+        d)
+            travis_test_deploy
             ;;
         t)
             travis_unit_test

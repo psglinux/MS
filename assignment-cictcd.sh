@@ -30,7 +30,10 @@ function travis_test_deploy() {
 }
 
 function travis_unit_test() {
-	echo "TO Be Done!!"
+    echo "Unit Testing Book API !!"
+    pushd $ADIR
+    python3.6 bookapi_ut.py
+    popd
 }
 
 # Usage info

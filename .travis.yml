@@ -2,6 +2,12 @@ language: python
 python:
     - '3.6'
 
+cache:
+    - pip3
+
+install:
+    - pip3 install -r requirements.txt
+
 jobs:
   include:
     - stage: build-containers
@@ -10,6 +16,8 @@ jobs:
       script: ./assignment-cictcd.sh -d
     - stage: unit-test
       script: ./assignment-cictcd.sh -t
+
+
 
 os:
   - linux

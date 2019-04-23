@@ -11,9 +11,9 @@ install:
 jobs:
   include:
     - stage: build-containers
-    - script: ./assignment-cictcd.sh -b
-    - #- stage: test-deploy
-    - script: ./assignment-cictcd.sh -d
+      script: ./assignment-cictcd.sh -b
+    - stage: test-deploy
+      script: ./assignment-cictcd.sh -d
     - stage: unit-test
       script: ./assignment-cictcd.sh -t
 

@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.com/psglinux/cmpe-272.svg?branch=master)](https://travis-ci.com/psglinux/cmpe-272)
+
 Project and Assignment for SJSU CMPE272
 =======================================
 

@@ -1,4 +1,3 @@
-import sys
 import pymongo
 
 class Customer:
@@ -17,7 +16,7 @@ class Customer:
         return self.cemail
     def email_is(self, cemail):
         #XXX TODO  Add validation
-        self.cemail = email
+        self.cemail = cemail
 
     def phone(self):
         return self.cphone
@@ -43,42 +42,73 @@ class Customer:
 
 def add_customer(db, cust):
     # Verify that new customer has all information needed
-    if not cust.fully_populated(): 
+    if not cust.fully_populated():
         return False
-
     # For purposes of unique customer identifcation, we will use email ID
     if db.customers.find_one({'email_address': cust.email()}):
        return False
-
     try:
         db.customers.insert_one({'Name': cust.name(), 'email_address': cust.email(),
                                 'address': cust.address(), 'phone_number': cust.phone()})
     except:
         return False
-
     return True
 
-'''
-class CustomerOrder:
-    def __init__(self, cust_id, cust_name, booksToQuantity={}, Cost):
-        self.cust_id = cust_id
-        self.cust_name = cust_name
-        self.booksToQuantity = booksToQuantity
-        self.Cost = self.calculate_cost()
+# Customer will order books based on the following
+# - Will provide customer email
+# - Will provide provide book names and quantities
+# Verify this customer exists in Customer DB else fail order
+#
+# The API will look up books collection to find via book name
+# - id of each book
+# - Price of each book
+#
+# After this API will use id to query inventory collection
+# - Check if requested quantity for each book is available
+# - Decrement in book inventory if everything is available else fail order
+#
+# Open Items: How to charge customer ? We don't have payment info in the
+# Customer table.
+#
+# XXX TODO Note: Some of this will change when we add AUTH because we need to
+# pull user information from an authenticated session object which
+# identifies an authenticated user.
+def order_books(db, cust_email, book_to_qty={}):
+    customer = db.customers.find_one({'email_address': cust_email})
+    if not customer:
+        return None
 
-    def calculate_cost():
-        # Find books in booksToQuantity and cost of each to calculate total
-        # cost to the customer
-        return 0
+    # This will be a dict of customer object to a list of books
+    # Each book is a dict of book title, ISBN-13, price and qty
+    customer_order = {}
+    books_order = []
+    for title, req_qty in book_to_qty.items():
+        book_record = None
+        try:
+            book_record = db.books.find_one({'Title': title})
+        except:
+            continue
+        book_id = book_record['_id']
+        book_inventory = None
+        try:
+            book_inventory = db.inventory.find_one({'_id': book_id})
+        except:
+            continue
 
-def order_books(db, cust_id, booksToQuantity={}):
-    # Find if all books requested exist ?
-    # If, not then fail order.
+        book_quantity = book_inventory['quantity']
+        if book_quantity < req_qty:
+            continue
 
-    # Create a CustomerOrder Object to return to customer
-
-    # Reduce books & quantity from inventory
-
-    # Return Object
-'''
+        # XXX TODO HACK ALERT! Do we really know that this remain_qty will be atomically set ?
+        # What is the syntax for "Atomically read and decrement this amount" from DB ?
+        remain_qty = book_quantity - req_qty
+        try:
+            db.inventory.update_one({'_id': book_id}, {'$set': {'quantity': remain_qty}}, upsert=False)
+        except:
+            continue
+        book_order = {'Title':title, 'ISBN-13': book_record['ISBN-13'], 'Price':book_record['Price'], 'Quantity':req_qty}
+        books_order.append(book_order)
+    # Order ready
+    customer_order[customer] = books_order
+    return customer_order
 

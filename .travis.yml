@@ -23,15 +23,6 @@ jobs:
     - stage: unit-test-project
       script: ./project-cictcd.sh -t || travis_terminate 1
 
-    - stage: build-containers-project
-      script: ./project-cictcd.sh -b
-    - stage: test-deploy-project
-      script: ./project-cictcd.sh -d
-    - stage: unit-test-project
-      script: ./project-cictcd.sh -t
-
-
-
 os:
   - linux
 

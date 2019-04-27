@@ -78,9 +78,6 @@ def order_books(db, cust_email, book_to_qty={}):
     if not customer:
         return None
 
-    # This will be a dict of customer object to a list of books
-    # Each book is a dict of book title, ISBN-13, price and qty
-    customer_order = {}
     books_order = []
     for title, req_qty in book_to_qty.items():
         book_record = None
@@ -95,20 +92,20 @@ def order_books(db, cust_email, book_to_qty={}):
         except:
             continue
 
-        book_quantity = book_inventory['quantity']
-        if book_quantity < req_qty:
-            continue
-
         # XXX TODO HACK ALERT! Do we really know that this remain_qty will be atomically set ?
         # What is the syntax for "Atomically read and decrement this amount" from DB ?
-        remain_qty = book_quantity - req_qty
+        inv_qty = book_inventory['quantity']
+        if req_qty <= 0 or inv_qty < req_qty:
+            continue
+        remain_qty = inv_qty - req_qty
         try:
             db.inventory.update_one({'_id': book_id}, {'$set': {'quantity': remain_qty}}, upsert=False)
         except:
             continue
         book_order = {'Title':title, 'ISBN-13': book_record['ISBN-13'], 'Price':book_record['Price'], 'Quantity':req_qty}
         books_order.append(book_order)
-    # Order ready
-    customer_order[customer] = books_order
-    return customer_order
+
+    # This will be a set of customer object & a list of books
+    # Each book is a dict of book title, ISBN-13, price and qty
+    return (customer, books_order)
 

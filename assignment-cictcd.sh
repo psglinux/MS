@@ -33,6 +33,7 @@ function travis_unit_test() {
     echo "Unit Testing Book API !!"
     pushd $ADIR
     python3.6 bookapi_ut.py
+    python3.6 addcustapi_ut.py
     popd
 }
 

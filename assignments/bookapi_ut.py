@@ -2,6 +2,7 @@ import unittest
 import mongomock
 import json
 import bookapi
+import pprint
 
 class DBTests(unittest.TestCase):
     def setUp(self):
@@ -19,6 +20,7 @@ class DBTests(unittest.TestCase):
     def test_get_available_books(self):
         books = bookapi.get_available_books(self.db)
         self.assertEqual(len(books), 2)
+        pprint.pprint(books)
         print("PASS bookapi test")
 
 if __name__ == '__main__':

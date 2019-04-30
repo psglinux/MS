@@ -1,0 +1,74 @@
+# Book Store Team ELfs
+# how to use this ?
+# https://mscgen.js.org/
+# paste this file and check the out put or modify the output
+
+msc {
+  wordwraparcs=on,
+  hscale="0.85",
+  watermark="Team Elfs cmpe-272 Assignment";
+
+  act [label="Actor", linecolor="darkgreen", textcolor="white", textbgcolor="darkgreen", arclinecolor="darkgreen", arctextcolor="darkgreen"],
+  browser [label=":WebBrowser", linecolor="darkgreen", textcolor="white", textbgcolor="darkgreen", arclinecolor="darkgreen", arctextcolor="darkgreen"],
+  app [label="nginx", linecolor="maroon", textcolor="white", textbgcolor="maroon", arclinecolor="maroon", arctextcolor="maroon"],
+  wsgi [label="WSGI Server", linecolor="#3a5795", textcolor="white", textbgcolor="#3a5795", arclinecolor="#3a5795", arctextcolor="#3a5795"],
+  flask [label="Flask Python App", linecolor="#3a5795", textcolor="white", textbgcolor="#3a5795", arclinecolor="#3a5795", arctextcolor="#3a5795"],
+  mongo [label="Mongo DB", linecolor="#3a5795", textcolor="white", textbgcolor="#3a5795", arclinecolor="#3a5795", arctextcolor="#3a5795"];
+
+
+
+  # Authentication flow
+
+  #act => browser [label="Browse the bookstore"];
+  #browser => app [label="Requests books, available quantity"];
+
+  #app >> browser [label="<<http redirect>>"];
+  #browser => wsgi [label="authorize"];
+  #wsgi >> browser [label="permission form"];
+  #browser >> act [label="permission form"];
+
+  #act => browser [label="user permission"];
+  #browser => wsgi [label="process permission"];
+  #wsgi >> browser [label="<<http redirect>>"];
+
+  #act alt flask [label="permission granted", linecolor="grey", textcolor="black"] {
+  #  browser => app [label="Book Store authorization code"];
+  #  app => wsgi [label="Book Store authorization code"];
+  #  wsgi >> app [label="access token"];
+  #  app => flask [label="access Book Store user protected resource"];
+  #  flask >> app [label="protected resource"];
+  #  app >> browser [label="protected resource"];
+  #  browser >> act [label="protected resource"];
+  #  --- [label="no permission", linecolor="grey", textbgcolor="white", textcolor="black"];
+  #  browser => app [label="no authorization"];
+  # app >> browser [label="Book Store resource not available"];
+  #  browser >> act [label="Book Store resource not available"];
+  #};
+
+  act alt mongo [label="Authentication not needed", linecolor="grey", textcolor="black"] {
+    browser => app [label="Request Books: Get Rest API"];
+    app >> wsgi [label="UDP communication reaches WSGI -- infra"];
+    wsgi >> flask [label="Request Reaches Flask -- infra"];
+    flask => mongo [label="Requests Data stored"];
+    mongo => flask [label="Requests Data stored"];
+    flask >> wsgi [label="Response to HTTP request in JSON"];
+    wsgi >> app [label="UDP communication reaches nginx -- infra"];
+    app => browser [label="Request Books: Get Resp"];
+  };
+
+    act alt mongo [label="Authentication not needed", linecolor="grey", textcolor="black"] {
+    browser => app [label="Request Books: Post Order Rest API"];
+    app >> wsgi [label="UDP communication reaches WSGI -- infra"];
+    wsgi >> flask [label="Post Data Reaches Flask -- infra"];
+    flask => mongo [label="Update book count Data"];
+    mongo => flask [label="Resp from mongo"];
+
+    flask => mongo [label="Process order"];
+    mongo => flask [label="Resp from mongo on  process"];
+
+
+    flask >> wsgi [label="Response to HTTP request in JSON"];
+    wsgi >> app [label="UDP communication reaches nginx -- infra"];
+    app => browser [label="Request Books: Post Resp order successful/error"];
+  };
+}

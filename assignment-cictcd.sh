@@ -35,6 +35,7 @@ function travis_unit_test() {
     python3.6 bookapi_ut.py
     python3.6 addcustapi_ut.py
     python3.6 addorderapi_ut.py
+    python3.6 bookstore_flask_ut.py -v
     popd
 }
 

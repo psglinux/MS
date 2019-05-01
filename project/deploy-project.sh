@@ -4,15 +4,13 @@
 # script : bash script for build and install of cmpe-272
 #########################################
 
-#!/bin/bash
-
-DCRFLASK=elfs-flask
-DCRNGNX=elfs-nginx
-DCRNET=elfs-network
-DCRMONGODB=elfs-mongodb
+DCRFLASK=elfs-project-flask
+DCRNGNX=elfs-project-nginx
+DCRNET=elfs-project-network
+DCRMONGODB=elfs-project-mongodb
 DCRNGNXNAME=nginx
-DCRFLASKNAME=flask
-DCRMONGODBNAME=mongodb
+DCRFLASKNAME=project-flask
+DCRMONGODBNAME=project-mongodb
 MONGODBPERSIST=/var/www/project-mongodb
 
 function create_mongo_db_dir() {
@@ -22,14 +20,14 @@ function create_mongo_db_dir() {
     fi
 }
 
-function build_elfs_app() {
+function build_elfs_project_app() {
     echo "Building ...."
 	docker build -t $DCRFLASK -f Dockerfile-project-flask .
 	docker build -t $DCRNGNX -f Dockerfile-project-nginx .
 	docker build -t $DCRMONGODB -f Dockerfile-project-mongodb .
 }
 
-function deploy_elfs_app() {
+function deploy_elfs_project_app() {
     echo "Deploying Team Elf's webserver and application..."
 
     #create_mongo_db_dir
@@ -41,7 +39,7 @@ function deploy_elfs_app() {
 
 }
 
-function clean_elfs_app() {
+function clean_elfs_project_app() {
     echo "Cleaning Team Elfs webserve and applicatio..."
     docker kill $DCRFLASKNAME $DCRNGNXNAME $DCRMONGODBNAME
     docker rm $DCRFLASKNAME $DCRNGNXNAME $DCRMONGODBNAME
@@ -49,7 +47,7 @@ function clean_elfs_app() {
     docker rmi $DCRNGNX $DCRFLASK $DCRMONGODB
 }
 
-function stop_elfs_app() {
+function stop_elfs_project_app() {
     echo "Stopping Team Elfs webserve and applicatio..."
     docker kill $DCRFLASKNAME $DCRNGNXNAME $DCRMONGODBNAME
     docker rm $DCRFLASKNAME $DCRNGNXNAME $DCRMONGODBNAME
@@ -82,16 +80,16 @@ function main() {
     while getopts "bcihs" o; do
         case "${o}" in
         b)
-            build_elfs_app
+            build_elfs_project_app
             ;;
         c)
-            clean_elfs_app
+            clean_elfs_project_app
             ;;
         i)
-            deploy_elfs_app
+            deploy_elfs_project_app
             ;;
         s)
-            stop_elfs_app
+            stop_elfs_project_app
             ;;
         h)
             usage

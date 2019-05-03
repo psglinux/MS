@@ -1,6 +1,9 @@
 import unittest
 import os
 import json
+import mongomock
+import bookapi
+import pprint
 
 from app import app
 
@@ -31,10 +34,6 @@ class BasicTestCase(unittest.TestCase):
         tester = app.test_client(self)
         response = tester.get('/getbook/123', content_type='html/text')
         self.assertEqual(response.status_code, 200)
-        pass
-
-    def test_database(self):
-        """initial test. ensure that the database exists"""
         pass
 
 

@@ -36,7 +36,7 @@ function deploy_elfs_app() {
 	docker network create $DCRNET
 	docker run -d --name $DCRFLASKNAME --net $DCRNET -v "./app" $DCRFLASK
 	docker run -d --name $DCRNGNXNAME --net $DCRNET -p "80:80" $DCRNGNX
-	docker run -d --name $DCRMONGODBNAME -d -v $MONGODBPERSIST:/data/db -p 27017:27017 $DCRMONGODB
+	docker run -d --name $DCRMONGODBNAME --net $DCRNET -v $MONGODBPERSIST:/data/db -p 27017:27017 $DCRMONGODB
     docker ps
 
 }

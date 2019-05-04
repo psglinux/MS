@@ -11,11 +11,11 @@ install:
 jobs:
   include:
     - stage: build-containers
-      script: ./assignment-cictcd.sh -b
+      script: ./assignment-cictcd.sh -b || travis_terminate 1
     - stage: test-deploy
-      script: ./assignment-cictcd.sh -d
+      script: ./assignment-cictcd.sh -d || travis_terminate 1
     - stage: unit-test
-      script: ./assignment-cictcd.sh -t
+      script: ./assignment-cictcd.sh -t || travis_terminate 1
 
 
 

@@ -4,7 +4,7 @@
 # script : bash script for build and install of cmpe-272
 #########################################
 
-#!/bin/bash
+#!/bin/bash -e
 
 DCRFLASK=elfs-flask
 DCRNGNX=elfs-nginx

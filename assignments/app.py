@@ -4,6 +4,8 @@ import bookapi
 from flask import Flask
 import pymongo
 import mongomock
+from flask import jsonify
+
 from apymongodb import APymongodb
 import bson
 
@@ -23,6 +25,14 @@ def mock_book_mongo_db():
 def real_mongo_db():
     return pymongo.MongoClient(mongodb_uri)['test_database']
 
+def get_db_instance():
+    if app.testing:
+        db = mock_book_mongo_db()
+    else:
+        db = real_mongo_db()
+
+    return db
+
 @app.route('/')
 def hello_world():
     """
@@ -34,19 +44,22 @@ def hello_world():
 def get_all_books():
     books={}
     print("app.testing:", app.testing)
-    if app.testing:
-        db = mock_book_mongo_db()
-    else:
-        db = real_mongo_db()
+
+    db = get_db_instance()
 
     for book in bookapi.get_available_books(db):
         print(book['title'], book['quantity'])
         books.update(book)
     return bson.json_util.dumps(books)
 
+
 @app.route('/getbook/<int:isbn_no>', methods=['GET'])
 def get_book_by_isbn(isbn_no):
-    return str({"book":"bbc", "isbn":"zbc"})
+    db = get_db_instance()
+    book = bookapi.get_book_with_isbn(isbn_no, db)
+    print("book", type(book))
+    return bson.json_util.dumps(books)
+
 
 
 if __name__ == '__main__':

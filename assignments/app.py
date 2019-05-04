@@ -5,6 +5,7 @@ from flask import Flask
 import pymongo
 import mongomock
 from apymongodb import APymongodb
+import bson
 
 app = Flask(__name__)
 app.config.from_object(__name__)
@@ -31,7 +32,7 @@ def hello_world():
 
 @app.route('/getbook', methods=['GET'])
 def get_all_books():
-    books=[]
+    books={}
     print("app.testing:", app.testing)
     if app.testing:
         db = mock_book_mongo_db()
@@ -40,8 +41,8 @@ def get_all_books():
 
     for book in bookapi.get_available_books(db):
         print(book['title'], book['quantity'])
-        books.append(book)
-    return str(books)
+        books.update(book)
+    return bson.json_util.dumps(books)
 
 @app.route('/getbook/<int:isbn_no>', methods=['GET'])
 def get_book_by_isbn(isbn_no):

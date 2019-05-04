@@ -43,21 +43,23 @@ def hello_world():
 @app.route('/getbook', methods=['GET'])
 def get_all_books():
     books=[]
-    print("app.testing:", app.testing)
+    #print("app.testing:", app.testing)
 
     db = get_db_instance()
 
     for book in bookapi.get_available_books(db):
-        print(book['title'], book['quantity'])
+        #print("book", str(book))
         books.append(book)
+    #print(books)
     return bson.json_util.dumps(books)
 
 
-@app.route('/getbook/<int:isbn_no>', methods=['GET'])
+@app.route('/getbook/<string:isbn_no>', methods=['GET'])
 def get_book_by_isbn(isbn_no):
     db = get_db_instance()
     book = bookapi.get_book_with_isbn(isbn_no, db)
-    print("book", type(book))
+    #print("book retrieved:", type(book))
+    #print("book", (book))
     return bson.json_util.dumps(book)
 
 

@@ -37,8 +37,9 @@ class BasicTestCase(unittest.TestCase):
         Test the books api
         """
         tester = app.test_client(self)
-        response = tester.get('/getbook', content_type='application/json')
-        print(response.get_json())
+        response = tester.get('/getbook', content_type='html/text')
+        print("get all books:", response.get_data())
+        #print("get all books:", response)
         self.assertEqual(response.status_code, 200)
         pass
 
@@ -47,15 +48,24 @@ class BasicTestCase(unittest.TestCase):
         Test the book isbn api
         """
         tester = app.test_client(self)
-        response = tester.get('/getbook/123', content_type='application/json')
-        print(response.get_json())
+        response = tester.get('/getbook/123', content_type='html/text')
+        print(response.get_data())
         self.assertEqual(response.status_code, 200)
 
         tester = app.test_client(self)
-        response = tester.get('/getbook/1491979909', content_type='application/json')
-        print(response.get_json())
+        response = tester.get('/getbook/1491979909', content_type='html/text')
+        print(response.get_data())
+        self.assertEqual(response.status_code, 200)
+
+        tester = app.test_client(self)
+        response = tester.get('/getbook/978-0201616224', content_type='html/text')
+        #print("dir response:", dir(response))
+        #print("type",type(response.get_data()))
+        print("data: ",(response.get_data()))
+        #print(response.get_json())
         self.assertEqual(response.status_code, 200)
         pass
+
 
 
 if __name__ == '__main__':

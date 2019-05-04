@@ -22,7 +22,7 @@ def find_publisher(_id, db):
 def find_inventory(_id, db):
     try:
         inv = db.inventory.find_one({'_id': _id})
-        print(inv['quantity'])
+        #print(inv['quantity'])
         return inv['quantity']
     except Exception as e:
         print("exception:"+ str(e))
@@ -46,11 +46,11 @@ def get_available_books(db):
     return available_books
 
 def get_book_with_isbn(_no, db):
-    print(_no)
+    #print(_no)
     try:
         book = db.book.find_one({"ISBN-10": str(_no)})
         if book is not None:
-            print("book:", book['_id'])
+            #print("book:", book['_id'])
             book['quantity'] = find_inventory(book['_id'], db)
             book['author'] = find_author(book['author_id'],db)
             book['publisher'] = find_publisher(book['publisher_id'],db)

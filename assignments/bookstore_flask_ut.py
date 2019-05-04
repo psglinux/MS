@@ -6,6 +6,7 @@ import bookapi
 import pprint
 
 from app import app
+import apymongodb
 
 TEST_DB = 'test_database'
 

@@ -46,14 +46,16 @@ def get_available_books(db):
     return available_books
 
 def get_book_with_isbn(_no, db):
-    #print(_no)
+    print("_no",_no)
+    print("tyep(_no)",type(_no))
     try:
-        book = db.book.find_one({"ISBN-10": str(_no)})
+        book = db.book.find_one({"$or": [{"ISBN-10": _no}, {"ISBN-13": _no}]})
         if book is not None:
             #print("book:", book['_id'])
             book['quantity'] = find_inventory(book['_id'], db)
             book['author'] = find_author(book['author_id'],db)
             book['publisher'] = find_publisher(book['publisher_id'],db)
+            #print(str(book))
             return book
     except Exception as e:
         print("exception:"+ str(e))

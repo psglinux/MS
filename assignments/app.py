@@ -57,11 +57,8 @@ def get_book_by_isbn(isbn_no):
     db = get_db_instance()
     book = bookapi.get_book_with_isbn(isbn_no, db)
     print("book", type(book))
-    if book is not None and '_id' in book.keys():
-        del book['_id']
-        del book['author_id']
-        del book['publisher_id']
-    return jsonify(book)
+    return bson.json_util.dumps(book)
+
 
 
 if __name__ == '__main__':

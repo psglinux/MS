@@ -4,14 +4,29 @@ import bookapi
 from flask import Flask
 import pymongo
 import mongomock
+from apymongodb import APymongodb
 
 app = Flask(__name__)
 app.config.from_object(__name__)
 
 mongodb_uri="mongodb"
 
+def mock_book_mongo_db():
+    """
+    create a mock db for usint testing.
+    """
+    mock_pymondb = APymongodb(test=True)
+    mock_pymondb.create_db_from_csv()
+    return mock_pymondb.db
+
+def real_mongo_db():
+    return pymongo.MongoClient(mongodb_uri)['test_database']
+
 @app.route('/')
 def hello_world():
+    """
+    default route for the Team Elf's home page
+    """
     return '<h1 align=center>Hello, Welcome to the webserver of team ELFs</h1>'
 
 @app.route('/getbook', methods=['GET'])
@@ -19,17 +34,9 @@ def get_all_books():
     books=[]
     print("app.testing:", app.testing)
     if app.testing:
-        db = mongomock.MongoClient()['test_database']
-        db.book.insert_one({'_id': '1', 'title': 'A test book', 'ISBN-10': '111-1234567'})
-        db.book.insert_one({'_id': '2', 'title': 'Another test book', 'ISBN-13': '113-131313'})
-        db.book.insert_one({'_id': '3', 'title': 'A rare book', 'ISBN-10': '113-145313'})
-        db.book.insert_one({'_id': '4', 'title': 'A Rarest of Rare book', 'ISBN-13': '113-1545313'})
-        db.inventory.insert_one({'_id': '1', 'id': '1', 'quantity': 5})
-        db.inventory.insert_one({'_id': '2', 'id': '2', 'quantity': 0})
-        db.inventory.insert_one({'_id': '3', 'id': '4', 'quantity': 1})
-        db.inventory.insert_one({'_id': '4', 'id': '4', 'quantity': 10})
+        db = mock_book_mongo_db()
     else:
-        db = pymongo.MongoClient(mongodb_uri)['test_database']
+        db = real_mongo_db()
 
     for book in bookapi.get_available_books(db):
         print(book['title'], book['quantity'])

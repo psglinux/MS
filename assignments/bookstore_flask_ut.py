@@ -37,7 +37,8 @@ class BasicTestCase(unittest.TestCase):
         Test the books api
         """
         tester = app.test_client(self)
-        response = tester.get('/getbook', content_type='html/text')
+        response = tester.get('/getbook', content_type='application/json')
+        print(response.get_json())
         self.assertEqual(response.status_code, 200)
         pass
 
@@ -46,7 +47,13 @@ class BasicTestCase(unittest.TestCase):
         Test the book isbn api
         """
         tester = app.test_client(self)
-        response = tester.get('/getbook/123', content_type='html/text')
+        response = tester.get('/getbook/123', content_type='application/json')
+        print(response.get_json())
+        self.assertEqual(response.status_code, 200)
+
+        tester = app.test_client(self)
+        response = tester.get('/getbook/1491979909', content_type='application/json')
+        print(response.get_json())
         self.assertEqual(response.status_code, 200)
         pass
 

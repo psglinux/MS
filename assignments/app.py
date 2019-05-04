@@ -42,14 +42,14 @@ def hello_world():
 
 @app.route('/getbook', methods=['GET'])
 def get_all_books():
-    books={}
+    books=[]
     print("app.testing:", app.testing)
 
     db = get_db_instance()
 
     for book in bookapi.get_available_books(db):
-       print(book['title'], book['quantity'])
-        books.update(book)
+        print(book['title'], book['quantity'])
+        books.append(book)
     return bson.json_util.dumps(books)
 
 @app.route('/getbook/<int:isbn_no>', methods=['GET'])

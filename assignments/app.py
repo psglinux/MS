@@ -58,7 +58,7 @@ def get_book_by_isbn(isbn_no):
     db = get_db_instance()
     book = bookapi.get_book_with_isbn(isbn_no, db)
     print("book", type(book))
-    return bson.json_util.dumps(books)
+    return bson.json_util.dumps(book)
 
 
 

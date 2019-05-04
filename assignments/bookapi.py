@@ -37,6 +37,7 @@ def get_available_books(db):
             if int(qty) <= 0:
                 continue
             book = db.book.find_one({'_id': book_id})
+            book['quantity'] = find_inventory(book['_id'], db)
             book['author'] = find_author(book['author_id'], db)
             book['publisher'] = find_publisher(book['publisher_id'], db)
             available_books.append(book)
@@ -57,7 +58,7 @@ def get_book_with_isbn(_no, db):
     except Exception as e:
         print("exception:"+ str(e))
 
-    return ({})
+    return ([])
 
 
 if __name__ == "__main__":

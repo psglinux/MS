@@ -1,21 +1,16 @@
-import pymongo
+import random
 from datetime import datetime
+from bson import ObjectId
 
 class Order:
-    def __init__(self, order_id, email, book_id, amount):
-        self.order_id = order_id
+    def __init__(self, email, title, amount):
+        self.order_id = ""
         self.email = email
-        self.book_id = book_id
+        self.title = title
         self.amount = amount
-        self.created_time = datetime.now()
+        self.created_time = str(datetime.utcnow())
         self.completed_time = ""
-        self.status = "Initiated "
-
-    def order_id(self):
-        return self.order_id
-
-    def order_id(self, order_id):
-        self.order_id = order_id
+        self.status = "Initiated"
 
     def email(self):
         return self.email
@@ -23,11 +18,11 @@ class Order:
     def name_is(self, email):
         self.email = email
 
-    def book_id(self):
-        return self.book_id
+    def title(self):
+        return self.title
 
-    def book_id_is(self, book_id):
-        self.book_id = book_id
+    def title_is(self, title):
+        self.title = title
 
     def amount(self):
         return self.amount
@@ -50,7 +45,7 @@ class Order:
     def fully_populated(self):
         if not self.email:
             return False
-        if not self.book_id:
+        if not self.title:
             return False
         if not self.amount:
             return False
@@ -59,14 +54,45 @@ class Order:
 
 def create_order(db, order):
     # Verify that new order has all information needed
+    dict_order_info = {}
     if not order.fully_populated():
-        return False
+        dict_order_info = {"error":"order info not fully populated"}
+        return dict_order_info
     try:
-        db.orders.insert_one({'order_id': order.order_id,'email': order.email, 'book_id': order.book_id, 'amount': order.amount,
+
+        #### check if the customer exist ####
+        customer = db.customers.find_one({'email_address': order.email})
+
+        if customer is None:
+            dict_order_info = {"error": "customer does not exist"}
+            return dict_order_info
+
+        #### check if the book id exist ####
+        book = db.book.find_one({'title': order.title})
+
+        if book is None:
+            dict_order_info = {"error": "book does not exist"}
+            return dict_order_info
+        ##### create random number for order_id ######
+        ### TODO : Need to check how to make it unique
+
+        order_no = random.randint(256,4567890098765456789)
+        order.order_id = order_no
+        db.orders.insert_one({'order_id': order.order_id,'email': order.email, 'title': order.title, 'amount': order.amount,
                               'created_time': order.created_time, 'status': order.status})
-    except:
-        return False
-    return True
+
+        ####check if order inserted properly and return the order number####
+
+        order = db.orders.find_one({'order_id': order.order_id})
+        if order is not None:
+            dict_order_info = {"order_id": order["order_id"]}
+            return dict_order_info
+        else:
+            dict_order_info = {"error": "order id is not created successfully due to some technical issue"}
+            return dict_order_info
+    except Exception as e:
+        print("exception:" + str(e))
+    return dict_order_info
 
 # Customer will order books based on the following
 # - Will provide customer email
@@ -97,7 +123,7 @@ def process_order(db, orders):
 
         db.orders.update_one({'order_id': order.order_id}, {'$set': {'status': 'in_processing'}}, upsert=False)
         try:
-            book_record = db.books.find_one({'Title': order.book_id})
+            book_record = db.books.find_one({'title': order.book_id})
             print(book_record)
         except:
             continue
@@ -119,7 +145,7 @@ def process_order(db, orders):
             try:
                 db.inventory.update_one({'_id': book_id}, {'$set': {'quantity': remain_qty}}, upsert=False)
                 db.orders.update_one({'order_id': order.order_id},
-                                     {'$set': {'status': 'completed', 'completed_time': datetime.now()}}, upsert=False)
+                                     {'$set': {'status': 'completed', 'completed_time': str(datetime.utcnow())}}, upsert=False)
             except:
                 continue
         books_order.append(order)

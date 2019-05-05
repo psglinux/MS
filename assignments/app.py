@@ -9,6 +9,7 @@ from flask import jsonify
 from flask import request
 from flask import Response
 from flask import abort
+from flask import json
 
 from apymongodb import APymongodb
 import bson
@@ -67,6 +68,22 @@ def get_book_by_isbn(isbn_no):
     #print("book", (book))
     return bson.json_util.dumps(book)
 
+@app.route('/addorder', methods = ['POST'])
+def app_message():
+    if not request.json:
+        return "415 Unsupported Media Type ;)"
+    elif 'email' not in request.json:
+        return "No email key  ;)"
+    elif 'title' not in request.json:
+        return "No title key  ;)"
+    elif 'amount' not in request.json:
+        return "No amount key  ;)"
+    else:
+        db = get_db_instance()
+        order = addorderapi.Order(request.json['email'], request.json['title'], request.json['amount'])
+        order_info = addorderapi.create_order(db, order)
+        return bson.json_util.dumps(order_info)
+     
 '''
 PUT orders/number: "fulfills the order" - i.e.
 adjusts the inventory to account for the books shipped for this order.
@@ -77,7 +94,6 @@ def process_book_order(order_id):
     if not order_id:
         print("Order is None")
         abort(404)
-
     db = get_db_instance()
     if not db:
         print("DB NOT found")

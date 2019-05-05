@@ -36,6 +36,8 @@ function travis_unit_test() {
     python3.6 addcustapi_ut.py
     python3.6 addorderapi_ut.py
     python3.6 bookstore_flask_ut.py -v
+    echo "Generating documentation for the python api's"
+    ./deploy.sh -d
     popd
 }
 

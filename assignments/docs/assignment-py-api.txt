@@ -8,6 +8,8 @@ CLASSES
         Customer
     
     class Customer(builtins.object)
+     |  Customer(name, email, phone, address)
+     |  
      |  Methods defined here:
      |  
      |  __init__(self, name, email, phone, address)
@@ -65,7 +67,7 @@ FUNCTIONS
         # identifies an authenticated user.
 
 FILE
-    /home/psg/working/MS/cmpe-272/cmpe-272/assignments/addcustapi.py
+    /home/clala/clala-git/cmpe-272/assignments/addcustapi.py
 
 
 Help on module addcustapi_ut:
@@ -78,6 +80,8 @@ CLASSES
         AddCustTests
     
     class AddCustTests(unittest.case.TestCase)
+     |  AddCustTests(methodName='runTest')
+     |  
      |  A class whose instances are single test cases.
      |  
      |  By default, the test code itself should be placed in a method named
@@ -334,7 +338,7 @@ CLASSES
      |      
      |      Args:
      |          expected_exception: Exception class expected to be raised.
-     |          expected_regex: Regex (re pattern object or string) expected
+     |          expected_regex: Regex (re.Pattern object or string) expected
      |                  to be found in error message.
      |          args: Function to be called and extra positional args.
      |          kwargs: Extra kwargs.
@@ -423,7 +427,7 @@ CLASSES
      |      
      |      Args:
      |          expected_warning: Warning class expected to be triggered.
-     |          expected_regex: Regex (re pattern object or string) expected
+     |          expected_regex: Regex (re.Pattern object or string) expected
      |                  to be found in error message.
      |          args: Function to be called and extra positional args.
      |          kwargs: Extra kwargs.
@@ -474,7 +478,7 @@ CLASSES
      |  skipTest(self, reason)
      |      Skip this test.
      |  
-     |  subTest(self, msg=<object object at 0x7f1baa1ea330>, **params)
+     |  subTest(self, msg=<object object at 0x7fc719f0e4c0>, **params)
      |      Return a context manager that will return the enclosed block
      |      of code in a subtest identified by the optional message and
      |      keyword parameters.  A failure in the subtest marks the test
@@ -516,7 +520,7 @@ DATA
     cust_email = 'cl@gm.com'
 
 FILE
-    /home/psg/working/MS/cmpe-272/cmpe-272/assignments/addcustapi_ut.py
+    /home/clala/clala-git/cmpe-272/assignments/addcustapi_ut.py
 
 
 Help on module addorderapi:
@@ -529,6 +533,8 @@ CLASSES
         Order
     
     class Order(builtins.object)
+     |  Order(order_id, email, book_id, amount)
+     |  
      |  Methods defined here:
      |  
      |  __init__(self, order_id, email, book_id, amount)
@@ -592,7 +598,7 @@ FUNCTIONS
         # identifies an authenticated user.
 
 FILE
-    /home/psg/working/MS/cmpe-272/cmpe-272/assignments/addorderapi.py
+    /home/clala/clala-git/cmpe-272/assignments/addorderapi.py
 
 
 Help on module addorderapi_ut:
@@ -605,6 +611,8 @@ CLASSES
         AddCustTests
     
     class AddCustTests(unittest.case.TestCase)
+     |  AddCustTests(methodName='runTest')
+     |  
      |  A class whose instances are single test cases.
      |  
      |  By default, the test code itself should be placed in a method named
@@ -863,7 +871,7 @@ CLASSES
      |      
      |      Args:
      |          expected_exception: Exception class expected to be raised.
-     |          expected_regex: Regex (re pattern object or string) expected
+     |          expected_regex: Regex (re.Pattern object or string) expected
      |                  to be found in error message.
      |          args: Function to be called and extra positional args.
      |          kwargs: Extra kwargs.
@@ -952,7 +960,7 @@ CLASSES
      |      
      |      Args:
      |          expected_warning: Warning class expected to be triggered.
-     |          expected_regex: Regex (re pattern object or string) expected
+     |          expected_regex: Regex (re.Pattern object or string) expected
      |                  to be found in error message.
      |          args: Function to be called and extra positional args.
      |          kwargs: Extra kwargs.
@@ -1003,7 +1011,7 @@ CLASSES
      |  skipTest(self, reason)
      |      Skip this test.
      |  
-     |  subTest(self, msg=<object object at 0x7f1baa1ea330>, **params)
+     |  subTest(self, msg=<object object at 0x7fc719f0e4c0>, **params)
      |      Return a context manager that will return the enclosed block
      |      of code in a subtest identified by the optional message and
      |      keyword parameters.  A failure in the subtest marks the test
@@ -1045,7 +1053,7 @@ DATA
     cust_email = 'cl@gm.com'
 
 FILE
-    /home/psg/working/MS/cmpe-272/cmpe-272/assignments/addorderapi_ut.py
+    /home/clala/clala-git/cmpe-272/assignments/addorderapi_ut.py
 
 
 problem in ../app.py - ModuleNotFoundError: No module named 'bookapi'
@@ -1059,6 +1067,8 @@ CLASSES
         APymongodb
     
     class APymongodb(builtins.object)
+     |  APymongodb(uri='mongodb', db_name='test_database', test=False)
+     |  
      |  Methods defined here:
      |  
      |  __init__(self, uri='mongodb', db_name='test_database', test=False)
@@ -1083,7 +1093,7 @@ CLASSES
      |      list of weak references to the object (if defined)
 
 FILE
-    /home/psg/working/MS/cmpe-272/cmpe-272/assignments/apymongodb.py
+    /home/clala/clala-git/cmpe-272/assignments/apymongodb.py
 
 
 Help on module bookapi:
@@ -1103,7 +1113,7 @@ FUNCTIONS
     get_book_with_isbn(_no, db)
 
 FILE
-    /home/psg/working/MS/cmpe-272/cmpe-272/assignments/bookapi.py
+    /home/clala/clala-git/cmpe-272/assignments/bookapi.py
 
 
 Help on module bookapi_ut:
@@ -1116,6 +1126,8 @@ CLASSES
         DBTests
     
     class DBTests(unittest.case.TestCase)
+     |  DBTests(methodName='runTest')
+     |  
      |  A class whose instances are single test cases.
      |  
      |  By default, the test code itself should be placed in a method named
@@ -1370,7 +1382,7 @@ CLASSES
      |      
      |      Args:
      |          expected_exception: Exception class expected to be raised.
-     |          expected_regex: Regex (re pattern object or string) expected
+     |          expected_regex: Regex (re.Pattern object or string) expected
      |                  to be found in error message.
      |          args: Function to be called and extra positional args.
      |          kwargs: Extra kwargs.
@@ -1459,7 +1471,7 @@ CLASSES
      |      
      |      Args:
      |          expected_warning: Warning class expected to be triggered.
-     |          expected_regex: Regex (re pattern object or string) expected
+     |          expected_regex: Regex (re.Pattern object or string) expected
      |                  to be found in error message.
      |          args: Function to be called and extra positional args.
      |          kwargs: Extra kwargs.
@@ -1510,7 +1522,7 @@ CLASSES
      |  skipTest(self, reason)
      |      Skip this test.
      |  
-     |  subTest(self, msg=<object object at 0x7f1baa1ea330>, **params)
+     |  subTest(self, msg=<object object at 0x7fc719f0e4c0>, **params)
      |      Return a context manager that will return the enclosed block
      |      of code in a subtest identified by the optional message and
      |      keyword parameters.  A failure in the subtest marks the test
@@ -1546,7 +1558,7 @@ CLASSES
      |  maxDiff = 640
 
 FILE
-    /home/psg/working/MS/cmpe-272/cmpe-272/assignments/bookapi_ut.py
+    /home/clala/clala-git/cmpe-272/assignments/bookapi_ut.py
 
 
 problem in ../bookstore_flask_ut.py - ModuleNotFoundError: No module named 'app'

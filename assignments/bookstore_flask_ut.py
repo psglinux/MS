@@ -66,6 +66,16 @@ class BasicTestCase(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         pass
 
+    def test_process_book_order(self):
+        """
+        Test the books api
+        """
+        tester = app.test_client(self)
+        response = tester.put('/processorder/4321312', content_type='html/text')
+        print("process order:", response.get_data())
+        #print("get all books:", response)
+        self.assertEqual(response.status_code, 404)
+        pass
 
 
 if __name__ == '__main__':

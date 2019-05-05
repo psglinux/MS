@@ -7,11 +7,13 @@ import pymongo
 import mongomock
 from flask import jsonify
 from flask import request
+from flask import Response
+from flask import abort
 from flask import json
-
 
 from apymongodb import APymongodb
 import bson
+import json
 
 app = Flask(__name__)
 app.config.from_object(__name__)
@@ -81,7 +83,35 @@ def app_message():
         order = addorderapi.Order(request.json['email'], request.json['title'], request.json['amount'])
         order_info = addorderapi.create_order(db, order)
         return bson.json_util.dumps(order_info)
+     
+'''
+PUT orders/number: "fulfills the order" - i.e.
+adjusts the inventory to account for the books shipped for this order.
+'''
+@app.route('/processorder/<string:order_id>', methods=['PUT'])
+def process_book_order(order_id):
+    # Find the order from the db which matches order ID
+    if not order_id:
+        print("Order is None")
+        abort(404)
+    db = get_db_instance()
+    if not db:
+        print("DB NOT found")
+        abort(400)
 
+    order = None
+    # Then create an order object corresponding to that it.
+    try:
+        order = db.orders.find_one({'order_id', order_id})
+    except:
+        print("ORDER_ID not found in DB")
+        abort(404)
+
+    if not order:
+        print("No such order")
+        abort(404)
+    # Then invoke process_order
+    addorderapi.process_order(db, [order])
 
 if __name__ == '__main__':
     app = create_app()

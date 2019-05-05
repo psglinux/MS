@@ -57,14 +57,24 @@ function stop_elfs_app() {
     docker ps
 }
 
+# Generate only text docs
+function build_docs() {
+    pushd docs
+    pydoc3 ../*.py > assignment-py-api.txt
+    #pydoc3 -w ../*.py
+    popd
+
+}
+
 # Usage info
 usage() {
 cat << EOF
-Usage: ${0##*/} [-b] [-c] [-i] [-h]
+Usage: ${0##*/} [-b] [-c] [-d] [-i] [-h]
 This script is for build and deploy webserver and application
 
     -b          build the containers needed for deployment
     -c          clean the containers, (stop and clean the container images)
+    -d          build docs for python
     -i          start the containers  webserver, uwsgi, app server and mongodb
     -s          stop the running containers
     -h          help
@@ -79,13 +89,16 @@ function main() {
         exit 0
     fi
 
-    while getopts "bcihs" o; do
+    while getopts "bcdihs" o; do
         case "${o}" in
         b)
             build_elfs_app
             ;;
         c)
             clean_elfs_app
+            ;;
+        d)
+            build_docs
             ;;
         i)
             deploy_elfs_app

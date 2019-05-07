@@ -38,6 +38,10 @@ class BasicTestCase(unittest.TestCase):
         """
         tester = app.test_client(self)
         response = tester.get('/getbook', content_type='html/text')
+        print("response :", dir(response))
+        print("response.mime_type :", response.mimetype)
+        print("response.mime_type_params :", response.mimetype_params)
+        print("response.json:", response.json)
         print("get all books:", response.get_data())
         #print("get all books:", response)
         self.assertEqual(response.status_code, 200)

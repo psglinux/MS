@@ -47,19 +47,21 @@ class APymongodb:
         publisher_collection = self.db.publisher
 
         for author_name in author_list:
-            print(author_name)
+            #print(author_name)
             author_dict = {"author": author_name}
             author_collection.insert_one(author_dict)
         cursor = author_collection.find({})
         for document in cursor:
-            pprint(document)
+            #pprint(document)
+            pass
         for publisher_name in publisher_list:
             print(publisher_name)
             publisher_dict = {"publisher": publisher_name}
             publisher_collection.insert_one(publisher_dict)
         cursor = publisher_collection.find({})
         for document in cursor:
-            pprint(document)
+            #pprint(document)
+            pass
         print(self.db.collection_names())
 
         self.db.book.drop()
@@ -72,7 +74,7 @@ class APymongodb:
             for row in bookreader:
                 dict1 = {}
                 dict2 = {}
-                print(row)
+                #print(row)
                 dict1["title"] = row["Title"]
                 dict1["ISBN-13"] = row["ISBN-13"]
                 dict1["ISBN-10"] = row["ISBN-10"]
@@ -99,11 +101,13 @@ class APymongodb:
 
         cursor = book_collection.find({})
         for document in cursor:
-            pprint(document)
+            #pprint(document)
+            pass
 
         cursor = inventory_collection.find({})
         for document in cursor:
-            pprint(document)
+            #pprint(document)
+            pass
 
         self.db.customers.drop()
         customers_collection = self.db.customers
@@ -120,7 +124,8 @@ class APymongodb:
 
         cursor = customers_collection.find({})
         for document in cursor:
-            pprint(document)
+            #pprint(document)
+            pass
 
         self.db.order.drop()
         order_collection = self.db.order
@@ -128,7 +133,7 @@ class APymongodb:
             orderreader = csv.DictReader(csvfile, delimiter=',')
 
             for row in orderreader:
-                print(row)
+                #print(row)
                 dict1 = {}
                 book_id_list = []
                 # email_addr=row["userid"]
@@ -143,12 +148,13 @@ class APymongodb:
                 dict1["created_time"] = row["created_time"]
                 dict1['status'] = row["status"]
                 dict1["completed_time"] = row["completed_time"]
-                print(dict1)
+                #print(dict1)
                 order_collection.insert_one(dict1)
 
         cursor = order_collection.find({})
         for document in cursor:
-            pprint(document)
+            #pprint(document)
+            pass
 
     def populate_db_json(self, collection, jfile):
         """

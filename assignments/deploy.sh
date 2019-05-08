@@ -7,11 +7,13 @@
 #!/bin/bash -e
 
 DCRFLASK=elfs-flask
+DCRLOGINFLASK=elfs-login-flask
 DCRNGNX=elfs-nginx
 DCRNET=elfs-network
 DCRMONGODB=elfs-mongodb
 DCRNGNXNAME=nginx
 DCRFLASKNAME=flask
+DCRFLASKLOGINNAME=login-flask
 DCRMONGODBNAME=mongodb
 MONGODBPERSIST=/var/www/mongodb
 
@@ -25,6 +27,7 @@ function create_mongo_db_dir() {
 function build_elfs_app() {
     echo "Building ...."
 	docker build -t $DCRFLASK -f Dockerfile-flask .
+	docker build -t $DCRLOGINFLASK -f Dockerfile-login-flask .
 	docker build -t $DCRNGNX -f Dockerfile-nginx .
 	docker build -t $DCRMONGODB -f Dockerfile-mongodb .
 }
@@ -35,6 +38,7 @@ function deploy_elfs_app() {
     #create_mongo_db_dir
 	docker network create $DCRNET
 	docker run -d --name $DCRFLASKNAME --net $DCRNET -v "./app" $DCRFLASK
+	docker run -d --name $DCRFLASKLOGINNAME --net $DCRNET -v "./login" $DCRLOGINFLASK
 	docker run -d --name $DCRNGNXNAME --net $DCRNET -p "80:80" $DCRNGNX
 	docker run -d --name $DCRMONGODBNAME --net $DCRNET -v $MONGODBPERSIST:/data/db -p 27017:27017 $DCRMONGODB
     docker ps
@@ -43,16 +47,16 @@ function deploy_elfs_app() {
 
 function clean_elfs_app() {
     echo "Cleaning Team Elfs webserve and applicatio..."
-    docker kill $DCRFLASKNAME $DCRNGNXNAME $DCRMONGODBNAME
-    docker rm $DCRFLASKNAME $DCRNGNXNAME $DCRMONGODBNAME
+    docker kill $DCRFLASKNAME $DCRFLASKLOGINNAME $DCRNGNXNAME $DCRMONGODBNAME
+    docker rm $DCRFLASKNAME $DCRFLASKLOGINNAME $DCRNGNXNAME $DCRMONGODBNAME
     docker network rm $DCRNET
-    docker rmi $DCRNGNX $DCRFLASK $DCRMONGODB
+    docker rmi $DCRNGNX $DCRFLASK $DCRLOGINFLASK $DCRMONGODB
 }
 
 function stop_elfs_app() {
     echo "Stopping Team Elfs webserve and applicatio..."
-    docker kill $DCRFLASKNAME $DCRNGNXNAME $DCRMONGODBNAME
-    docker rm $DCRFLASKNAME $DCRNGNXNAME $DCRMONGODBNAME
+    docker kill $DCRFLASKNAME $DCRFLASKLOGINNAME $DCRNGNXNAME $DCRMONGODBNAME
+    docker rm $DCRFLASKNAME $DCRFLASKLOGINNAME $DCRNGNXNAME $DCRMONGODBNAME
     docker network rm $DCRNET
     docker ps
 }

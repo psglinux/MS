@@ -13,6 +13,7 @@ from flask import abort
 from flask import json,jsonify
 from flask import render_template,request,redirect,url_for
 from apymongodb import APymongodb
+import elfsloginapi
 import bson
 import json
 #app = Flask(__name__)
@@ -164,11 +165,6 @@ def addorder():
         order_info = addorderapi.create_order(db, order)
         return bson.json_util.dumps(order_info)
 
-<<<<<<< HEAD
-=======
-
-     
->>>>>>> 939921a... Latest code with UI and inventory handling
 '''
 PUT orders/number: "fulfills the order" - i.e.
 adjusts the inventory to account for the books shipped for this order.

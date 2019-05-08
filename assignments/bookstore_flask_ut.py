@@ -6,6 +6,7 @@ import bookapi
 import pprint
 
 from app import app
+from login import login
 import apymongodb
 
 TEST_DB = 'test_database'
@@ -79,6 +80,24 @@ class BasicTestCase(unittest.TestCase):
         print("process order:", response.get_data())
         #print("get all books:", response)
         self.assertEqual(response.status_code, 404)
+        pass
+
+    def test_login_process(self):
+        """
+        Test the login api from the main app
+        """
+        tester = app.test_client(self)
+        response = tester.get('/login', content_type='html/text')
+        print('login response:', response.get_data())
+        pass
+
+    def test_login_app(self):
+        """
+        Test the login api in teh login app
+        """
+        tester = login.test_client(self)
+        response = tester.get('/', content_type='html/text')
+        print('login response:', response.get_data())
         pass
 
 

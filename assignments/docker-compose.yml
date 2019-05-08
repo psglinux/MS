@@ -24,3 +24,10 @@ services:
       dockerfile: Dockerfile-mongodb
     ports:
       - 27017:27017
+  login-flask:
+    image: webapp-login-flask
+    build:
+      context: .
+      dockerfile: Dockerfile-login-flask
+    volumes:
+      - ./conf.d:/etc/nginx/conf.d

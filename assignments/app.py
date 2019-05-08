@@ -12,6 +12,7 @@ from flask import abort
 from flask import json
 
 from apymongodb import APymongodb
+import elfsloginapi
 import bson
 import json
 
@@ -19,6 +20,8 @@ app = Flask(__name__)
 app.config.from_object(__name__)
 
 mongodb_uri="mongodb"
+login_uri="login-flask"
+
 
 def mock_book_mongo_db():
     """
@@ -45,6 +48,16 @@ def hello_world():
     default route for the Team Elf's home page
     """
     return '<h1 align=center>Hello, Welcome to the webserver of team ELFs</h1>'
+
+@app.route('/login', methods=['GET'])
+def app_login():
+    """
+    the route for login. This will talk to a standalone app which is running in
+    the container login-flask:5000
+    """
+    print("received requests")
+    r = requests.get('http://login-flask:5000')
+    return '<h1>'+r.text+'</h1>'
 
 @app.route('/getbook', methods=['GET'])
 def get_all_books():
@@ -83,7 +96,7 @@ def app_message():
         order = addorderapi.Order(request.json['email'], request.json['title'], request.json['amount'])
         order_info = addorderapi.create_order(db, order)
         return bson.json_util.dumps(order_info)
-     
+
 '''
 PUT orders/number: "fulfills the order" - i.e.
 adjusts the inventory to account for the books shipped for this order.

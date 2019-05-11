@@ -10,7 +10,7 @@ from flask import request
 from flask import Response
 from flask import abort
 from flask import json
-
+from flask import render_template
 from apymongodb import APymongodb
 import bson
 import json
@@ -56,9 +56,23 @@ def get_all_books():
     for book in bookapi.get_available_books(db):
         #print("book", str(book))
         books.append(book)
-    #print(books)
-    return bson.json_util.dumps(books)
+    print(books)
+    #return bson.json_util.dumps(books)
+    return render_template('getbook.html',response=books)
 
+@app.route('/order', methods=['GET'])
+def order_books():
+    books=[]
+    #print("app.testing:", app.testing)
+
+    db = get_db_instance()
+
+    for book in bookapi.get_available_books(db):
+        #print("book", str(book))
+        books.append(book)
+    print(books)
+    #return bson.json_util.dumps(books)
+    return render_template('order.html',response=books)
 
 @app.route('/getbook/<string:isbn_no>', methods=['GET'])
 def get_book_by_isbn(isbn_no):

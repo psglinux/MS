@@ -9,15 +9,16 @@
   <script src="static/js/bootstrap.min.js"></script>
 </head>
 <body>
-
+<form method='POST'>
 <div class="container">
-  <h2>Books</h2>
+  <h2>Order</h2>
   <p></p>            
-  <table class="table table-striped">
+  <table class="table table-striped form-group">
     <thead>
       <tr>
         <th>ISBN</th>
         <th>Title</th>
+        <th>Quantity</th>
         <th>Price</th>
       </tr>
     </thead>
@@ -26,12 +27,14 @@
       <tr>
         <td>{{row['ISBN-13']}}</td>
         <td>{{row['title']}}</td>
+        <td><input type="text" name="{{row['title']}}" value="0"></input></td>
         <td>{{row['price']}}</td>
       </tr>
      {% endfor %}
     </tbody>
   </table>
+<button type="submit" name="submit_order" value="submit_order" class="btn btn-primary float-right active" >Submit Order</button>
 </div>
-
+</form>
 </body>
 </html>

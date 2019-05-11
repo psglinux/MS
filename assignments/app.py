@@ -92,8 +92,8 @@ def get_all_books():
         #print("book", str(book))
         books.append(book)
     print(books)
-    return bson.json_util.dumps(books)
-    #return render_template('getbook.html',response=books)
+    #return bson.json_util.dumps(books)
+    return render_template('getbook.html',response=books)
 
 @app.route('/order', methods=['GET','POST'])
 def order_books():

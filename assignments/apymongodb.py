@@ -5,6 +5,7 @@ import json
 import csv
 from pymongo import MongoClient
 import sys
+import hashlib
 from pprint import pprint
 
 
@@ -55,14 +56,14 @@ class APymongodb:
             #pprint(document)
             pass
         for publisher_name in publisher_list:
-            print(publisher_name)
+            #print(publisher_name)
             publisher_dict = {"publisher": publisher_name}
             publisher_collection.insert_one(publisher_dict)
         cursor = publisher_collection.find({})
         for document in cursor:
             #pprint(document)
             pass
-        print(self.db.collection_names())
+        print(self.db.list_collection_names())
 
         self.db.book.drop()
         book_collection = self.db.book
@@ -155,6 +156,19 @@ class APymongodb:
         for document in cursor:
             #pprint(document)
             pass
+
+        ## creating authentication collection for login_id,salt,password collections
+        self.db.auth.drop()
+        login_collection = self.db.authentication
+        with open('database/login.csv', newline='') as csvfile:
+            reader = csv.DictReader(csvfile)
+            for row in reader:
+                #print("type",type(row), "data", row)
+                #print('email_address:', row['email_address'], 'salt:', row['salt'], 'password:', row['password'])
+                #print(hashlib.sha256(str(row['salt']+hashlib.md5('password'.encode('utf-8')).hexdigest()).encode('utf-8')).hexdigest())
+                row['password'] = hashlib.sha256(str(row['salt']+hashlib.md5('password'.encode('utf-8')).hexdigest()).encode('utf-8')).hexdigest()
+                login_collection.insert_one(dict(row))
+
 
     def populate_db_json(self, collection, jfile):
         """

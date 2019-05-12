@@ -13,7 +13,6 @@ from flask import abort
 from flask import json
 
 from apymongodb import APymongodb
-import elfsloginapi
 import bson
 import json
 

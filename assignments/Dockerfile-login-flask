@@ -22,6 +22,10 @@ RUN pip install -r requirements.txt
 # we can optimize on this
 #COPY login.py .
 COPY login.py .
+COPY apymongodb.py .
+COPY app.py .
+COPY bookapi.py .
+COPY addorderapi.py .
 # Finally, we run uWSGI with the ini file we
 # created earlier
 # TODO: We do not need uwsgi

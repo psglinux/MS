@@ -107,7 +107,7 @@ class APymongodb:
 
         cursor = inventory_collection.find({})
         for document in cursor:
-            #pprint(document)
+            pprint(document)
             pass
 
         self.db.customers.drop()
@@ -154,7 +154,7 @@ class APymongodb:
 
         cursor = order_collection.find({})
         for document in cursor:
-            #pprint(document)
+            pprint(document)
             pass
 
         ## creating authentication collection for login_id,salt,password collections

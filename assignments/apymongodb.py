@@ -9,11 +9,11 @@ from pprint import pprint
 
 
 class APymongodb:
-    def __init__(self, uri="mongodb", db_name="test_database", test=False):
+    def __init__(self, uri="127.0.0.1:27017", db_name="test_database", test=False):
         if test:
             self.db =mongomock.MongoClient()[db_name]
         else:
-            self.db = pymongo.MongoClient(uri)[dbname]
+            self.db = pymongo.MongoClient(uri)[db_name]
         pass
 
     def delete_db(self):
@@ -106,7 +106,7 @@ class APymongodb:
 
         cursor = inventory_collection.find({})
         for document in cursor:
-            #pprint(document)
+            pprint(document)
             pass
 
         self.db.customers.drop()
@@ -153,7 +153,7 @@ class APymongodb:
 
         cursor = order_collection.find({})
         for document in cursor:
-            #pprint(document)
+            pprint(document)
             pass
 
     def populate_db_json(self, collection, jfile):

@@ -13,7 +13,6 @@ from flask import abort
 from flask import json,jsonify
 from flask import render_template,request,redirect,url_for
 from apymongodb import APymongodb
-import elfsloginapi
 import bson
 import json
 #app = Flask(__name__)

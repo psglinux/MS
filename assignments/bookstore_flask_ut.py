@@ -118,6 +118,7 @@ class LoginAppTestCase(unittest.TestCase):
         """
         Test the login api in the login app
         email_id,salt,sha256(salt+md5hash)
+        email_id,salt,md5hash
         95f7vcnewd8@iffymedia.com,FF,5f4dcc3b5aa765d61d8327deb882cf99
         zo71ht9vbrp@payspun.com,AA,5f4dcc3b5aa765d61d8327deb882cf99
         6c2uj5sb352@fakemailgenerator.net,BB,5f4dcc3b5aa765d61d8327deb882cf99
@@ -134,7 +135,7 @@ class LoginAppTestCase(unittest.TestCase):
         response = tester.post('/login', data=json.dumps(pdata1), headers=headers)
         #print('login response:', response.get_data())
         resp = json.loads(response.get_data())
-        print("resp:", resp)
+        #print("resp:", resp)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(resp['status'], 'success')
         print('login successfully tested')

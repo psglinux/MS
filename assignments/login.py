@@ -38,7 +38,6 @@ def login_user():
     except Exception as e:
         print("exception:", str(e))
     return jsonify({'status': 'internal error'})
-
     pass
 
 #by default the app run on port 5000

@@ -22,7 +22,7 @@ def create_app():
     return app
 app=create_app()
 
-mongodb_uri="127.0.0.1:27017"
+mongodb_uri="mongodb"
 
 def mock_book_mongo_db():
     """

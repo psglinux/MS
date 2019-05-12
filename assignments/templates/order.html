@@ -16,6 +16,7 @@
   <table class="table table-striped form-group">
     <thead>
       <tr>
+        <th></th>
         <th>ISBN</th>
         <th>Title</th>
         <th>Quantity</th>
@@ -25,9 +26,10 @@
     <tbody>
      {% for row in response %}
       <tr>
+        <td><input type="checkbox" name="book_id_list" value={{row['_id']}}></input></td>
         <td>{{row['ISBN-13']}}</td>
         <td>{{row['title']}}</td>
-        <td><input type="text" name="{{row['title']}}" value="0"></input></td>
+        <td><input type="text" name="{{row['_id']}}" value="0"></input></td>
         <td>{{row['price']}}</td>
       </tr>
      {% endfor %}

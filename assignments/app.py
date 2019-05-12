@@ -103,7 +103,12 @@ def order_books():
         quantity_list=request.form.getlist('quantity_list')
         dict1=dict(request.form)
         del dict1["submit_order"]
-        return str(dict1)
+        del dict1["book_id_list"]
+        order_dict2={}
+        for id in book_id_list:
+           order_dict2[id]=dict1[id]
+            
+        return str(order_dict2)
 
     #print("app.testing:", app.testing)
 

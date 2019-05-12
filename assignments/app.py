@@ -49,7 +49,7 @@ def hello_world():
     """
     return '<h1 align=center>Hello, Welcome to the webserver of team ELFs</h1>'
 
-@app.route('/login', methods=['GET'])
+@app.route('/login', methods=['POST'])
 def app_login():
     """
     the route for login. This will talk to a standalone app which is running in
@@ -59,8 +59,27 @@ def app_login():
         return bson.json_util.dumps({'status': 'success'})
     else:
         print("received requests")
-        r = requests.get('http://login-flask:5000')
-        return '<h1>'+r.text+'</h1>'
+        try:
+            print("request data from browser:", json.loads(request.data))
+            rcv_login_req = json.loads(request.data)
+            print("request json from browser:", rcv_login_req)
+
+            # request the login-app to authenticate the user
+            #pdata1 = {'email_address':'95f7vcnewd8@iffymedia.com', 'password':'5f4dcc3b5aa765d61d8327deb882cf99'}
+            #r = requests.post('http://login-flask:5000/login', data=json.dumps(pdata1), headers=headers)
+            headers = {'content-type': 'application/json'}
+            r = requests.post('http://login-flask:5000/login', data=json.dumps(rcv_login_req), headers=headers)
+            print("send request", dir(r))
+            #r = requests.get('http://login-flask:5000/')
+            #print("response:", dir(r))
+            #print("response.text:", r.text)
+            #print("response.status_code", r.status_code)
+            #print("response.json", r.json)
+            # TODO: Return the JWT here
+            return '<h1>'+str(r.status_code)+'</h1>'+'<h2>'+r.text+'</h2>'
+        except Exception as e:
+            print("exception:", str(e))
+            return '<h1>'+"error"+'</h1>'
 
 @app.route('/getbook', methods=['GET'])
 def get_all_books():

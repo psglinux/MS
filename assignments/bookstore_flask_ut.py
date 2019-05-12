@@ -134,6 +134,7 @@ class LoginAppTestCase(unittest.TestCase):
         response = tester.post('/login', data=json.dumps(pdata1), headers=headers)
         #print('login response:', response.get_data())
         resp = json.loads(response.get_data())
+        print("resp:", resp)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(resp['status'], 'success')
         print('login successfully tested')

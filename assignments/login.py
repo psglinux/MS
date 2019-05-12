@@ -21,21 +21,23 @@ def login_user():
     """
     The login api returns wither a success or a failure as a jason to a caller app
     """
-    #print("user_id:",requests.form.get('id'))
-    #print("password:",requests.form.get('password'))
-    #print("request data:", json.loads(request.data))
-    r = json.loads(request.data)
-    db = get_db_instance()
-    l_data = db.authentication.find_one({'email_address': r['email_address']})
-    #print('retrieved login data:',l_data)
-    #calculate sha256 with salt + md5 hash, compare with the retrieved password
-    passwd = hashlib.sha256(str(l_data['salt'] + r['password']).encode('utf-8')).hexdigest()
-    #print ('calculated password hash:', passwd)
-    #print ('database   password hash:', l_data['password'])
-    if passwd == l_data['password']:
-        return jsonify({'status': 'success'})
-    else:
-        return jsonify({'status': 'error'})
+    try:
+        #print("request data:", json.loads(request.data))
+        r = json.loads(request.data)
+        db = get_db_instance()
+        l_data = db.authentication.find_one({'email_address': r['email_address']})
+        #print('retrieved login data:',l_data)
+        #calculate sha256 with salt + md5 hash, compare with the retrieved password
+        passwd = hashlib.sha256(str(l_data['salt'] + r['password']).encode('utf-8')).hexdigest()
+        #print ('calculated password hash:', passwd)
+        #print ('database   password hash:', l_data['password'])
+        if passwd == l_data['password']:
+            return jsonify({'status': 'success'})
+        else:
+            return jsonify({'status': 'error'})
+    except Exception as e:
+        print("exception:", str(e))
+    return jsonify({'status': 'internal error'})
 
     pass
 

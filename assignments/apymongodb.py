@@ -10,11 +10,11 @@ from pprint import pprint
 
 
 class APymongodb:
-    def __init__(self, uri="mongodb", db_name="test_database", test=False):
+    def __init__(self, uri="localhost:27017", db_name="test_database", test=False):
         if test:
             self.db =mongomock.MongoClient()[db_name]
         else:
-            self.db = pymongo.MongoClient(uri)[dbname]
+            self.db = pymongo.MongoClient(uri)[db_name]
         pass
 
     def delete_db(self):
@@ -177,5 +177,5 @@ class APymongodb:
         pass
 
 if __name__ == '__main__':
-    pymondb = APymongodb(test=True)
+    pymondb = APymongodb(test=False)
     pymondb.create_db_from_csv()

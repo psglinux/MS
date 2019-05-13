@@ -30,6 +30,15 @@ class Order:
             return False
         return True
 
+def get_all_order(db):
+    """
+    get all the oders from the db and return a json
+    """
+    try:
+        orders  = db.orders.find()
+        print(orders)
+    except Exception as e:
+        print("get order exception", str(e))
 
 def create_order(db, order):
     # Verify that new order has all information needed
@@ -97,11 +106,11 @@ def create_order(db, order):
 def process_order(db, order_id):
     books_order = []
     order_val = db.orders.find_one({'order_id': int(order_id)})
-    print(order_val)
+    print("order_val:",order_val)
     if not order_val:
         return "ERROR"
-    
-    db.orders.update_one({'order_id': order_id}, {'$set': {'status': 'in_processing'}}, upsert=False)
+
+    db.orders.update_one({'order_id': int(order_id)}, {'$set': {'status': 'in_processing'}}, upsert=False)
     for book_order in order_val["order_dtl"]["order"]:
             print(book_order)
             book_record = db.book.find_one({'_id': ObjectId(book_order["book_id"])})

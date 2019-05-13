@@ -173,6 +173,44 @@ def addorder():
 PUT orders/number: "fulfills the order" - i.e.
 adjusts the inventory to account for the books shipped for this order.
 '''
+@app.route('/getorders', methods=['GET'])
+def get_orders():
+    """
+    get all the orders that have been placed. This is to be used for the admin user
+    """
+    db = get_db_instance()
+    orders = db.orders.find()
+    print(orders)
+    return render_template('getorder.html',response=orders)
+
+
+@app.route('/fullfillorder', methods=['POST'])
+def fullfill_book_order():
+    print("post data", request.form['order_id'])
+    order_id=request.form['order_id']
+    # Find the order from the db which matches order ID
+    if not order_id:
+        print("Order is None")
+        abort(404)
+    db = get_db_instance()
+    if not db:
+        print("DB NOT found")
+        abort(400)
+
+    order = None
+    # Then create an order object corresponding to that it.
+    order = db.orders.find_one({'order_id':int(order_id)})
+    print("order:", order)
+
+    if not order:
+        print("No such order")
+        abort(404)
+    # Then invoke process_order
+    val=addorderapi.process_order(db, order_id)
+    return get_orders()
+
+
+
 @app.route('/processorder/<int:order_id>', methods=['PUT'])
 def process_book_order(order_id):
     print(type(order_id))

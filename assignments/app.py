@@ -26,6 +26,7 @@ app=create_app()
 app = Flask(__name__)
 app.config.from_object(__name__)
 
+
 mongodb_uri="mongodb"
 login_uri="login-flask"
 
@@ -163,6 +164,7 @@ def addorder():
         order = addorderapi.Order(request.json['email'], request.json['title'], request.json['amount'])
         order_info = addorderapi.create_order(db, order)
         return bson.json_util.dumps(order_info)
+
 
 '''
 PUT orders/number: "fulfills the order" - i.e.

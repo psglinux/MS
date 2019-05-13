@@ -11,6 +11,7 @@ from pprint import pprint
 
 class APymongodb:
     def __init__(self, uri="localhost:27017", db_name="test_database", test=False):
+
         if test:
             self.db =mongomock.MongoClient()[db_name]
         else:

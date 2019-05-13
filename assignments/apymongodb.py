@@ -160,6 +160,7 @@ class APymongodb:
         ## creating authentication collection for login_id,salt,password collections
         self.db.auth.drop()
         login_collection = self.db.authentication
+        #login.csv contains the password in md5hash
         with open('database/login.csv', newline='') as csvfile:
             reader = csv.DictReader(csvfile)
             for row in reader:

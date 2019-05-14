@@ -17,7 +17,10 @@ if __name__ == "__main__":
     collection = argv[3]
     
     df = pd.read_csv(filename).fillna('')
-    db = pymongo.MongoClient(mongodb_uri).get_database()
+    dbHandle = pymongo.MongoClient(mongodb_uri)
+    #db = dbHandle.get_database()
+    db = dbHandle.client_database
+    
     db[collection].drop()
     batch = []
     for index in tqdm(range(len(df.index))):

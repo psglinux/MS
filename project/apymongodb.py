@@ -13,7 +13,7 @@ class APymongodb:
         if test:
             self.db =mongomock.MongoClient()[db_name]
         else:
-            self.db = pymongo.MongoClient(uri)[dbname]
+            self.db = pymongo.MongoClient(uri)[db_name]
         pass
 
     def delete_db(self):
@@ -188,7 +188,14 @@ class APymongodb:
         pass
 
 if __name__ == '__main__':
-    pymondb = APymongodb(test=True)
+    argv = sys.argv
+    if len(argv) < 2:
+        print("Usage: python3 " + argv[0] + " mongodb_uri")
+        exit(-1)
+
+    mongodb_uri = argv[1]
+    #pymondb = APymongodb(test=True)
+    pymondb = APymongodb(mongodb_uri, "client_database", False)
     #pymondb.create_db_from_csv()
     pymondb.create_project_db_from_csv()
     #pymondb.test_read_project_db()

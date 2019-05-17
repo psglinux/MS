@@ -12,6 +12,9 @@ DCRNGNXNAME=nginx
 DCRFLASKNAME=project-flask
 DCRMONGODBNAME=project-mongodb
 MONGODBPERSIST=/var/www/project-mongodb
+# Copy over CSV files to the following location
+CSVIMPORTPATH=/var/data/csv
+MONGOPORT=27017
 
 function create_mongo_db_dir() {
     if [ ! -d $MONGODBPERSIST ]; then
@@ -34,9 +37,21 @@ function deploy_elfs_project_app() {
 	docker network create $DCRNET
 	docker run -d --name $DCRFLASKNAME --net $DCRNET -v "./project-app" $DCRFLASK
 	docker run -d --name $DCRNGNXNAME --net $DCRNET -p "80:80" $DCRNGNX
-	docker run -d --name $DCRMONGODBNAME -d -v $MONGODBPERSIST:/data/db -p 27017:27017 $DCRMONGODB
+	docker run -d --name $DCRMONGODBNAME -d -v $MONGODBPERSIST:/data/db -p $MONGOPORT:$MONGOPORT $DCRMONGODB
     docker ps
+}
 
+function import_csv_data() {
+    echo "Importing CSV data from $CSVIMPORTPATH ..."
+	if [ ! -d $CSVIMPORTPATH ]; then
+		echo "No such directory"
+		exit 1
+	fi
+	for entry in $CSVIMPORTPATH/*.csv; do
+		echo "Importing $entry into DB"
+		collname=$(basename  $entry .csv)
+		python3 tools/batch_import.py localhost:$MONGOPORT $entry $collname
+	done
 }
 
 function clean_elfs_project_app() {
@@ -58,10 +73,11 @@ function stop_elfs_project_app() {
 # Usage info
 usage() {
 cat << EOF
-Usage: ${0##*/} [-b] [-c] [-i] [-h]
+Usage: ${0##*/} [-b] [-p] [-c] [-i] [-h]
 This script is for build and deploy webserver and application
 
     -b          build the containers needed for deployment
+    -p          import CSV data into mongodb
     -c          clean the containers, (stop and clean the container images)
     -i          start the containers  webserver, uwsgi, app server and mongodb
     -s          stop the running containers
@@ -77,10 +93,13 @@ function main() {
         exit 0
     fi
 
-    while getopts "bcihs" o; do
+    while getopts "bpcihs" o; do
         case "${o}" in
         b)
             build_elfs_project_app
+            ;;
+        p)
+            import_csv_data
             ;;
         c)
             clean_elfs_project_app

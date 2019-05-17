@@ -3,6 +3,7 @@ import pandas as pd
 import pymongo
 import json
 from tqdm import tqdm
+import pprint
 
 BATCH_SIZE = 1000
 
@@ -34,5 +35,7 @@ if __name__ == "__main__":
     if batch:
         db[collection].insert_many(batch)
 
-
-    
+    #### TEST ####
+    col = db[collection].find({})
+    for document in col:
+        pprint.pprint(document)

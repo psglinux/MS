@@ -10,11 +10,14 @@ from flask import jsonify
 from flask import request
 from flask import Response
 from flask import abort
-from flask import json,jsonify
+from flask import json,jsonify, make_response
 from flask import render_template,request,redirect,url_for
 from apymongodb import APymongodb
 import bson
 import json
+import jwt
+SECRET_KEY = "Secret Key"
+
 #app = Flask(__name__)
 #app.config.from_object(__name__)
 # create flask instance
@@ -38,9 +41,11 @@ def mock_book_mongo_db():
     mock_pymondb.create_db_from_csv()
     return mock_pymondb.db
 
+
 def real_mongo_db():
     print(mongodb_uri)
     return pymongo.MongoClient(mongodb_uri)['test_database']
+
 
 def get_db_instance():
     print("Inside get db instance")
@@ -52,12 +57,39 @@ def get_db_instance():
 
     return db
 
+
+def check_auth_token(request, db):
+    auth_header = request.headers.get('Authorization')
+    if auth_header:
+        auth_token = auth_header.split(" ")[1]
+    else:
+        auth_token = ''
+    if auth_token:
+        try:
+            payload = jwt.decode(auth_token,
+                                 SECRET_KEY,
+                                 algorithm="HS256")
+            db = get_db_instance()
+            l_data = db.authentication.find_one({'email_address':  payload['sub']})
+            if l_data:
+                 return 'success'
+            else:
+                return 'error'
+        except jwt.ExpiredSignatureError:
+            return 'Signature expired. Please log in again.'
+        except jwt.InvalidTokenError:
+            return 'Invalid token. Please log in again.'
+    else:
+        return 'error: no jwt token provided'
+
+
 @app.route('/',methods=['GET'])
 def hello_world():
     """
     default route for the Team Elf's home page
     """
     return '<h1 align=center>Hello, Welcome to the webserver of team ELFs</h1>'
+
 
 @app.route('/login', methods=['POST'])
 def app_login():
@@ -86,84 +118,103 @@ def app_login():
             #print("response.status_code", r.status_code)
             #print("response.json", r.json)
             # TODO: Return the JWT here
-            return '<h1>'+str(r.status_code)+'</h1>'+'<h2>'+r.text+'</h2>'
+            return '<h1>'+str(r.status_code)+'</h1>'+'<h2>'+r.text+'</h2>+'
         except Exception as e:
             print("exception:", str(e))
             return '<h1>'+"error"+'</h1>'
 
+
 @app.route('/getbook', methods=['GET'])
 def get_all_books():
-    books=[]
-    #print("app.testing:", app.testing)
-
     db = get_db_instance()
+    auth_status = check_auth_token(request,db)
+    if auth_status == 'success':
+        books=[]
+        #print("app.testing:", app.testing)
+        for book in bookapi.get_available_books(db):
+            #print("book", str(book))
+            books.append(book)
+        print(books)
+        #return bson.json_util.dumps(books)
+        return render_template('getbook.html',response=books)
+    else:
+        return '<h1>'+auth_status+'</h1>'
 
-    for book in bookapi.get_available_books(db):
-        #print("book", str(book))
-        books.append(book)
-    print(books)
-    #return bson.json_util.dumps(books)
-    return render_template('getbook.html',response=books)
 
 @app.route('/order', methods=['GET','POST'])
 def order_books():
+
     books=[]
     order_dict={}
     db = get_db_instance()
-    if request.method=="POST":
-        print("Inside post")
-        book_id_list=request.form.getlist('book_id_list')
-        quantity_list=request.form.getlist('quantity_list')
-        form_dict=dict(request.form)
-        del form_dict["submit_order"]
-        del form_dict["book_id_list"]
-        order_dict["order"]=[]
-        order_dict["email"]="95f7vcnewd8@iffymedia.com" 
-        for id in book_id_list:
-           tmp_dict={}
-           tmp_dict["book_id"]=id
-           tmp_dict["quantity"]=form_dict[id][0]
-           order_dict["order"].append(tmp_dict)
-        print(order_dict)
-        order = addorderapi.Order(order_dict)
-        print(order)
-        order_info = addorderapi.create_order(db, order)
-        return bson.json_util.dumps(order_info)
-        #return redirect(url_for('addorder',response=json.dumps(str(order_dict2))),code=307)
+    auth_status = check_auth_token(request, db)
+    if auth_status == 'success':
+        if request.method=="POST":
+            print("Inside post")
+            book_id_list=request.form.getlist('book_id_list')
+            quantity_list=request.form.getlist('quantity_list')
+            form_dict=dict(request.form)
+            del form_dict["submit_order"]
+            del form_dict["book_id_list"]
+            order_dict["order"]=[]
+            order_dict["email"]="95f7vcnewd8@iffymedia.com"
+            for id in book_id_list:
+               tmp_dict={}
+               tmp_dict["book_id"]=id
+               tmp_dict["quantity"]=form_dict[id][0]
+               order_dict["order"].append(tmp_dict)
+            print(order_dict)
+            order = addorderapi.Order(order_dict)
+            print(order)
+            order_info = addorderapi.create_order(db, order)
+            return bson.json_util.dumps(order_info)
+            #return redirect(url_for('addorder',response=json.dumps(str(order_dict2))),code=307)
 
-    #print("app.testing:", app.testing)
+        #print("app.testing:", app.testing)
 
-    for book in bookapi.get_available_books(db):
-        #print("book", str(book))
-        books.append(book)
-    print(books)
-    #return bson.json_util.dumps(books)
-    return render_template('order.html',response=books)
+        for book in bookapi.get_available_books(db):
+            #print("book", str(book))
+            books.append(book)
+        print(books)
+        #return bson.json_util.dumps(books)
+        return render_template('order.html',response=books)
+    else:
+        return '<h1>' + auth_status + '</h1>'
 
 
 @app.route('/getbook/<string:isbn_no>', methods=['GET'])
 def get_book_by_isbn(isbn_no):
     db = get_db_instance()
-    book = bookapi.get_book_with_isbn(isbn_no, db)
-    #print("book retrieved:", type(book))
-    #print("book", (book))
-    return bson.json_util.dumps(book)
+    auth_status = check_auth_token(request, db)
+    if auth_status == 'success':
+        book = bookapi.get_book_with_isbn(isbn_no, db)
+        #print("book retrieved:", type(book))
+        #print("book", (book))
+        return bson.json_util.dumps(book)
+    else:
+        return '<h1>' + auth_status + '</h1>'
+
 
 @app.route('/addorder', methods = ['POST'])
 def addorder():
-    if not request.json:
-        return "415 Unsupported Media Type ;)"
-    elif 'email' not in request.json:
-        return "No email key  ;)"
-    elif 'title' not in request.json:
-        return "No title key  ;)"
-    elif 'amount' not in request.json:
-        return "No amount key  ;)"
+    db = get_db_instance()
+    auth_status = check_auth_token(request, db)
+    if auth_status == 'success':
+        if not request.json:
+            return "415 Unsupported Media Type ;)"
+        elif 'email' not in request.json:
+            return "No email key  ;)"
+        elif 'title' not in request.json:
+            return "No title key  ;)"
+        elif 'amount' not in request.json:
+            return "No amount key  ;)"
+        else:
+            db = get_db_instance()
+            order = addorderapi.Order(request.json['email'], request.json['title'], request.json['amount'])
+            order_info = addorderapi.create_order(db, order)
+            return bson.json_util.dumps(order_info)
     else:
-        db = get_db_instance()
-        order = addorderapi.Order(request.json['email'], request.json['title'], request.json['amount'])
-        order_info = addorderapi.create_order(db, order)
-        return bson.json_util.dumps(order_info)
+        return '<h1>' + auth_status + '</h1>'
 
 
 '''
@@ -207,7 +258,6 @@ def fullfill_book_order():
     return get_orders()
 
 
-
 @app.route('/processorder/<int:order_id>', methods=['PUT'])
 def process_book_order(order_id):
     print(type(order_id))
@@ -230,6 +280,7 @@ def process_book_order(order_id):
     # Then invoke process_order
     val=addorderapi.process_order(db, order_id)
     return val
+
 
 if __name__ == '__main__':
 #    app = Flask(__name__)

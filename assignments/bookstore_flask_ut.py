@@ -12,7 +12,10 @@ import apymongodb
 TEST_DB = 'test_database'
 
 
+
 class BasicTestCase(unittest.TestCase):
+
+    auth_token = " "
 
     def setUp(self):
         """
@@ -31,14 +34,39 @@ class BasicTestCase(unittest.TestCase):
         """initial test. ensure flask was set up correctly"""
         tester = app.test_client(self)
         response = tester.get('/', content_type='html/text')
+        print(response)
         self.assertEqual(response.status_code, 200)
+
+    def test_always_first_login(self):
+        """
+        Need to get the jwt token from login server to call all other apis
+
+        """
+        data =   {'email_address': 'psg@gmail.com', 'password': 'md5hashed-password-from-ui'}
+        pdata1 = {'email_address':'95f7vcnewd8@iffymedia.com', 'password':'5f4dcc3b5aa765d61d8327deb882cf99'}
+
+        #test 1 match password
+        tester = login.test_client(self)
+        headers = {'content-type': 'application/json'}
+        response = tester.post('/login', data=json.dumps(pdata1), headers=headers)
+        print('login response:', response.get_data())
+        resp = json.loads(response.get_data())
+        self.__class__.auth_token = "Bearer " + resp['auth_token']
+        print("auth_token*************", self.__class__.auth_token)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(resp['status'], 'success')
+        print('login successfully tested')
+
 
     def test_get_book(self):
         """
         Test the books api
         """
         tester = app.test_client(self)
-        response = tester.get('/getbook', content_type='html/text')
+        headers = {
+            'Authorization': self.__class__.auth_token
+        }
+        response = tester.get('/getbook', headers=headers)
         print("response :", dir(response))
         print("response.mime_type :", response.mimetype)
         print("response.mime_type_params :", response.mimetype_params)
@@ -52,18 +80,21 @@ class BasicTestCase(unittest.TestCase):
         """
         Test the book isbn api
         """
+        headers = {
+            'Authorization': self.__class__.auth_token
+        }
         tester = app.test_client(self)
-        response = tester.get('/getbook/123', content_type='html/text')
+        response = tester.get('/getbook/123', headers=headers)
+        print("sample ****************",response.get_data())
+        self.assertEqual(response.status_code, 200)
+
+        tester = app.test_client(self)
+        response = tester.get('/getbook/1491979909', headers=headers)
         print(response.get_data())
         self.assertEqual(response.status_code, 200)
 
         tester = app.test_client(self)
-        response = tester.get('/getbook/1491979909', content_type='html/text')
-        print(response.get_data())
-        self.assertEqual(response.status_code, 200)
-
-        tester = app.test_client(self)
-        response = tester.get('/getbook/978-0201616224', content_type='html/text')
+        response = tester.get('/getbook/978-0201616224', headers=headers)
         #print("dir response:", dir(response))
         #print("type",type(response.get_data()))
         print("data: ",(response.get_data()))
@@ -90,6 +121,7 @@ class BasicTestCase(unittest.TestCase):
         response = tester.get('/login', content_type='html/text')
         print('login response:', response.get_data())
         pass
+
 
 class LoginAppTestCase(unittest.TestCase):
     def setUp(self):
@@ -133,8 +165,9 @@ class LoginAppTestCase(unittest.TestCase):
         tester = login.test_client(self)
         headers = {'content-type': 'application/json'}
         response = tester.post('/login', data=json.dumps(pdata1), headers=headers)
-        #print('login response:', response.get_data())
+        print('login response:', response.get_data())
         resp = json.loads(response.get_data())
+        print("type", resp['auth_token'])
         print("resp:", resp)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(resp['status'], 'success')

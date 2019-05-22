@@ -33,6 +33,16 @@ app.config.from_object(__name__)
 mongodb_uri="mongodb"
 login_uri="login-flask"
 
+endpoint_access = {'N': ['login', 'getbook', 'order', 'addorder'],
+                   'S': ['login', 'getbook', 'order', 'addorder', 'getorders', 'fullfillorder']}
+
+def check_endpoint_access(db, email, ep):
+    l_data = db.authentication.find_one({'email_address':  email})
+    if l_data :
+        if ep in endpoint_access[l_data['role']]:
+            return True
+    return False
+
 def mock_book_mongo_db():
     """
     create a mock db for usint testing.
@@ -58,7 +68,7 @@ def get_db_instance():
     return db
 
 
-def check_auth_token(request, db):
+def check_auth_token(request, db, ep=None):
     auth_header = request.headers.get('Authorization')
     if auth_header:
         auth_token = auth_header.split(" ")[1]
@@ -72,7 +82,10 @@ def check_auth_token(request, db):
             db = get_db_instance()
             l_data = db.authentication.find_one({'email_address':  payload['sub']})
             if l_data:
-                 return 'success'
+                if ep is not None:
+                    if not check_endpoint_access(db, payload['sub'], ep):
+                        return 'error'
+                return 'success'
             else:
                 return 'error'
         except jwt.ExpiredSignatureError:
@@ -227,9 +240,14 @@ def get_orders():
     get all the orders that have been placed. This is to be used for the admin user
     """
     db = get_db_instance()
-    orders = db.orders.find()
-    print(orders)
-    return render_template('getorder.html',response=orders)
+    auth_status = check_auth_token(request, db, ep="getorders")
+    if auth_status == 'success':
+        db = get_db_instance()
+        orders = db.orders.find()
+        print(orders)
+        return render_template('getorder.html',response=orders)
+    else:
+        return '<h1>' + auth_status + '</h1>'
 
 
 @app.route('/fullfillorder', methods=['POST'])

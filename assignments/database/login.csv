@@ -1,4 +1,4 @@
-email_address,salt,password
-95f7vcnewd8@iffymedia.com,FF,5f4dcc3b5aa765d61d8327deb882cf99
-zo71ht9vbrp@payspun.com,AA,5f4dcc3b5aa765d61d8327deb882cf99
-6c2uj5sb352@fakemailgenerator.net,BB,5f4dcc3b5aa765d61d8327deb882cf99
+email_address,salt,password,role
+95f7vcnewd8@iffymedia.com,FF,5f4dcc3b5aa765d61d8327deb882cf99,N
+zo71ht9vbrp@payspun.com,AA,5f4dcc3b5aa765d61d8327deb882cf99,N
+6c2uj5sb352@fakemailgenerator.net,BB,5f4dcc3b5aa765d61d8327deb882cf99,S

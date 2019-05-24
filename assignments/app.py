@@ -104,23 +104,29 @@ def hello_world():
     return '<h1 align=center>Hello, Welcome to the webserver of team ELFs</h1>'
 
 
-@app.route('/login', methods=['POST'])
+@app.route('/login', methods=['POST','GET'])
 def app_login():
     """
     the route for login. This will talk to a standalone app which is running in
     the container login-flask:5000
     """
+    error=None
     if app.testing:
         return bson.json_util.dumps({'status': 'success'})
     else:
         print("received requests")
-        try:
-            print("request data from browser:", json.loads(request.data))
-            rcv_login_req = json.loads(request.data)
-            print("request json from browser:", rcv_login_req)
-
+        if request.method == 'POST':
+         try:
+            #print("request data from browser:", request.data)
+            #print("request data from browser:", json.loads(request.data))
+            #rcv_login_req = json.loads(request.data)
+            #print("request json from browser:", rcv_login_req)
+            email_addr=request.form['username']
+            password=request.form['password']
+            #rcv_login_req={'email_address':email_addr, 'password':password}
             # request the login-app to authenticate the user
             #pdata1 = {'email_address':'95f7vcnewd8@iffymedia.com', 'password':'5f4dcc3b5aa765d61d8327deb882cf99'}
+            rcv_login_req = {'email_address':'95f7vcnewd8@iffymedia.com', 'password':'5f4dcc3b5aa765d61d8327deb882cf99'}
             #r = requests.post('http://login-flask:5000/login', data=json.dumps(pdata1), headers=headers)
             headers = {'content-type': 'application/json'}
             r = requests.post('http://login-flask:5000/login', data=json.dumps(rcv_login_req), headers=headers)
@@ -132,10 +138,10 @@ def app_login():
             #print("response.json", r.json)
             # TODO: Return the JWT here
             return '<h1>'+str(r.status_code)+'</h1>'+'<h2>'+r.text+'</h2>+'
-        except Exception as e:
+         except Exception as e:
             print("exception:", str(e))
             return '<h1>'+"error"+'</h1>'
-
+    return render_template('login.html', error=error)
 
 @app.route('/getbook', methods=['GET'])
 def get_all_books():

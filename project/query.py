@@ -181,7 +181,22 @@ def find_listings(params):
 
     listing = query_listings(query)
     return (True, listing)
-   
+
+# Function to handle range based queries
+# At the moment we only support a few kinds of range based queries
+# All these will be in range_params
+# 1. price =  { lo : min_val, hi : max_val }
+# 2. Number of beds =  { lo : min_val , hi : max_val }
+# 3. Number of bathrooms = { lo : min_val, hi : max_val }
+# 3. Number of bedrooms = { lo : min_val, hi : max_val }
+def range_query(range_params = {}, params = {}):
+    query = params
+    good_range_keys = [ 'price', 'beds', 'bedrooms', 'bathrooms' ]
+    for k,v in range_params.items():
+        if k not in good_range_keys:
+            continue
+        query[k] = { "$gt": v['lo'], "$lt" : v['hi'] }
+    return find_listings(query)
 
 if __name__ == '__main__':
     # TC 1
@@ -202,7 +217,12 @@ if __name__ == '__main__':
     r, l = find_listings(params)
     assert r, "Listings not found"
     assert len(l) == 1, "Listings count not enough"
-         
+
+    # TC 4
+    range_params = { 'price' : { 'lo' : '$101.00', 'hi' : '$345.00' } }
+    params = { 'country_code' : 'AU', 'zipcode' : '3188' }
+    r, l = range_query(range_params, params)
+    pprint.pprint(l)
 
 
 

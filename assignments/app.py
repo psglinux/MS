@@ -10,7 +10,7 @@ from flask import jsonify
 from flask import request
 from flask import Response
 from flask import abort
-from flask import json,jsonify, make_response
+from flask import json,jsonify, make_response,session
 from flask import render_template,request,redirect,url_for
 from apymongodb import APymongodb
 import bson
@@ -68,12 +68,12 @@ def get_db_instance():
     return db
 
 
-def check_auth_token(request, db, ep=None):
-    auth_header = request.headers.get('Authorization')
-    if auth_header:
-        auth_token = auth_header.split(" ")[1]
+def check_auth_token(request,db, ep=None):
+    if 'Authorization' in session.keys():
+         print(session.keys())
+         auth_token=session['Authorization'] 
     else:
-        auth_token = ''
+         auth_token=""
     if auth_token:
         try:
             payload = jwt.decode(auth_token,
@@ -129,7 +129,7 @@ def app_login():
             rcv_login_req = {'email_address':'95f7vcnewd8@iffymedia.com', 'password':'5f4dcc3b5aa765d61d8327deb882cf99'}
             #r = requests.post('http://login-flask:5000/login', data=json.dumps(pdata1), headers=headers)
             headers = {'content-type': 'application/json'}
-            r = requests.post('http://login-flask:5000/login', data=json.dumps(rcv_login_req), headers=headers)
+            r = requests.post('http://login-flask:5000/login', data=bson.json_util.dumps(rcv_login_req), headers=headers)
             print("send request", dir(r))
             #r = requests.get('http://login-flask:5000/')
             #print("response:", dir(r))
@@ -137,7 +137,10 @@ def app_login():
             #print("response.status_code", r.status_code)
             #print("response.json", r.json)
             # TODO: Return the JWT here
-            return '<h1>'+str(r.status_code)+'</h1>'+'<h2>'+r.text+'</h2>+'
+            session['Authorization']=json.loads(r.text)['auth_token'] 
+            return redirect(url_for('order_books'))
+            #return redirect(url_for('get_all_books'))
+            #return '<h1>'+str(r.status_code)+'</h1>'+'<h2>'+r.text+'</h2>+'
          except Exception as e:
             print("exception:", str(e))
             return '<h1>'+"error"+'</h1>'
@@ -146,6 +149,8 @@ def app_login():
 @app.route('/getbook', methods=['GET'])
 def get_all_books():
     db = get_db_instance()
+    #if request.data=='':
+    #    request=None
     auth_status = check_auth_token(request,db)
     if auth_status == 'success':
         books=[]
@@ -157,6 +162,7 @@ def get_all_books():
         #return bson.json_util.dumps(books)
         return render_template('getbook.html',response=books)
     else:
+        return redirect(url_for('app_login'))
         return '<h1>'+auth_status+'</h1>'
 
 
@@ -198,6 +204,7 @@ def order_books():
         #return bson.json_util.dumps(books)
         return render_template('order.html',response=books)
     else:
+        return redirect(url_for('app_login'))
         return '<h1>' + auth_status + '</h1>'
 
 
@@ -217,6 +224,7 @@ def get_book_by_isbn(isbn_no):
 @app.route('/addorder', methods = ['POST'])
 def addorder():
     db = get_db_instance()
+    return session
     auth_status = check_auth_token(request, db)
     if auth_status == 'success':
         if not request.json:

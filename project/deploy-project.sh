@@ -12,9 +12,13 @@ DCRNGNXNAME=nginx
 DCRFLASKNAME=project-flask
 DCRMONGODBNAME=project-mongodb
 MONGODBPERSIST=/var/www/project-mongodb
+DCRMEMCHD=elfs-project-memcached
+DCRMEMCHDNAME=project-memcached
+
 # Copy over CSV files to the following location
 CSVIMPORTPATH=/var/data/csv
 MONGOPORT=27017
+MEMCHDPORT=11211
 
 function create_mongo_db_dir() {
     if [ ! -d $MONGODBPERSIST ]; then
@@ -28,6 +32,7 @@ function build_elfs_project_app() {
 	docker build -t $DCRFLASK -f Dockerfile-project-flask .
 	docker build -t $DCRNGNX -f Dockerfile-project-nginx .
 	docker build -t $DCRMONGODB -f Dockerfile-project-mongodb .
+    docker build -t $DCRMEMCHD -f Dockerfile-project-memcached .
 }
 
 function deploy_elfs_project_app() {
@@ -38,6 +43,7 @@ function deploy_elfs_project_app() {
 	docker run -d --name $DCRFLASKNAME --net $DCRNET -v "./project-app" $DCRFLASK
 	docker run -d --name $DCRNGNXNAME --net $DCRNET -p "80:80" $DCRNGNX
 	docker run -d --name $DCRMONGODBNAME -d -v $MONGODBPERSIST:/data/db -p $MONGOPORT:$MONGOPORT $DCRMONGODB
+    docker run -d --name $DCRMEMCHDNAME -p $MEMCHDPORT:$MEMCHDPORT -e MEMCACHED_MEMUSAGE=32 $DCRMEMCHD
     docker ps
 }
 
@@ -56,16 +62,16 @@ function import_csv_data() {
 
 function clean_elfs_project_app() {
     echo "Cleaning Team Elfs webserve and applicatio..."
-    docker kill $DCRFLASKNAME $DCRNGNXNAME $DCRMONGODBNAME
-    docker rm $DCRFLASKNAME $DCRNGNXNAME $DCRMONGODBNAME
+    docker kill $DCRFLASKNAME $DCRNGNXNAME $DCRMONGODBNAME $DCRMEMCHDNAME
+    docker rm $DCRFLASKNAME $DCRNGNXNAME $DCRMONGODBNAME $DCRMEMCHDNAME
     docker network rm $DCRNET
-    docker rmi $DCRNGNX $DCRFLASK $DCRMONGODB
+    docker rmi $DCRNGNX $DCRFLASK $DCRMONGODB $DCRMEMCHD
 }
 
 function stop_elfs_project_app() {
     echo "Stopping Team Elfs webserve and applicatio..."
-    docker kill $DCRFLASKNAME $DCRNGNXNAME $DCRMONGODBNAME
-    docker rm $DCRFLASKNAME $DCRNGNXNAME $DCRMONGODBNAME
+    docker kill $DCRFLASKNAME $DCRNGNXNAME $DCRMONGODBNAME $DCRMEMCHDNAME
+    docker rm $DCRFLASKNAME $DCRNGNXNAME $DCRMONGODBNAME $DCRMEMCHDNAME
     docker network rm $DCRNET
     docker ps
 }

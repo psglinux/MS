@@ -1,0 +1,10 @@
+FROM       ubuntu:16.04
+
+RUN apt-get update
+
+COPY memcached-boot.sh /boot.sh
+
+RUN apt-get update &&  apt-get install -y memcached && chmod +x /boot.sh
+
+USER memcached
+CMD ["/boot.sh"]

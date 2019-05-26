@@ -29,6 +29,7 @@ app=create_app()
 app = Flask(__name__)
 app.config.from_object(__name__)
 
+
 mongodb_uri="mongodb"
 login_uri="login-flask"
 
@@ -50,6 +51,7 @@ def mock_book_mongo_db():
     mock_pymondb.create_db_from_csv()
     return mock_pymondb.db
 
+
 def real_mongo_db():
     print(mongodb_uri)
     return pymongo.MongoClient(mongodb_uri)['test_database']
@@ -64,6 +66,7 @@ def get_db_instance():
         db = real_mongo_db()
 
     return db
+
 
 def check_auth_token(request,db, ep=None):
     if 'Authorization' in session.keys():
@@ -100,18 +103,6 @@ def hello_world():
     """
     return '<h1 align=center>Hello, Welcome to the webserver of team ELFs</h1>'
 
-@app.route('/getbook', methods=['GET'])
-def get_all_books():
-    books=[]
-    #print("app.testing:", app.testing)
-
-    db = get_db_instance()
-
-    for book in bookapi.get_available_books(db):
-        #print("book", str(book))
-        books.append(book)
-    #print(books)
-    return bson.json_util.dumps(books)
 
 @app.route('/login', methods=['POST','GET'])
 def app_login():

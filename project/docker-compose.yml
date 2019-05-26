@@ -5,16 +5,38 @@ services:
     image: webapp-flask
     build:
       context: .
-      dockerfile: Dockerfile-flask
+      dockerfile: Dockerfile-project-flask
     volumes:
       - ./conf.d:/etc/nginx/conf.d
   nginx:
     image: webapp-nginx
     build:
       context: .
-      dockerfile: Dockerfile-nginx
+      dockerfile: Dockerfile-project-nginx
     ports:
       - 5000:80
     depends_on:
       - flask
+  mongodb:
+    image: webapp-mongodb
+    build:
+      context: .
+      dockerfile: Dockerfile-project-mongodb
+    ports:
+      - 27017:27017
 
+        #  login-flask:
+        #    image: webapp-login-flask
+        #    build:
+        #      context: .
+        #      dockerfile: Dockerfile-project-login-flask
+        #    volumes:
+        #      - ./conf.d:/etc/nginx/conf.d
+
+  memcached:
+    image: memcached
+    build:
+      context: .
+      dockerfile: Dockerfile-project-mongodb
+    ports:
+      - 11211:11211

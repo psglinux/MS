@@ -33,10 +33,12 @@ def get_available_books(db):
     try:
         for record in db.inventory.find({}):
             book_id = record['_id']
+            print(book_id)
             qty = record['quantity']
             if int(qty) <= 0:
                 continue
             book = db.book.find_one({'_id': book_id})
+            print(book)
             book['quantity'] = find_inventory(book['_id'], db)
             book['author'] = find_author(book['author_id'], db)
             book['publisher'] = find_publisher(book['publisher_id'], db)

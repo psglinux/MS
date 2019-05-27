@@ -123,21 +123,22 @@ def app_login():
             #print("request json from browser:", rcv_login_req)
             email_addr=request.form['username']
             password=request.form['password']
-            #rcv_login_req={'email_address':email_addr, 'password':password}
+            #print(email_addr, ",", password)
+            rcv_login_req={'email_address':email_addr, 'password':password}
             # request the login-app to authenticate the user
             #pdata1 = {'email_address':'95f7vcnewd8@iffymedia.com', 'password':'5f4dcc3b5aa765d61d8327deb882cf99'}
-            rcv_login_req = {'email_address':'95f7vcnewd8@iffymedia.com', 'password':'5f4dcc3b5aa765d61d8327deb882cf99'}
+            #rcv_login_req = {'email_address':'95f7vcnewd8@iffymedia.com', 'password':'5f4dcc3b5aa765d61d8327deb882cf99'}
             #r = requests.post('http://login-flask:5000/login', data=json.dumps(pdata1), headers=headers)
             headers = {'content-type': 'application/json'}
             r = requests.post('http://login-flask:5000/login', data=bson.json_util.dumps(rcv_login_req), headers=headers)
             print("send request", dir(r))
             #r = requests.get('http://login-flask:5000/')
             #print("response:", dir(r))
-            #print("response.text:", r.text)
-            #print("response.status_code", r.status_code)
-            #print("response.json", r.json)
+            print("response.text:", r.text)
+            print("response.status_code", r.status_code)
+            print("response.json", r.json)
             # TODO: Return the JWT here
-            session['Authorization']=json.loads(r.text)['auth_token'] 
+            session['Authorization']=json.loads(r.text)['auth_token']
             return redirect(url_for('order_books'))
             #return redirect(url_for('get_all_books'))
             #return '<h1>'+str(r.status_code)+'</h1>'+'<h2>'+r.text+'</h2>+'

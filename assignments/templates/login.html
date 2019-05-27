@@ -1,3 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Elfs Book Store</title>
+  <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/crypto-js.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/md5.min.js"></script>
+</head>
+<body>
+
+<form action="/login" id="loginForm">
+  <input type="text" name="email" placeholder="email">
+  <input type="password" placeholder="Password" name="password">
+  <input type="submit" value="Login">
+</form>
+<!-- the result of the search will be rendered inside this div -->
+<div id="result"></div>
+
+<script>
+// Attach a submit handler to the form
+$( "#loginForm" ).submit(function( event ) {
+
+  // Stop form from submitting normally
+  event.preventDefault();
+
+
+  // Get some values from elements on the page:
+  var $form = $( this ),
+    emailid= $form.find( "input[name='email']" ).val(),
+    pwd= $form.find( "input[name='password']" ).val(),
+    url = $form.attr( "action" );
+
+  var passhash = CryptoJS.MD5(pwd).toString();
+  //alert(passhash);
+
+  // Send the data using post
+  var posting = $.post( url, { username: emailid, password: passhash},
+                function(data, status){
+                  //console.log("Data: " + data + "\nStatus: " + status);
+                  document.location = "order"
+                });
+
+  // Put the results in a div
+  posting.done(function( data ) {
+    var content = $( data ).find( "#content" );
+    $( "#result" ).empty().append( content );
+iii  });
+});
+</script>
+
+</body>
+</html>
+
+<!--
+
 <html>
   <head>
     <title>Flask Intro - login page</title>
@@ -21,3 +77,4 @@
     </div>
   </body>
 </html>
+-->

@@ -144,7 +144,7 @@ def app_login():
             #return '<h1>'+str(r.status_code)+'</h1>'+'<h2>'+r.text+'</h2>+'
          except Exception as e:
             print("exception:", str(e))
-            return '<h1>'+"error"+'</h1>'
+            #return '<h1>'+"error"+'</h1>'
     return render_template('login.html', error=error)
 
 @app.route('/getbook', methods=['GET'])

@@ -61,7 +61,7 @@ function deploy_elfs_project_app() {
     docker network create $DCRNET
     docker run -d --name $DCRFLASKNAME --net $DCRNET -v "./project-app" $DCRFLASK
     docker run -d --name $DCRNGNXNAME --net $DCRNET -p "80:80" $DCRNGNX
-    docker run -d --name $DCRMONGODBNAME --net $DCRNET -d -v $MONGODBPERSIST:/data/db -p $MONGOPORT:$MONGOPORT $DCRMONGODB
+    docker run -d --name $DCRMONGODBNAME --net $DCRNET -d -v $MONGODBPERSIST:/data/proj-db -p $MONGOPORT:$MONGOPORT $DCRMONGODB
     docker run -d --name $DCRMEMCHDNAME --net $DCRNET -p $MEMCHDPORT:$MEMCHDPORT -e MEMCACHED_MEMUSAGE=32 $DCRMEMCHD
     docker run -d --name $DCRFLASKLOGINNAME --net $DCRNET -v "./login" $DCRLOGINFLASK
     docker ps

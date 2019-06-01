@@ -41,7 +41,8 @@ $( "#loginForm" ).submit(function( event ) {
   var posting = $.post( url, { username: emailid, password: passhash},
                 function(data, status){
                   //console.log("Data: " + data + "\nStatus: " + status);
-                  document.location = "loginsuccess"
+                  //document.location = "loginsuccess"
+                  document.location = "review/10803"
                 });
 
   // Put the results in a div

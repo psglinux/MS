@@ -152,9 +152,10 @@ def get_review_by_id(listing_id):
     db = get_db_instance()
     auth_status = check_auth_token(request, db)
     if auth_status == 'success':
-        reviews = reviewapi.get_review_with_listingid(listing_id, db)
-        return bson.json_util.dumps(reviews)
-    return '<h1>' + auth_status + '</h1>'
+        reviews = reviewapi.get_review_with_listing_id(listing_id, db)
+        return render_template('reviews.html',response=reviews)
+    else:
+        return '<h1>' + auth_status + '</h1>'
 
 @app.route('/loginsuccess', methods=['GET'])
 def get_login_success():

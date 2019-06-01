@@ -68,6 +68,8 @@ function deploy_elfs_project_app() {
 }
 
 function import_csv_data() {
+    #import the user db
+    python3 apymongodb.py localhost
     echo "Importing CSV data from $CSVIMPORTPATH ..."
     if [ ! -d $CSVIMPORTPATH ]; then
         echo "No such directory"

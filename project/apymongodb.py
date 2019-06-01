@@ -67,7 +67,7 @@ class APymongodb:
         self.db.authentication.drop()
         login_collection = self.db.authentication
         #login.csv contains the password in md5hash
-        with open('testdb/login.csv', newline='') as csvfile:
+        with open('userdb/authentication.csv', newline='') as csvfile:
             reader = csv.DictReader(csvfile)
             for row in reader:
                 #print("type",type(row), "data", row)
@@ -85,7 +85,7 @@ if __name__ == '__main__':
     mongodb_uri = argv[1]
     #pymondb = APymongodb(test=True)
     pymondb = APymongodb(mongodb_uri, "client_database", False)
-    pymondb.create_project_db_from_csv()
+    #pymondb.create_project_db_from_csv()
     #pymondb.test_read_project_db()
     pymondb.create_auth_db()
 

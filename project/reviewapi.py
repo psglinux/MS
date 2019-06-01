@@ -4,36 +4,33 @@ import pymongo
 def get_all_reviews(db):
     pass
 
-def get_review_with_listingid(_no, db):
-    print("_no",_no)
-    print("type(_no)",type(_no))
-    """
+def get_review_with_listing_id(_id, db):
+    print("_id",_id)
+    print("type(_id)",type(_id))
+    _id = int(_id)
+    rev_lst = []
     try:
-        book = db.book.find_one({"$or": [{"ISBN-10": _no}, {"ISBN-13": _no}]})
-        if book is not None:
-            #print("book:", book['_id'])
-            book['quantity'] = find_inventory(book['_id'], db)
-            book['author'] = find_author(book['author_id'],db)
-            book['publisher'] = find_publisher(book['publisher_id'],db)
-            #print(str(book))
-            return book
+        reviews = db.reviews.find({"listing_id": _id})
+        if reviews is not None:
+            #print("dir(reviews):", dir(reviews))
+            #print("reviews:", reviews)
+            for r in reviews:
+                rev_lst.append(r)
+            return rev_lst
     except Exception as e:
         print("exception:"+ str(e))
-    """
-    pass
+    return rev_lst
 
 
 
 if __name__ == "__main__":
     argv = sys.argv
     if len(argv) < 2:
-        print("Usage: python3.6 reviewapi.py  mongodb_uri")
+        print("Usage: python3.6 reviewapi.py  mongodb_uri <listing_id>")
         exit(-1)
 
     mongodb_uri = argv[1]
+    listing_id = int(argv[2])
 
     db = pymongo.MongoClient(mongodb_uri)['client_database']
-    """
-    for book in get_available_books(db):
-        print(book['title'], book['quantity'])
-    """
+    print(get_review_with_listing_id(listing_id, db))

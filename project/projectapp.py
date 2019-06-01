@@ -131,7 +131,7 @@ def app_login():
             #pdata1 = {'email_address':'95f7vcnewd8@iffymedia.com', 'password':'5f4dcc3b5aa765d61d8327deb882cf99'}
             headers = {'content-type': 'application/json'}
             r = requests.post('http://project-login-flask:5000/login', data=bson.json_util.dumps(rcv_login_req), headers=headers)
-            print("send request", dir(r))
+            #print("send request", dir(r))
             #r = requests.get('http://login-flask:5000/')
             #print("response:", dir(r))
             print("response.text:", r.text)
@@ -153,6 +153,7 @@ def get_review_by_id(listing_id):
     auth_status = check_auth_token(request, db)
     if auth_status == 'success':
         reviews = reviewapi.get_review_with_listing_id(listing_id, db)
+        #print("reviews:", reviews)
         return render_template('reviews.html',response=reviews)
     else:
         return '<h1>' + auth_status + '</h1>'

@@ -171,6 +171,11 @@ def get_listings():
         z.update(y)
         return z
 
+    # XXX TODO How to check token using CURL ?
+    #auth_status = check_auth_token(request, db)
+    #if auth_status != 'success':
+    #    return '<h1>' + auth_status + '</h1>'
+
     args = {}
     try:
         args = request.get_json(force=True)
@@ -178,7 +183,6 @@ def get_listings():
         for k, v in request.form.items():
             if k == None or v == None:
                 continue
-            pprint.pprint( [ k,v] )
             args[k] = v
         pass
 
@@ -187,11 +191,6 @@ def get_listings():
     pprint.pprint(query_params)
 
     db = get_db_instance()
-
-    # XXX TODO How to check token using CURL ?
-    #auth_status = check_auth_token(request, db)
-    #if auth_status != 'success':
-    #    return '<h1>' + auth_status + '</h1>'
 
     results = {}
     rv, r = query.find_listings(query_params, db)

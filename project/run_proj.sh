@@ -12,9 +12,9 @@ fi
 HOSTIP=127.0.0.1
 
 
-DEBUG=1
-if [ "x$NODEBUG" != "x" ]; then
-	DEBUG=0
+DEBUG=0
+if [ "x$ENDEBUG" != "x" ]; then
+	DEBUG=1
 fi
 
 print_logs() {
@@ -46,12 +46,11 @@ debug_json() {
 
 set -e
 # Should return a listing using FORM data
-curl -X POST -F "bedrooms=5.0" -F "country_code=AU" -F "zipcode=3810" http://$HOSTIP/getlistings 1> ${OUTJSON} 2>/dev/null
-debug_print ${OUTJSON}
-
+curl -X POST -F "country_code=AU" -F "zipcode=3810" -F "weekly_price=\$980.00" http://$HOSTIP/getlistings 1> ${OUTJSON} 2>/dev/null
+debug_json ${OUTJSON}
 
 # Should return a listing using JSON
-PARS='{ "country_code" : "AU", "zipcode" : "3810" }'
+PARS='{ "accommodates" : 2, "country_code" : "AU", "zipcode" : "3810" }'
 curl -X POST -H 'Content-Type: application/json' -H 'Accept: application/json' http://$HOSTIP/getlistings -d "${PARS}"  2>/dev/null 1> ${OUTJSON}
 debug_json ${OUTJSON}
 

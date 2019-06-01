@@ -163,6 +163,7 @@ def get_login_success():
 
 # Test using -> curl -X POST -H 'Content-Type: application/json' http://127.0.0.1/getlistings -d '{"bedrooms":"5.0"}'
 # See https://gist.github.com/subfuzion/08c5d85437d5d4f00e58
+# Run project/run_proj.sh
 @app.route('/getlistings', methods=['POST'])
 def get_listings():
     def merge_dicts(x, y):
@@ -170,10 +171,9 @@ def get_listings():
         z.update(y)
         return z
 
-    #args = request.args.to_dict(False)
     args = request.get_json(force=True)
-    pprint.pprint(args)
-    query_params = merge_dicts({ 'zipcode' : '3188' }, args)
+    #pprint.pprint(args)
+    query_params = merge_dicts({ 'country_code' : 'AU' }, args)
     pprint.pprint(query_params)
 
     db = get_db_instance()
@@ -183,10 +183,11 @@ def get_listings():
     #    return '<h1>' + auth_status + '</h1>'
 
     results = {}
-    r = query.query_listings(query_params, db)
+    rv, r = query.find_listings(query_params, db)
+    if not rv:
+       abort(404)
+
     results["results"] = r
-    #pprint.pprint(results)
-    #return bson.json_util.dumps(r)
     return jsonify(results)
 
 if __name__ == '__main__':

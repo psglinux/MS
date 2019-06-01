@@ -184,7 +184,7 @@ def find_listings(params, db=None):
     if not zipcode:
         return (False, None)
 
-    listing = query_listings(query)
+    listing = query_listings(query, db)
     return (True, listing)
 
 # Function to handle range based queries
@@ -201,7 +201,7 @@ def range_query(range_params = {}, params = {}, db=None):
         if k not in good_range_keys:
             continue
         query[k] = { "$gt": v['lo'], "$lt" : v['hi'] }
-    return find_listings(query)
+    return find_listings(query, db)
 
 if __name__ == '__main__':
     # TC 1

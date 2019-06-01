@@ -171,13 +171,24 @@ def get_listings():
         z.update(y)
         return z
 
-    args = request.get_json(force=True)
-    #pprint.pprint(args)
+    args = {}
+    try:
+        args = request.get_json(force=True)
+    except:
+        for k, v in request.form.items():
+            if k == None or v == None:
+                continue
+            pprint.pprint( [ k,v] )
+            args[k] = v
+        pass
+
+    pprint.pprint(args)
     query_params = merge_dicts({ 'country_code' : 'AU' }, args)
     pprint.pprint(query_params)
 
     db = get_db_instance()
-    # XXX TODO How to check token ?
+
+    # XXX TODO How to check token using CURL ?
     #auth_status = check_auth_token(request, db)
     #if auth_status != 'success':
     #    return '<h1>' + auth_status + '</h1>'
@@ -188,7 +199,11 @@ def get_listings():
        abort(404)
 
     results["results"] = r
+    #if request.args['type'] != 'json':
+       #return '<script> var counts = JSON.parse("{{ results }}"); </script>'
+
     return jsonify(results)
+
 
 if __name__ == '__main__':
 #    app = Flask(__name__)

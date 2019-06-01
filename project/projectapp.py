@@ -161,28 +161,33 @@ def get_review_by_id(listing_id):
 def get_login_success():
     return render_template('login_success.html', error="")
 
-@app.route('/getlistings', methods=['GET'])
+# Test using -> curl -X POST -H 'Content-Type: application/json' http://127.0.0.1/getlistings -d '{"bedrooms":"5.0"}'
+# See https://gist.github.com/subfuzion/08c5d85437d5d4f00e58
+@app.route('/getlistings', methods=['POST'])
 def get_listings():
     def merge_dicts(x, y):
         z = x.copy()
         z.update(y)
         return z
 
-    args = request.args.to_dict(False)
+    #args = request.args.to_dict(False)
+    args = request.get_json(force=True)
     pprint.pprint(args)
     query_params = merge_dicts({ 'zipcode' : '3188' }, args)
     pprint.pprint(query_params)
 
-
     db = get_db_instance()
+    # XXX TODO How to check token ?
     #auth_status = check_auth_token(request, db)
     #if auth_status != 'success':
     #    return '<h1>' + auth_status + '</h1>'
 
+    results = {}
     r = query.query_listings(query_params, db)
-    pprint.pprint(r)
-    return bson.json_util.dumps(r)
-
+    results["results"] = r
+    #pprint.pprint(results)
+    #return bson.json_util.dumps(r)
+    return jsonify(results)
 
 if __name__ == '__main__':
 #    app = Flask(__name__)

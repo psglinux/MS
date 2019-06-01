@@ -3,7 +3,7 @@ import pymongo
 from datetime import datetime
 import pprint
 
-## Before running this, plese make sure MongoDB is runing on 
+## Before running this, plese make sure MongoDB is runing on
 ## "mongodb://127.0.0.1:27017" and you have imported listings
 
 
@@ -131,7 +131,7 @@ def connect_db(uri = def_mongodb_uri, db_name = def_db):
 def query_listings(query={}, db=None):
     global pymondo
     # Connect to db if not yet done
-    # use client_database   
+    # use client_database
     # db.listings.find(({'country_code':'AU'}, {'zipcode':'3188'}))
     pprint.pprint(query)
     if db:
@@ -144,9 +144,9 @@ def query_listings(query={}, db=None):
     ret = []
     houses = pymondo.listings.find(query)
     for house in houses:
-       ret.append(house) 
+       ret.append(house)
     return ret
-        
+
 #  Zip & Country/Code are mandatory. Everything else is optional
 # Pass all params in a Dict with the above mentioned params as keys
 # Returns a True is query params are correct and a list matching the entries
@@ -215,7 +215,7 @@ if __name__ == '__main__':
     params = { 'country_code' : 'AU', 'state' : 'aa' }
     r, l = find_listings(params)
     assert r == False, "Should have not entries"
-      
+
     # TC 3
     params = { 'country_code' : 'AU', 'state' : 'VIC', 'price': '$345.00',
                'zipcode' : '3188', 'beds': 3.0, 'accommodates': 4 }

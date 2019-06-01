@@ -4,7 +4,7 @@
 FROM python:3
 # Set an environment variable with the directory
 # where we'll be running the app
-ENV APP /project-app
+ENV APP /projectapp
 # Create the directory and instruct Docker to operate
 # from there from now on
 RUN mkdir $APP
@@ -20,4 +20,4 @@ RUN pip install -r requirements.txt
 COPY . .
 # Finally, we run uWSGI with the ini file we
 # created earlier
-CMD [ "uwsgi", "--ini", "project-app.ini" ]
+CMD [ "uwsgi", "--ini", "projectapp.ini" ]

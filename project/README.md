@@ -29,10 +29,10 @@ up to serve more users.
 ## Manual Steps to create a web application stack using nginx-uWSGI-flask
 
 - Step 1: Create a requirments.txt file with dependencies for python application
-- Step 2: Create an project-app.py file with web application logic
-- Step 3: Create an project-app.ini file with uWSGI operation logic
+- Step 2: Create an projectapp.py file with web application logic
+- Step 3: Create an projectapp.ini file with uWSGI operation logic
 - Step 4: Build the flask docker image
-- Step 5: Create an project-app.conf file with configuration for routing traffic to uWSGI
+- Step 5: Create an projectapp.conf file with configuration for routing traffic to uWSGI
 - Step 6: Build the nginx docker image
 - Step 7: Create the docker compose yaml file
 - Step 8: Run the below command for building and deploying

@@ -21,11 +21,7 @@ RUN pip install -r requirements.txt
 # We copy the rest of the codebase into the image
 # we can optimize on this
 #COPY login.py .
-COPY common/login.py .
-COPY common/apymongodb.py .
-COPY common/app.py .
-COPY common/bookapi.py .
-COPY common/addorderapi.py .
+COPY . .
 # Finally, we run uWSGI with the ini file we
 # created earlier
 # TODO: We do not need uwsgi

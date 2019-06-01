@@ -36,6 +36,6 @@ if __name__ == "__main__":
         db[collection].insert_many(batch)
 
     #### TEST ####
-    col = db[collection].find({})
-    for document in col:
-        pprint.pprint(document)
+    #col = db[collection].find({})
+    #for document in col:
+    #    pprint.pprint(document)

@@ -128,14 +128,19 @@ pymondo = None
 def connect_db(uri = def_mongodb_uri, db_name = def_db):
     return pymongo.MongoClient(uri)[db_name]
 
-def query_listings(query):
+def query_listings(query={}, db=None):
     global pymondo
     # Connect to db if not yet done
     # use client_database   
     # db.listings.find(({'country_code':'AU'}, {'zipcode':'3188'}))
+    pprint.pprint(query)
+    if db:
+       pymondo = db
+
     if not pymondo:
        pymondo = connect_db()
 
+    pprint.pprint("Making QUERY")
     ret = []
     houses = pymondo.listings.find(query)
     for house in houses:
@@ -145,7 +150,7 @@ def query_listings(query):
 #  Zip & Country/Code are mandatory. Everything else is optional
 # Pass all params in a Dict with the above mentioned params as keys
 # Returns a True is query params are correct and a list matching the entries
-def find_listings(params):
+def find_listings(params, db=None):
     query = {}
     for k,v in params.items():
         if k != '' and k in good_col_names:
@@ -189,7 +194,7 @@ def find_listings(params):
 # 2. Number of beds =  { lo : min_val , hi : max_val }
 # 3. Number of bathrooms = { lo : min_val, hi : max_val }
 # 3. Number of bedrooms = { lo : min_val, hi : max_val }
-def range_query(range_params = {}, params = {}):
+def range_query(range_params = {}, params = {}, db=None):
     query = params
     good_range_keys = [ 'price', 'beds', 'bedrooms', 'bathrooms' ]
     for k,v in range_params.items():
@@ -223,8 +228,5 @@ if __name__ == '__main__':
     params = { 'country_code' : 'AU', 'zipcode' : '3188' }
     r, l = range_query(range_params, params)
     pprint.pprint(l)
-
-
-
 
 

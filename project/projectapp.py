@@ -1,9 +1,14 @@
 # app.py
 
-from flask import Flask
+import pprint
+import json
+import bson
+import jwt
+
 import pymongo
 import mongomock
 import requests
+from flask import Flask
 from flask import jsonify
 from flask import request
 from flask import Response
@@ -11,9 +16,8 @@ from flask import abort
 from flask import json,jsonify, make_response,session
 from flask import render_template,request,redirect,url_for
 from apymongodb import APymongodb
-import bson
-import json
-import jwt
+import reviewapi
+import query
 SECRET_KEY = "Secret Key"
 
 #app = Flask(__name__)
@@ -143,7 +147,6 @@ def app_login():
             #return '<h1>'+"error"+'</h1>'
     return render_template('login.html', error=error)
 
-
 @app.route('/review/<string:listing_id>', methods=['GET'])
 def get_review_by_id(listing_id):
     db = get_db_instance()
@@ -151,13 +154,33 @@ def get_review_by_id(listing_id):
     if auth_status == 'success':
         reviews = reviewapi.get_review_with_listingid(listing_id, db)
         return bson.json_util.dumps(reviews)
-    else:
-        return '<h1>' + auth_status + '</h1>'
+    return '<h1>' + auth_status + '</h1>'
 
 @app.route('/loginsuccess', methods=['GET'])
 def get_login_success():
     return render_template('login_success.html', error="")
 
+@app.route('/getlistings', methods=['GET'])
+def get_listings():
+    def merge_dicts(x, y):
+        z = x.copy()
+        z.update(y)
+        return z
+
+    args = request.args.to_dict(False)
+    pprint.pprint(args)
+    query_params = merge_dicts({ 'zipcode' : '3188' }, args)
+    pprint.pprint(query_params)
+
+
+    db = get_db_instance()
+    #auth_status = check_auth_token(request, db)
+    #if auth_status != 'success':
+    #    return '<h1>' + auth_status + '</h1>'
+
+    r = query.query_listings(query_params, db)
+    pprint.pprint(r)
+    return bson.json_util.dumps(r)
 
 
 if __name__ == '__main__':

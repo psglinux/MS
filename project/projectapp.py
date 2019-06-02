@@ -153,7 +153,7 @@ def get_review_by_id(listing_id):
     auth_status = check_auth_token(request, db)
     if auth_status == 'success':
         reviews = reviewapi.get_review_with_listing_id(listing_id, db)
-        #print("reviews:", reviews)
+        print("reviews:", reviews)
         return render_template('reviews.html',response=reviews)
     else:
         return '<h1>' + auth_status + '</h1>'
@@ -165,46 +165,57 @@ def get_login_success():
 # Test using -> curl -X POST -H 'Content-Type: application/json' http://127.0.0.1/getlistings -d '{"bedrooms":"5.0"}'
 # See https://gist.github.com/subfuzion/08c5d85437d5d4f00e58
 # Run project/run_proj.sh
-@app.route('/getlistings', methods=['GET', 'POST'])
+
+#http://ec2-18-191-206-216.us-east-2.compute.amazonaws.com/getlistings?zipcode=3018&bedrooms=1&accomodates=0
+@app.route('/getlistings', methods=['GET'])
+
 def get_listings():
     def merge_dicts(x, y):
         z = x.copy()
         z.update(y)
         return z
 
-    if request.method == 'GET':
-        error=None
-        return render_template('test1.html', error=error)
 
     # XXX TODO How to check token using CURL ?
     #auth_status = check_auth_token(request, db)
     #if auth_status != 'success':
     #    return '<h1>' + auth_status + '</h1>'
+    if request.method == 'GET':
+        error=None
+        args = {}
+        try:
+            args = request.args
+        except:
+            pass
+        query_params = merge_dicts({ 'country_code' : 'AU' }, args)
+        zipcode=request.args.get('zipcode')
+        print(request.args)
+        if zipcode is None:
+            return render_template('test1.html', error=error)
+        else:
+            db = get_db_instance()
 
-    args = {}
-    try:
-        args = request.get_json(force=True)
-    except:
-        for k, v in request.form.items():
-            if k == None or v == None:
-                continue
-            args[k] = v
-        pass
+            results = {}
+            print(query_params)
+            query_params['zipcode']=int(query_params['zipcode'])
+            try:
+                query_params['bedrooms']=int(query_params['bedrooms'])
+            except:
+                pass 
+            try:
+                query_params['accomodates']=int(query_params['accomodates'])
+            except:
+                pass 
+            print(query.find_listings(query_params, db))
+            rv, r = query.find_listings(query_params, db)
+            if not rv:
+                print("404")
+                abort(404)
+            results["results"] = r
+            print(results)
+            return render_template('listings.html',response=results)
+            #return jsonify(results)
 
-    pprint.pprint(args)
-    query_params = merge_dicts({ 'country_code' : 'AU' }, args)
-    pprint.pprint(query_params)
-
-    db = get_db_instance()
-
-    results = {}
-    rv, r = query.find_listings(query_params, db)
-    if not rv:
-       abort(404)
-
-    results["results"] = r
-
-    return jsonify(results)
 
 
 if __name__ == '__main__':

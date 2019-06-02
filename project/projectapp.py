@@ -180,14 +180,11 @@ def get_listings():
     #auth_status = check_auth_token(request, db)
     #if auth_status != 'success':
     #    return '<h1>' + auth_status + '</h1>'
+    
     if request.method == 'GET':
+        range_params={}
         error=None
-        args = {}
-        try:
-            args = request.args
-        except:
-            pass
-        query_params = merge_dicts({ 'country_code' : 'AU' }, args)
+        query_params = { 'country_code' : 'AU' }
         zipcode=request.args.get('zipcode')
         print(request.args)
         if zipcode is None:
@@ -196,18 +193,13 @@ def get_listings():
             db = get_db_instance()
 
             results = {}
-            print(query_params)
-            query_params['zipcode']=int(query_params['zipcode'])
-            try:
-                query_params['bedrooms']=int(query_params['bedrooms'])
-            except:
-                pass 
-            try:
-                query_params['accomodates']=int(query_params['accomodates'])
-            except:
-                pass 
-            print(query.find_listings(query_params, db))
-            rv, r = query.find_listings(query_params, db)
+            query_params['zipcode']=int(request.args.get('zipcode'))
+            range_params['price'] =  { 'lo' : '$0.00', 'hi' : request.args.get('price')}
+            range_params['accomodates']={'lo': int(request.args.get('accomodates')),'hi':10}
+            range_params['bedrooms']={'lo': int(request.args.get('bedrooms')),'hi':6}
+            print("query_params",range_params,query_params)
+            print(query.range_query(range_params,query_params,db))
+            rv, r = query.range_query(range_params,query_params,db)
             if not rv:
                 print("404")
                 abort(404)

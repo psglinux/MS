@@ -165,12 +165,16 @@ def get_login_success():
 # Test using -> curl -X POST -H 'Content-Type: application/json' http://127.0.0.1/getlistings -d '{"bedrooms":"5.0"}'
 # See https://gist.github.com/subfuzion/08c5d85437d5d4f00e58
 # Run project/run_proj.sh
-@app.route('/getlistings', methods=['POST'])
+@app.route('/getlistings', methods=['GET', 'POST'])
 def get_listings():
     def merge_dicts(x, y):
         z = x.copy()
         z.update(y)
         return z
+
+    if request.method == 'GET':
+        error=None
+        return render_template('test1.html', error=error)
 
     # XXX TODO How to check token using CURL ?
     #auth_status = check_auth_token(request, db)
@@ -199,8 +203,6 @@ def get_listings():
        abort(404)
 
     results["results"] = r
-    #if request.args['type'] != 'json':
-       #return '<script> var counts = JSON.parse("{{ results }}"); </script>'
 
     return jsonify(results)
 

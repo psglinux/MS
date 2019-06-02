@@ -18,6 +18,7 @@
       <tr>
         <th>Name</th>
         <th>Description</th>
+        <th>Bedrooms</th>
         <th>Price</th>
         <th>Reviews</th>
       </tr>
@@ -27,6 +28,7 @@
       <tr>
         <td>{{row['name']}}</td>
         <td>{{row['description']}}</td>
+        <td>{{row['bedrooms']}}</td>
         <td>{{row['price']}}</td>
         <td><a href={{ url_for('get_review_by_id',listing_id=row['id'])}}>{{row['number_of_reviews']}}</a></td>
       </tr>

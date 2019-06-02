@@ -200,7 +200,7 @@ def range_query(range_params = {}, params = {}, db=None):
     for k,v in range_params.items():
         if k not in good_range_keys:
             continue
-        query[k] = { "$gt": v['lo'], "$lt" : v['hi'] }
+        query[k] = { "$gte": v['lo'], "$lte" : v['hi'] }
     return find_listings(query, db)
 
 if __name__ == '__main__':

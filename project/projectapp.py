@@ -194,7 +194,13 @@ def get_listings():
 
             results = {}
             query_params['zipcode']=int(request.args.get('zipcode'))
-            range_params['price'] =  { 'lo' : '$0.00', 'hi' : request.args.get('price')}
+            price_max=request.args.get('price').strip()
+            if price_max.startswith('$'):
+               pass
+            else:
+               price_max="$"+price_max
+               
+            range_params['price'] =  { 'lo' : '$0.00', 'hi' : price_max}
             range_params['accomodates']={'lo': int(request.args.get('accomodates')),'hi':10}
             range_params['bedrooms']={'lo': int(request.args.get('bedrooms')),'hi':6}
             print("query_params",range_params,query_params)

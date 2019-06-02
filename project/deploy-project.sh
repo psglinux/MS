@@ -18,7 +18,7 @@ MONGODBPERSIST=/var/www/project-mongodb
 DCRMEMCHDNAME=project-memcached
 
 # Copy over CSV files to the following location
-CSVIMPORTPATH=/var/data/csv
+CSVIMPORTPATH=testdb
 MONGOPORT=27017
 MEMCHDPORT=11211
 

@@ -106,6 +106,13 @@ def hello_world():
     """
     return '<h1 align=center>Hello, Welcome to the Project webserver of team ELFs</h1>'
 
+@app.route('/maps',methods=['GET'])
+def maps():
+    """
+    default route for the Team Elf's home page
+    """
+    return render_template('maps.html',response=request.response)
+
 @app.route('/login', methods=['POST','GET'])
 def app_login():
     """
@@ -211,7 +218,10 @@ def get_listings():
                 abort(404)
             results["results"] = r
             print(results)
-            return render_template('listings.html',response=results)
+            if request.args.get('maps') is None:
+                return render_template('listings.html',response=results)
+            else:
+                return render_template('maps.html',response=results)
             #return jsonify(results)
 
 

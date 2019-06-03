@@ -184,10 +184,11 @@ def get_listings():
 
 
     # XXX TODO How to check token using CURL ?
-    #auth_status = check_auth_token(request, db)
-    #if auth_status != 'success':
-    #    return '<h1>' + auth_status + '</h1>'
-    
+    db = get_db_instance()
+    auth_status = check_auth_token(request, db)
+    if auth_status != 'success':
+        return '<h1>' + auth_status + '</h1>'
+
     if request.method == 'GET':
         range_params={}
         error=None
@@ -206,7 +207,7 @@ def get_listings():
                pass
             else:
                price_max="$"+price_max
-               
+
             range_params['price'] =  { 'lo' : '$0.00', 'hi' : price_max}
             range_params['accomodates']={'lo': int(request.args.get('accomodates')),'hi':10}
             range_params['bedrooms']={'lo': int(request.args.get('bedrooms')),'hi':6}

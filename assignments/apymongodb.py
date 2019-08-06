@@ -70,6 +70,7 @@ class APymongodb:
         book_collection = self.db.book
         self.db.inventory.drop()
         inventory_collection = self.db.inventory
+
         with open("database/book.csv", newline='') as csvfile:
             bookreader = csv.DictReader(csvfile, delimiter=',')
 

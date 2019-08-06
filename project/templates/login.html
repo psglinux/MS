@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="utf-8">
+  <title>Elfs Book Store</title>
+  <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/crypto-js.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/md5.min.js"></script>
+<style>
+body {font-family: Arial, Helvetica, sans-serif;}
+form {border: 3px solid #f1f1f1;}
+
+input[type=text], input[type=password] {
+  width: 20%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  display: inline-block;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+}
+
+button {
+  background-color: #A9A9A9;
+  color: white;
+  padding: 14px 20px;
+  margin: 8px 0;
+  border: none;
+  cursor: pointer;
+  width: 10%;
+}
+
+button:hover {
+  opacity: 0.8;
+}
+
+.cancelbtn {
+  width: auto;
+  padding: 10px 18px;
+  background-color: #f44336;
+}
+
+.imgcontainer {
+  text-align: center;
+  margin: 24px 0 12px 0;
+}
+
+img.avatar {
+  width: 10%;
+  border-radius: 50%;
+}
+
+.container {
+  text-align: center;
+  padding: 16px;
+}
+
+span.psw {
+  float: right;
+  padding-top: 16px;
+}
+
+/* Change styles for span and cancel button on extra small screens */
+@media screen and (max-width: 300px) {
+  span.psw {
+     display: block;
+     float: none;
+  }
+  .cancelbtn {
+     width: 100%;
+  }
+}
+</style>
+</head>
+<body>
+
+<h2>Team Elfs- Demo webapp Login</h2>
+
+<form action="/login" id="loginForm">
+  <div class="imgcontainer">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7c/User_font_awesome.svg/1024px-User_font_awesome.svg.png" alt="Avatar" class="avatar">
+  </div>
+
+  <div class="container">
+    <label for="uname"><b>Username</b></label>
+    <input type="text" placeholder="Enter Username" name="email" required>
+
+    <label for="psw"><b>Password</b></label>
+    <input type="password" placeholder="Enter Password" name="password" required>
+        
+    <button type="submit">Login</button>
+  </div>
+
+</form>
+<div id="result"></div>
+<script>
+// Attach a submit handler to the form
+$( "#loginForm" ).submit(function( event ) {
+
+  // Stop form from submitting normally
+  event.preventDefault();
+
+
+  // Get some values from elements on the page:
+  var $form = $( this ),
+    emailid= $form.find( "input[name='email']" ).val(),
+    pwd= $form.find( "input[name='password']" ).val(),
+    url = $form.attr( "action" );
+
+  var passhash = CryptoJS.MD5(pwd).toString();
+  //alert(passhash);
+
+  // Send the data using post
+  var posting = $.post( url, { username: emailid, password: passhash},
+                function(data, status){
+                  //console.log("Data: " + data + "\nStatus: " + status);
+                  //document.location = "loginsuccess"
+                  document.location = "getlistings"
+                });
+
+  // Put the results in a div
+  posting.done(function( data ) {
+    var content = $( data ).find( "#content" );
+    $( "#result" ).empty().append( content );
+iii  });
+});
+</script>
+</body>
+</html>

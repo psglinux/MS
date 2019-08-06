@@ -71,7 +71,7 @@ def get_db_instance():
 def check_auth_token(request,db, ep=None):
     if 'Authorization' in session.keys():
          print(session.keys())
-         auth_token=session['Authorization'] 
+         auth_token=session['Authorization']
     else:
          auth_token=""
     if auth_token:

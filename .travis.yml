@@ -14,8 +14,12 @@ jobs:
       script: ./assignment-cictcd.sh -b && ./assignment-cictcd.sh -d
     - stage: unit-test
       script: ./assignment-cictcd.sh -t || travis_terminate 1
-
-
+    - stage: build-containers-project
+      script: ./project-cictcd.sh -b || travis_terminate 1
+    - stage: test-deploy-project
+      script: ./project-cictcd.sh -d || travis_terminate 1
+    - stage: unit-test-project
+      script: ./project-cictcd.sh -t || travis_terminate 1
 
 os:
   - linux

@@ -1,0 +1,26 @@
+FROM python:3
+
+# install mosquitto server
+RUN apt-get update && apt-get install -y \
+    mosquitto \
+    tcpdump \
+    net-tools
+
+#copy the certificate files
+ADD nfv-cert/ca* /etc/mosquitto/ca_certificates/
+ADD nfv-cert/server* /etc/mosquitto/certs/
+
+# copy the configuration
+ADD nfv5g-mosquitto.conf /etc/mosquitto/
+
+# copy the iot5g.py file
+ADD nfv5g.py /
+ADD mylogger.py /
+
+COPY requirements.txt /
+RUN pip3 install -r requirements.txt
+
+RUN chmod +x /nfv5g.py
+
+# overwrite this with 'CMD []' in a dependent Dockerfile
+CMD [ "python", "./nfv5g.py" ]

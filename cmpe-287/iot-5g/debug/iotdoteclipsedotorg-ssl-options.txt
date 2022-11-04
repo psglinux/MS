@@ -1,0 +1,84 @@
+CONNECTED(00000003)
+---
+Certificate chain
+ 0 s:/CN=iot.eclipse.org
+   i:/C=US/O=Let's Encrypt/CN=Let's Encrypt Authority X3
+ 1 s:/C=US/O=Let's Encrypt/CN=Let's Encrypt Authority X3
+   i:/O=Digital Signature Trust Co./CN=DST Root CA X3
+---
+Server certificate
+-----BEGIN CERTIFICATE-----
+MIIFVjCCBD6gAwIBAgISA+F40bbHYdR1GSExNvlPvCoGMA0GCSqGSIb3DQEBCwUA
+MEoxCzAJBgNVBAYTAlVTMRYwFAYDVQQKEw1MZXQncyBFbmNyeXB0MSMwIQYDVQQD
+ExpMZXQncyBFbmNyeXB0IEF1dGhvcml0eSBYMzAeFw0xOTA2MDMxODQ3MzJaFw0x
+OTA5MDExODQ3MzJaMBoxGDAWBgNVBAMTD2lvdC5lY2xpcHNlLm9yZzCCASIwDQYJ
+KoZIhvcNAQEBBQADggEPADCCAQoCggEBAMbm1b6EYol5owQ6BKyWkyaIVw5RH/jV
+ze/yHIDpo86QIm20uPOHCmTRdgFhcCBxqpWMcV2QHp/EQ7V7K4BdrWAssCPcUR6n
+vfzcShpiZVW6Eb2SHCoaJHxtVdIFjR+qOivZ2Vy1T8++tIFx/0qZ43MnNBYgMaqo
+rbpWA5Nesb4/G2Wex5n9Yc6fhfzO1uAnKPXmtUnZyBm8FXkF2JosRfuU8Hn8vAb4
+QcGqu8qXWaTNuNRXw7W0grwPOpnbdjTbh0y4Zqv7Dw5c6KPyW9MyGCS53FDNH25T
+ivDJoK/vL0AxPdTw7WTE+OWWqLoXiV//VRfWXwSvU0OY4Ucpwh9VHssCAwEAAaOC
+AmQwggJgMA4GA1UdDwEB/wQEAwIFoDAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYB
+BQUHAwIwDAYDVR0TAQH/BAIwADAdBgNVHQ4EFgQUsvPusaYouEdKEciUYt328Diw
+EKswHwYDVR0jBBgwFoAUqEpqYwR93brm0Tm3pkVl7/Oo7KEwbwYIKwYBBQUHAQEE
+YzBhMC4GCCsGAQUFBzABhiJodHRwOi8vb2NzcC5pbnQteDMubGV0c2VuY3J5cHQu
+b3JnMC8GCCsGAQUFBzAChiNodHRwOi8vY2VydC5pbnQteDMubGV0c2VuY3J5cHQu
+b3JnLzAaBgNVHREEEzARgg9pb3QuZWNsaXBzZS5vcmcwTAYDVR0gBEUwQzAIBgZn
+gQwBAgEwNwYLKwYBBAGC3xMBAQEwKDAmBggrBgEFBQcCARYaaHR0cDovL2Nwcy5s
+ZXRzZW5jcnlwdC5vcmcwggEEBgorBgEEAdZ5AgQCBIH1BIHyAPAAdgDiaUuuJujp
+QAnohhu2O4PUPuf+dIj7pI8okwGd3fHb/gAAAWse4fG7AAAEAwBHMEUCIAvtnZqV
+qqxNJCEEhPJCx1bHBG5GSaduNwOM0a0cZ4rxAiEAl+HPwqzASzmjfZlpvUrhrFY6
+bzSm/mMhqv5Fl7I5NcYAdgApPFGWVMg5ZbqqUPxYB9S3b79Yeily3KTDDPTlRUf0
+eAAAAWse4fGKAAAEAwBHMEUCIQDZVJLIrMAa+sDpbkzuUZmXTmRS92mMtNqiN7Sj
+3uCltQIgbDHss/emDktHYaGfwOg+shMui8iOQZXj3HmOK6RtGTQwDQYJKoZIhvcN
+AQELBQADggEBAFeBApgdWSWaMG+R/wvwnBMG/zYTsiyfJlP8tTiJlSXyBfVjzaoM
+pQpMymw5nTLMFVL6tnNfUxDduw2hJo79G2ZTqPSq8NeHqkCKcgSHvq/pPVyp6ZzZ
+Oh+K2OR54zIRkoAHCHbk7Dtca4LIIEHEkZihqrlLox+6EiJRwzvk3GllyeBrtSZL
+jMoojfOFrm0WR74+kguEd5eLz+349AHCILlBndgdgnFPDBfSShfzqM/OcgN5gIHQ
+mVdV3uDq68L+l8tSoy+OPAiz8viycES2BGIcCL3UKADlyBLcUgpZTfw2ans9pr/2
+o8/2dfUVkAPeN70jsV+QexpV2BwwKM+NaYs=
+-----END CERTIFICATE-----
+subject=/CN=iot.eclipse.org
+issuer=/C=US/O=Let's Encrypt/CN=Let's Encrypt Authority X3
+---
+No client certificate CA names sent
+Peer signing digest: SHA512
+Server Temp Key: ECDH, P-256, 256 bits
+---
+SSL handshake has read 3222 bytes and written 433 bytes
+---
+New, TLSv1/SSLv3, Cipher is ECDHE-RSA-AES256-GCM-SHA384
+Server public key is 2048 bit
+Secure Renegotiation IS supported
+Compression: NONE
+Expansion: NONE
+No ALPN negotiated
+SSL-Session:
+    Protocol  : TLSv1.2
+    Cipher    : ECDHE-RSA-AES256-GCM-SHA384
+    Session-ID: BC5B66812FC26C21360AA5533874877FC44244AD43380553F90EE387F678903E
+    Session-ID-ctx: 
+    Master-Key: FF6532CCE1733448BC06480E3B609E0687B5B24FC8499536D63E7747A8B8E69D086B21E057CA54CE9BA8193F0F180429
+    Key-Arg   : None
+    PSK identity: None
+    PSK identity hint: None
+    SRP username: None
+    TLS session ticket lifetime hint: 300 (seconds)
+    TLS session ticket:
+    0000 - 83 4d 80 e3 d3 83 12 0f-4a 78 66 23 70 5a d5 5d   .M......Jxf#pZ.]
+    0010 - 15 b9 cd 13 a3 64 6c 87-93 6e 1c bd 81 57 a4 68   .....dl..n...W.h
+    0020 - 9f 5e 73 26 1b 26 46 80-e4 bf 69 bb 39 2c bb ff   .^s&.&F...i.9,..
+    0030 - 8d 81 15 4c 33 fe 04 06-21 d8 43 de 18 a9 e3 bb   ...L3...!.C.....
+    0040 - 10 5a c5 97 df 8d 57 8a-e8 59 c7 7d d3 46 ee 7a   .Z....W..Y.}.F.z
+    0050 - a0 06 a5 81 05 ac a3 1e-b9 3e 1e 3f 52 c1 f2 48   .........>.?R..H
+    0060 - 5d 8a f8 3d 9e 5e 10 ef-d8 e0 8d 94 a2 74 4d 05   ]..=.^.......tM.
+    0070 - b1 e9 3b 4b 3f 73 dc 44-af 35 d8 c8 07 33 a3 e1   ..;K?s.D.5...3..
+    0080 - 68 d9 c2 91 cd b2 74 29-fa b9 de 2b 3f 7e ae e0   h.....t)...+?~..
+    0090 - e0 c6 ae 4e e3 f5 05 14-41 3a 3c b6 6c 0f 6c 8a   ...N....A:<.l.l.
+    00a0 - 7a db 6c ef 37 6e 34 7b-e1 18 61 a4 07 b1 04 61   z.l.7n4{..a....a
+
+    Start Time: 1565551669
+    Timeout   : 300 (sec)
+    Verify return code: 0 (ok)
+---
+closed

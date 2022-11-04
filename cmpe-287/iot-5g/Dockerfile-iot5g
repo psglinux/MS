@@ -1,0 +1,22 @@
+FROM python:3
+
+#install mosquitto (to be used as client)
+RUN apt-get update && apt-get install -y \
+    mosquitto-clients \
+    tcpdump \
+    net-tools
+
+# copy the root CA
+ADD nfv-cert/ca.crt /etc/mosquitto/ca_certificates/
+
+# copy the iot5g.py file
+ADD iot5g.py /
+ADD mylogger.py /
+
+COPY requirements.txt /
+RUN pip3 install -r requirements.txt
+
+RUN chmod +x /iot5g.py
+
+# overwrite this with 'CMD []' in a dependent Dockerfile
+CMD [ "python", "./iot5g.py" ]

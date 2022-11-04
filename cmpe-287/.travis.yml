@@ -1,0 +1,29 @@
+language: python
+python:
+    - '3.6'
+
+cache:
+    - pip3
+
+install:
+    - pip3 install -r requirements.txt
+
+jobs:
+  include:
+    - stage: build-containers-project
+      script: ./project-cictcd.sh -b || travis_terminate 1
+    - stage: test-deploy-project
+      script: ./project-cictcd.sh -d || travis_terminate 1
+    - stage: unit-test-project
+      script: ./project-cictcd.sh -t || travis_terminate 1
+
+os:
+  - linux
+
+
+notifications:
+  email:
+    recipients:
+      - parthasarathi.ghosh@sjsu.edu
+    on_success: never # default: change
+    on_failure: always # default: always

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Bootstrap Example</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="static/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+  <script src="static/js/bootstrap.min.js"></script>
+</head>
+<body>
+<form method='POST'>
+<div class="container">
+  <h2>Order</h2>
+  <p></p>            
+  <table class="table table-striped form-group">
+    <thead>
+      <tr>
+        <th></th>
+        <th>ISBN</th>
+        <th>Title</th>
+        <th>Quantity</th>
+        <th>Price</th>
+      </tr>
+    </thead>
+    <tbody>
+     {% for row in response %}
+      <tr>
+        <td><input type="checkbox" name="book_id_list" value={{row['_id']}}></input></td>
+        <td>{{row['ISBN-13']}}</td>
+        <td>{{row['title']}}</td>
+        <td><input type="text" name="{{row['_id']}}" value="0"></input></td>
+        <td>{{row['price']}}</td>
+      </tr>
+     {% endfor %}
+    </tbody>
+  </table>
+<button type="submit" name="submit_order" value="submit_order" class="btn btn-primary float-right active" >Submit Order</button>
+</div>
+</form>
+</body>
+</html>

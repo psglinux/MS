@@ -1,0 +1,53 @@
+Lets Start from the academics. Lets talk about your Masters and Ph.D from UIUC.
+	1. Why did you decide to pursue a Masters and eventually a Ph.D ?
+	2. How do you think having a Master and Ph.D helped you in your career ? 
+	3. Apart from your research, What were the important skills and learnings that you acquired during your Masters and Ph.D ? 
+	4. Looking back, what would be the mistakes that you have not committed during your Masters and Ph.D ? 
+	5. When you finished your Masters and eventually Ph.D what was your feelings ? 
+	6. Are there professional organizations that you recommend joining being in university and what are their advantages ? 
+
+Early career.
+	7. What was your first job ? Was the transition from research to industry difficult ? 	
+	8. You have had made a few jobs changes in your career and at different stage. What were the key points that you tought while making those career changes ?
+	9. What are the different challenges that you have observed as an individual contributer and being in Leadership ?
+
+Individual Controbutor vs Leadership
+	10. What were the new things that you needed to learn when you moved to Leadership Positions from an individual contributor?
+	11. What kind of writing(s) and how much writing are required on the job?
+	12. How important are oral communication skills as compared to written?
+	13. How much time is spent working in teams, and what skills are needed to work in a team?
+	14. How does the companies (In general, ideally) value independent thinking and leadership skills?
+	15. Does your company have a code of ethics? Have you dealt with an ethical dilemma in the workplace that he or she is willing to share?
+	16. Conflicts are part of teams. How do you mediate them ?
+
+A Day in Steve's Job
+	17. What keeps you busy in your daily job ?
+	18. How do you priotitize your goals ? What are the tools and techniques that you use to prioritize tasks ?
+	19. How do you communicate bad news ?
+	20. How do you manage risk ?
+	21. What is Steve's secret formula to get things done ?   
+	
+Hiring 
+	22. What do you look in an engineer before hiring ?
+	23. What do you look in the resume before screening a candidate ?
+	24. What are the tough questions that come before you for hiring ? 
+	25. What are the qualities technical and soft skills that you look in a candiate when you interview ?
+	
+Productivity 
+	27. Did you get mesaured for prodcutivity in university ? if yes how ?
+	28. How do you think the tools for productivity varied between your research to those in the industry ?
+	29. You have observed a transition in the tools used in software and hardware. What do you think about modern webbased tools compared to unix style command line interfaces ?
+	30 .How has software development changed in the last 30 years ? Do the modern tools makes us more productive now?
+	31. What are the software tools that a software engineer should have in their technical armory for productivity ? You can share your experience about the tools that you used and thought they were superlative  
+	32. Warren Buffet says "The difference between successful people and really successful people is that really successful people say no to almost everything." Do you think an engineer saying "NO" helps to be successful in their job?
+	
+Computing, Present and Future 
+	33. Moore's Law is nearing it's end in 2025. Where do we go from there ?
+	34. Is the barrier to entry in linux kernel programming high compared to 10 years ago ?
+	35. What is your advice to Graduating student, should we stick to Computer Science fundamentals or chase flavor of the season (since 2000 we have observed many cycles COM/DCOM, JAVA, DOTCOM, .NET, AI, IOT etc etc)?
+	36. Can aLgorithm the solution to all human problems ? Should we regulate Algorithms ? 
+	37. Security breaches are all across the board. Major data breaches are happening at alarming rate. Where do we go from here to regain trust of the people ?  	
+	  
+Finishing thoughts
+	26. What do you see as the most important aspects of being a good engineer? 
+	38. What are the most important aspect of a good leader ?

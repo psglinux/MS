@@ -1,0 +1,247 @@
+%-------------------------
+% Resume in Latex
+% Author : Sourabh Bajaj
+% Modified By: Partha Sarathi Ghosh
+% License : MIT
+%------------------------
+
+\documentclass[letterpaper,12pt]{article}
+
+\usepackage{latexsym}
+\usepackage[empty]{fullpage}
+\usepackage{titlesec}
+\usepackage{marvosym}
+\usepackage[usenames,dvipsnames]{color}
+\usepackage{verbatim}
+\usepackage{enumitem}
+\usepackage[hidelinks]{hyperref}
+\usepackage{fancyhdr}
+\usepackage[english]{babel}
+\usepackage{tabularx}
+
+\pagestyle{fancy}
+\fancyhf{} % clear all header and footer fields
+\fancyfoot{}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+
+% Adjust margins
+\addtolength{\oddsidemargin}{-0.5in}
+\addtolength{\evensidemargin}{-0.5in}
+\addtolength{\textwidth}{1in}
+\addtolength{\topmargin}{-.5in}
+\addtolength{\textheight}{1.0in}
+
+\urlstyle{same}
+
+\raggedbottom
+\raggedright
+\setlength{\tabcolsep}{0in}
+
+% Sections formatting
+\titleformat{\section}{
+  \vspace{-4pt}\scshape\raggedright\large
+}{}{0em}{}[\color{black}\titlerule \vspace{-5pt}]
+
+%-------------------------
+% Custom commands
+\newcommand{\resumeItem}[2]{
+  \item\small{
+    \textbf{#1}{: #2 \vspace{-2pt}}
+  }
+}
+
+\newcommand{\resumeSubheading}[4]{
+  \vspace{-1pt}\item
+    \begin{tabular*}{0.97\textwidth}[t]{l@{\extracolsep{\fill}}r}
+      \textbf{#1} & #2 \\
+      \textit{\small#3} & \textit{\small #4} \\
+    \end{tabular*}\vspace{-5pt}
+}
+
+\newcommand{\resumeSubItem}[2]{\resumeItem{#1}{#2}\vspace{-4pt}}
+
+\renewcommand{\labelitemii}{$\circ$}
+
+\newcommand{\resumeSubHeadingListStart}{\begin{itemize}[leftmargin=*]}
+\newcommand{\resumeSubHeadingListEnd}{\end{itemize}}
+\newcommand{\resumeItemListStart}{\begin{itemize}}
+\newcommand{\resumeItemListEnd}{\end{itemize}\vspace{-5pt}}
+
+%-------------------------------------------
+%%%%%%  CV STARTS HERE  %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{document}
+
+%----------HEADING-----------------
+\begin{tabular*}{\textwidth}{l@{\extracolsep{\fill}}r}
+  \textbf{\href{www.partha.xyz}{\Large Partha Sarathi Ghosh}} & Email : \href{mailto:parthasarathi.ghosh@sjsu.edu}{parthasarathi.ghosh@sjsu.edu}\\
+  \href{http://www.partha.xyz/}{www.partha.xyz} & +1-408-206-8195 \\
+  \href{https://github.com/psglinux}{https://github.com/psglinux} & Address: 96 Mirabelli Cir,\\
+   & San Jose, 95134 \\
+\end{tabular*}
+
+
+%-----------SUMMARY-----------------
+\section{Summary}
+{I'm an expert Linux professional with over 15+ years of experience in embedded systems with specialization in networking stack. I enjoy being part of the early stages of product development. I'm proficient in handling any software needs for networking devices (Soho router/Enterprise Switch/ Data center Switch/ Carrier Switch/ Packet Monitoring Switch). \\
+I've designed a network protocol, \href{https://www.cisco.com/c/en/us/td/docs/switches/lan/smart_install/configuration/guide/smart_install/concepts.html/}{SmartInstall}. SmartInstall improved ease of use in the deployment of enterprise switches. It also improved efficiency in the upgrade of switch software images and device configuration. I've designed and implemented a hardware/software solution to \href{https://www.cpacket.com/solutions/#financial}{measure latency} in Trading Protocols. This solution helped financial organizations to detect network congestion points.}\\ 
+{I'm an open source enthusiast, a disciplined problem solver, an eternal optimist. I enjoy leading by example. I build a genuine camaraderie with team members and navigate conflicts with élan.} 
+
+%-----------EDUCATION-----------------
+\section{Education}
+  \resumeSubHeadingListStart
+    \resumeSubheading
+      {San Jose State University}{San Jose, California}
+      {Master of Science in Software Engineering; GPA: 3.95}{Aug 2018, Expected Graduation in Fall 2020}
+    \resumeSubheading
+      {Indian Institute of Engineering Science and Technology}{Shibpur, India}
+      {Bachelor of Engineering in Mining; 80\% (among top 2\% of the university)}{Aug. 1996 -- May. 2000}
+    
+  \resumeSubHeadingListEnd
+
+%-----------INTERESTS-----------------
+\section{Academic Courses}
+{Network Security, Software Security Technologies, Software Systems Engineering, Software Quality Assurance, Enterprise Software Platforms, Cryptography, Mobile Software Technologies}
+
+%-----------TECHNICAL PROFICIENCY-----------------
+\section{Technical Proficiency}
+  \resumeSubHeadingListStart
+    \resumeSubItem{Software Development}
+      {C, Python, Bash Scripting, Linux, GNU packages, Linux debug tools, GDB, perf}
+    \resumeSubItem{Network Protocols}
+      {L2 and L3 Forwarding, 802.1ad, 802.1q, VxLan, STP, PTP, q-in-q, ARP, TCP/IP, UDP, IP, DHCP Relay Agent, Routing Protocols, GRE}
+    \resumeSubItem{Software Architecture Expertise}
+      {Forwarding ASIC Infrastructure for Data Path, ASIC Data path, HTTP Emulation, micro-services, Enterprise Networking, Data center Architecture, Campus Networking, Systems Programming, Application Programming}
+    \resumeSubItem{Networking Hardware}
+      {Forwarding ASIC from Mellanox, Broadcom, Bittware Cards, Broadcom Phy}
+  \resumeSubHeadingListEnd
+  
+%-----------EXPERIENCE-----------------
+\section{Experience}
+  \resumeSubHeadingListStart
+
+    \resumeSubheading
+      {Nokia}{Mountain View, CA}
+      {Software Engineer}{Jan 2019–Present}
+      \resumeItemListStart
+        \resumeItem{Phy Bringup}
+          {I designed and implemented software components required for network interfaces that involved Broadcom Jericho2 and Broadcom Phys. I've implemented different form factors in the Phy like 400G, 100G, 40G}
+        \resumeItem{Chassis and Linecard Bringup}
+          {I've leaded a team of 10 people, to integrate different software components for bring up of a linecards in chassis based switch system.}
+      \resumeItemListEnd
+
+    \resumeSubheading
+      {Cumulus Networks}{Mountain View, CA}
+      {Senior Software Engineer}{Aug 2017–Jan 2019}
+      \resumeItemListStart
+        \resumeItem{Forwarding Data Plane}
+          {I maintained Mellanox Spectrum switch Software Development Kit (SDK) integration with Cumulus's forwarding software. I developed a strategy to be used for SDK updates. Implemented scripts to improve efficiency in the SDK update and validation process.}
+        \resumeItem{GRE and PTP}
+          {I implemented Generic Routing Encapsulation (GRE) and Precision Timing Protocol (PTP) features in Mellanox Switches. Contributed to \textit{tcpdump} open source project by implementing a packet parser for PTP.}
+        \resumeItem{Customer Deployment Issues}
+          {I was the engineering point of contact for data plane issues in Mellanox Switches. I had debugged numerous issues in customer setup.}
+      \resumeItemListEnd
+
+    \resumeSubheading
+      {CPacket Networks}{San Jose, CA}
+      {Senior Software Engineer}{Jan 2016–Aug 2017}
+      \resumeItemListStart
+        \resumeItem{Bring Up of Cx4100}
+          {I had assembled the prototype hardware system with different \textit{off the shelf} hardware components. Designed and implemented the forwarding path of Cx4100, the 4x100G  network monitoring switch built with Bittware card with x86 processors}
+        \resumeItem{Gap Detection}
+          {I designed a feature called Sequence anomaly detection for Market Feed Data. This solution enabled real time detection of packet loss or out of order packet for trading protocols.}
+      \resumeItemListEnd
+
+    \resumeSubheading
+      {Cisco Systems}{San Jose, CA}
+      {Senior Technical Lead}{March 2011–Jan 2016}
+      \resumeItemListStart
+        \resumeItem{Leading Catalyst 3850 Dataplane Bring up}
+          {I was the engineer responsible for bring up layer 2 and layer 3 data path on next gen Catalyst switch, in an OS convergence project. I contributed in getting the packet forwarding path working in UADP ASIC, using the new Linux based operating systems. I joined the project as the first team member. The team grew to 10 Engineers under my leadership while working in layer 2 and layer 3 forwarding features over a course of 2 years.}
+          
+        \resumeItem{Multcast Optimization}
+          {I designed and optimized the usage of hardware replication entries used to forward multicast and broadcast traffic in UADP ASIC. This software improvement helped to scale 12k wireless clients and 4k multicast entries.}
+      \resumeItemListEnd
+            
+    \resumeSubheading
+      {Cisco Systems (India)}{Bangalore, India}
+      {Senior Software Engineer}{Feb 2007–Feb 2011}
+      \resumeItemListStart
+        \resumeItem{Smart Install}
+          {I conceptualized, designed, implemented and delivered a product differentiating feature, Smart Install, for access Switching Portfolio. I lead a team of 6 members in delivering this protocol that helped customers in improving ease of use in deploying brand-new switches and improving efficiency in updating configurations and device images.}
+      \resumeItemListEnd
+
+    \resumeSubheading
+      {Riverstone Networks/Alcatel-Lucent (India)}{Bangalore, India}
+      {Member Technical Staff/Tech Specialist}{April 2004–Jan 2007}
+      \resumeItemListStart
+        \resumeItem{Bring up of 15100/15200}
+          {I was responsible for bring up of the Layer 2 forwarding infrastructure in RS15100/15200 switch, 1 RU switches for metro Ethernet}
+        \resumeItem{DHCP option 82}
+          {I designed and implemented DHCP relay and option 82 features in Riverstone’s 15k line of product. The deliverable included implementation of the software in user and kernel space.}
+      \resumeItemListEnd
+
+    \resumeSubheading
+      {Arkin Systems/Gsec 1}{Chennai, India}
+      {Software Engineer}{Dec 2002–March 204}
+      \resumeItemListStart
+        \resumeItem{Linux based firewall device}
+          {Delivered a network security module using IP tables, Kernel module based packet filtering, Restart ability of processes and configuration management.}
+      \resumeItemListEnd
+
+    \resumeSubheading
+      {Alumnus Software Ltd}{Kolkata, India}
+      {Software Engineer}{Jan 2001–Dec 2002}
+      \resumeItemListStart
+        \resumeItem{IxAnvil Test Suite Development}
+          {I developed conformance test suite of network protocols(OSPFv3 and RSTP) for Ixia Communications.}
+      \resumeItemListEnd
+
+    \resumeSubheading
+      {Cognizant Technology Solutions}{Kolkata, India}
+      {Programmer Analyst Trainee}{July 2000–Dec 2000}
+      \resumeItemListStart
+        \resumeItem{Trainee}
+          {Attended training sessions in programming, system software, gained knowledge about customer relationship management (CRM) software}
+      \resumeItemListEnd
+
+  \resumeSubHeadingListEnd
+
+%-----------INTERESTS-----------------
+\section{Interests}
+{Linux, Computer Security, Open Source, Risk Management, Cooking, Photography} 
+
+%-----------INTERESTS-----------------
+\section{Memberships}
+{Member of IEEE}\\
+{Member of ACM} 
+ 
+%-----------PROJECTS-----------------
+%\section{Projects}
+%  \resumeSubHeadingListStart
+%    \resumeSubItem{QuantSoftware Toolkit}
+%      {Open source python library for financial data analysis and machine learning for finance.}
+%    \resumeSubItem{Github Visualization}
+%      {Data Visualization of Git Log data using D3 to analyze project trends over time.}
+%    \resumeSubItem{Recommendation System}
+%      {Music and Movie recommender systems using collaborative filtering on public datasets.}
+%    \resumeSubItem{Mac Setup}
+%      {Book that gives step by step instructions on setting up developer environment on Mac OS.}
+%  \resumeSubHeadingListEnd
+
+
+%--------PROGRAMMING SKILLS------------
+%\section{Programming Skills}
+%  \resumeSubHeadingListStart
+%    \item{
+%      \textbf{Languages}{: Scala, Python, Javascript, C++, SQL, Java}
+%      \hfill
+%      \textbf{Technologies}{: AWS, Play, React, Kafka, GCE}
+%    }
+%  \resumeSubHeadingListEnd
+
+
+%-------------------------------------------
+\end{document}

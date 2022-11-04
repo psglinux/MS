@@ -1,0 +1,334 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Introduction}\label{sec:introduction}
+In a business enterprise there are numerous physical and virtual computing assets, in its Information Technology (IT) infrastructure. These assets could be physically co-located or be in a data center facility which could be thousands of miles apart, beyond the physical reach of a system administrator. Security engineers has to account for each of these assets, using different methods like Application Programming Interface (API) calls to cloud service providers, running network scanners, or perform penetration testing. Virtualisation and containerization is becoming the de facto mode to provide application services; having only bare metal servers in computing infrastructure is becoming obsolete in enterprises. IT infrastructure will continue to use a hybrid computing environment, consisting of bare metal servers and cloud service infrastructure. Looking from a security engineers perspective, the challenge to identify a cyber asset, risk profile it, and then mitigate the risk, becomes much more daunting with the unavailability of a cyber asset inventorying software. \\
+Securing the computing infrastructure is achieved with a layered or a perimeter security around the connected assets using Access Control Lists (ACLs) in routers, application firewalls, deep packet inspections etc. Even with all these bells and whistles for securing the computing infrastructure being in place, attack on networks and data breaches are common. The magnitude of the number of assets in an enterprise multiplied with the vulnerability present in those assets, makes cyber asset management a complex task. Apart from securing the computing resources, using security devices and algorithms, Chief Information Security Officers (CISO) are looking for risk management of the cyber assets. Cyber risk management involves identifying assets, creating risk profiles for them, classifying them into different category of risk profiles. To make this task even complex, new vulnerability are discovered there by the risk profiles of the assets change dynamically with time. This is a software area in which there is a real potential for a product that would perform asset inventorying, risk classification and perform cyber risk management.\\ 
+I recognise the problem of dynamic changes in threat landscape (all the different variables that would cause a change in the risk profile of an asset) for assets in an enterprise. In this research, I plan to focus on identifying the assets algorithmically, assign a risk profile, and then create a vulnerability ranking of the cyber assets. This would make risk management of cyber assets much easier. The scope of this work would be to do a study of contemporary work in similar area and then create a comprehensive list of cyber assets; look into the use of Markov process for finding the ranking algorithm based on vulnerability. Risk management methodology is beyond the scope of this work.
+
+\section{Literature Review}\label{sec:literature_review}
+In this section, I review a number of papers to dissect the subject of this thesis. The title has three key topics that need to be demystified, by referring to contemporary research in similar areas of cyber asset detection, and use of stochastic methods in network security. These topics are: cyber assets in section ~\ref{sec:assets_cyber}, ranking algorithm in section ~\ref{sec:ranking}, and security risk management \footnote{Security risk management is not considered for this literature review assignment. The scope of it is broad, and would need study of papers from business, operations and research to make the literature review noteworthy. If I pursue this thesis for my master's dissertation, then risk management section would be added to the literature review.}.
+Classifying cyber assets and deriving the ranking algorithm would need a perspective on the current and previous research in these areas; vulnerability could be a quantitative (or a qualitative parameter \footnote{qualitative parameters also needs to be quantified as mentioned in ~\cite{7546222}, ~\cite{6954232}}), which would be used as the parameter in the predictive algorithm for the asset ranking. Numerous attributes determines the cyber asset vulnerability. It could be operating system, hardware, zero-day vulnerabilities, software used etc. The focus of the literature review would be to look for the different type of assets that could be classified as cyber threat, and try to parameterize the attributes of the vulnerability matrix.\\
+The ranking algorithm will be a mathematical methodology, that would be used to derive a rank for each cyber asset in an enterprise. The threat landscape for the cyber assets change with time, so the risk profile associated with the cyber asset is dynamic in nature. Each cyber asset needs to be treated independently for vulnerability, based on their attributes and parameters; before deducing a rank with respect to all the cyber assets. Stochastic methods are well suited for dynamic ranking, where the state of the asset changes and so do the attributes which constitutes its vulnerability. So a look into the stochastic methods is very relevant and appropriate for this subject. \\
+The objective of this literature review is to create a pedestal for the individual component of this thesis, so that a complete solution could be hypothesized; the algorithms in section ~\ref{sec:algo}, can take novel approaches, by choosing to learn from earlier works and eliminate improbable choices. \\ 
+
+\subsection{Cyber Assets}\label{sec:assets_cyber}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Behavior-based critical cyber asset identification in Process Control Systems under Cyber Attacks ~\cite{7145073}, \\ 
+%Mission assurance proof-of-concept: Mapping dependencies among cyber assets, missions, and users ~\cite{6459865}, \\
+%Adaptive Security and Trust ~\cite{6498379}, \\
+%The Risks of Network Virtual Assets and its Measurements ~\cite{4908498}, \\
+%Infrastructural Assets Provisioning in Cloud Computing Systems ~\cite{7546222}, \\
+%Reuse sensitive process models: are process elements software assets too? ~\cite{654360},\\
+%Software asset analyzer: A system for detecting configuration anomalies ~\cite{7795460}, \\
+%Automatic assets identification for smart cities: Prerequisites for cybersecurity risk assessments ~\cite{7580812}, \\
+%Computational Asset Description for Cyber Experiment Support Using OWL ~\cite{6061419} \\
+%ISO/IEC/IEEE International Standard - Systems and software engineering -- Vocabulary ~~\cite{5733835}, \\
+%Cloud computing: Security model comprising governance, risk management and compliance  ~\cite{6954232}
+%Stuxnet: Dissecting a Cyberwarfare Weapon ~\cite{5772960},
+%Human Relationships: A Never-Ending Security Education Challenge? ~\cite{5189564},
+%A Novel Architecture for Enterprise Network Security ~\cite{5375916},
+%Securing the mobile enterprise with network-based security and cloud computing ~cite\{6222759},
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Waedt \textit{et al}. ~\cite{7580812} defines an asset as \textit{"\ldots is something that has a potential or actual value for an organization"}. In this thesis the word "asset" always means a cyber asset. This section details about classification, identification, visibility of cyber assets in an enterprise. In this thesis, I have used the vocabulary for systems and software using ~\cite{5733835}. Evaluation of the different cyber assets could possibly be, but not limited to, entities in cyber risk management. I review the dependencies among cyber assets in ~\cite{6459865}. Cloud computing system assets are looked into, in detail, in ~\cite{7546222}. \\ 
+\subsubsection{Software Configurations}\label{sec:asset_swconfig}
+Software configurations are one of the most vulnerable component are in the IT infrastructure. Software configuration build the network segment, compute and storage blocks in the IT infrastructure. Software configuration are used in computing device, a network device, a virtual device, any application program executing on a multitude of computing devices, security configurations etc. It poses a high risk because these configurations are often hand crafted and visually validated. Humans are the weak links in the cyber security; in majority of the cyber incident human gullibility and fallibility. Hagen, in [~\cite{5189564}], questions, if human relationship with security education is an ongoing challenge. Note here that a person who creates a configuration, also knows about the drawback or weak links in a configuration. Trust is the most important credential for the people who creating these configurations; human error are bound to happen. Automated validation of configurations can mitigate risk caused by human error. Errors do happen with checks and balances, due to oversight or error in validation software. So the human errors pose a huge challenge in cyber security; this risk needs to be addressed in cyber security risk management. Software configurations are cyber assets that needs to be protected, classified and a risk profile be associated with. For this entity I study ~\cite{7795460}, ~\cite{6061419}.\\ 
+\subsubsection{Ubiquity of Networked Devices}\label{sec:network_dev}
+Devices with network connectivity are ubiquitous. The importance of connected devices in any enterprise is tied to its profitability becasue any activity in an enterprise (inventory assessment, procurement, billing, delivery tracking etc) becomes highly automated with connected devices. That increases productivity and so do profitability. As a large scale example of connected devices, a smart city is a complex grid of connected device. Network connectivity introduces an element in cyber risk which can have an impact on life and property, unless the cyber assets are inventoried and risk profiled. I review the cyber assets in a smart city in ~\cite{7580812}.
+Connected devices in the manufacturing sector brings in new challenges in cyber security. The devices used in a manufacturing pipelines are networked, remotely operated and often use the same set of base software as any desktop. Stuxnet, an act of industrial sabotage, as described by Langner ~\cite{5772960}, was a cyber breach of Iran's nuclear reactors. These nuclear reactors were using Windows operating system, an operating system used in any home and office computing device. Cyber perpetrators used the vulnerability in Windows to cause malfunction in the nuclear reactors causing the nuclear centrifuge to go out of control eventually damaging the nuclear reactor. The point here is that, large or small scale industrial process control do use the same set of software and hardware exactly similar to consumer grade software and hardware. The context of deployments and functionality could be different in the industrial space, however the vulnerability posed are similar, but the financial impact in industrial context is huge. So the identification of the assets in an industrial process control are important and is looked into in ~\cite{7145073}.
+
+\subsubsection{Classification of Cyber Assets}\label{sec:asset_class}
+A cyber asset could be a hardware, a virtual machine, or a software service running in a cloud server which is not owned by the enterprise, a database server, or a process running in any server. A cyber asset's location could be a home, a business facility, in sports arena or a theater, a multi storied building, or a smart city etc. The presence of networked devices in any proximity to users makes it challenging to classify a device which can be a cyber threat. A non-connected device like a USB storage (commonly known as a pen drive) could be the unlikeliest source of cyber threat when connected to a network infrastructure through a computing device like laptop. Cyber threat through non-connected devices are also cyber risks. This topic is beyond the socpe of this thesis because it's a specialized case of cyber policy and cyber hygiene. The variety of devices that connect to the network makes the classification of the cyber assets a difficult task. For this thesis to be developed into a minimal viable product (MVP), the scope of the cyber assets is restricted to more common asset types like cloud infrastructure ~\cite{7145073}, virtual cyber assets ~\cite{4908498} and a large scale infrastructure like smart city ~\cite{7580812}. Assets in an enterprise network that consist of wired and wireless networks ~\cite{5375917} ~\cite{6222759} needs to be considered in the classification of cyber assets. \\
+
+\subsubsection{End Points in IT Infrastructure Assets} \label{sec:ep_sec}
+A study on enterprise network security by Chen \textit{et al.} ~\cite{5375916} focuses on the endpoint security. End points are applications, network devices and policy servers where security mechanisms would be implemented. While Gustavo \textit{et al.}~\cite{6222759} while proposing a new security architecture for mobile enterprise discusses an enterprise network segments as illustrated in ~\cite[Figure 1, 2]{6222759}. The cyber assets ~\cite{6222759} are predominantly networked devices. Virtual Private Networks (VPN) is determined as an asset in this study. The focus on using VPN to secure the enterprise infrastructure brings in  \textit{network connectivity} as a cyber asset. When hybrid infrastructure is used, like on-prem (compute and storage resources in a facility owned by the enterprise) and cloud infrastructure, the connecting pipelines becomes key targets for attacks. More than often these data pipelines (physically optical fiber) are shared between multiple tenants. These data pipelines are not point-to-point, but rather multi-hop and span the infrastructure of multiple internet service providers. Protecting data pipe lines using encryption technologies is key to security. \\
+
+\subsubsection{Cryptocurrancyi Assets} \label{sec:crypto_cur}
+Peng \textit{et al.} ~\cite{4908498} talks about one of the most interesting virtual assets in any enterprise which is cryptocurrency. They say "In recent years, to facilitate the user to purchase online paid services, the game operators and Portal network enterprise have launched the network virtual currency of a variety of names \ldots". Virtual currency is gaining prevalence but since this form of money does not have a physical form nor its supported by major financial organization, yet companies have started accepting them. Securing This virtual asset is of great importance; the solution seems to be like securing data, that is through encryption. There would be a lot of work that would be undertaken in the area of securing virtual money as it becomes more acceptable by governments and financial institutions.\\
+
+\subsubsection{Cloud Software Assets}\label{sec:cloud_sw}
+Ease of use and cost benefits has caused a paradigm shift for the enterprises to use of cloud infrastructure more than often. For productivity needs of any enterprise, the choice of office software suites are provided by two major providers (Microsoft and Google). These are browser based software which has made collaboration and document versioning easy for the user; on the other hand this has become a pain for the security professionals. Most of these cloud based software are encrypted end-to-end even in the corporate networks. More than often the security professionals are concerned about loosing corporate documents through this browser based productivity software. Kushwah \textit{et al}. ~\cite{7546222} details some key cyber assets in a cloud infrastructure; this service is known as Infrastructure as a service (IAAS). These are virtual machines (VMs), which runs the compute resources provided by the infrastructure provider and more than often shared with multiple tenants. This means that a physical server could be shared my multiple enterprise and a different instance of the operating system running on a physical server would be the security boundary. Service providers ensure the security of the VMs for each client. The most interesting part of the VMs is their mobility. This means that if a server is running out of capacity in terms of compute performance, then the VMs could be shifted to another physical server. In this circumstance the key requirement is to ensure that there is no downtime for the services provided by the VM that's been moved. The challenge in VM mobility is the network security policy associated with the VM also needs to be shifted. This is a complex operation, often manual and error prone; with no real time audit of the security of the VM mobility this is a potential security threat. Virtual assets are more prevalent in computing environment and keeping a track of all the VM resources is a challenge for the IT security. \\ 
+
+\subsubsection{Manufacturing Industry Assets}\label{sec:manu}
+Process Control Systems (PCS) also known as Industrial control systems (ICS) are built with pieces of equipments, that are used in production lines, in manufacturing process. Over the course of past few decades off-the-shelf components has been making inroads into the process control systems. These network connected and automated components are known as Internet of Things (IOT) in Cyber security parlance. Cyber attacks does affect the process control systems. The impact of cyber attacks on assets involving process control systems has been described in great detail by Kiss \textit{et al.}~\cite{7145073}. In their study they not only evaluate but try to quantify the impact of the Cyber attacks on the elements that consist of the process control systems. Note here that the test bed used in ~\cite{7145073}, on a chemical engineering plant, Tennessee Eastman chemical process. These devices are numerous, each needs to be identified and can be identified using Operating System scanning techniques. Since most of these devices operate in a production system, it is important to monitor the network data that is originating from these devices but also the processes running in them. If a malicious process runs in these devices then the production system is compromised. This thesis aims to introduce a technique that would identify all the devices in a production control system.\\
+
+\subsubsection{Smart City Assets}\label{sec:smcity}
+An example of a large scale asset inventory is a smart city ~\cite{7580812}. A smart city has a network of devices which automates the operations of a city. The boundary of automation is not well-defined but left to human ingenuity. Traffic signals, trains, light rails, air conditioning, street light, parking ticket kiosks, traffic lanes which are tolled, access to buildings and so on are some examples of the assets in a smart city. Wadet \textit{et al}. in ~\cite{7580812} broadly classifies the cyber assets in a city by grouping them as "physical, infrastructure and movable assets", "Information and Information \& Communication Technology (ICT) assets", "intangible assets" and "critical assets". In ~\cite[Figure 3]{7580812} the main concept of asset management has been laid out. Each element in a city has to be identified and appropriately tagged before that asset can be part of any automation operation in the city. The problem to solve this is enormous and this is improbable to be implemented in any existing city. This problem is not only a computing problem but is also a public policy issues. Securing such an infrastructure using asset management is only possible when each component is risk analysed independently. \\ 
+
+\subsection{List of Cyber Assets}\label{sec:assets}
+The classification of cyber assets is key to simplify the identification of the cyber asset through automation. Cyber assets in organizations may vary, but they could be classified in one of the following.
+\begin{enumerate}\label{ref:cyber_assets}
+                \item Network connectivity device is e.g switches, routers, wireless access points.
+                \item Compute devices e.g. servers, laptops.
+                \item Virtual compute resources e.g. VMs, virtual routers.
+                \item Network data pipelines e.g. VPN, fiber, Local Area Network (LAN) cables.
+                \item Data assets e.g documents, code, logs that are electronically stored
+                \item Identity management e.g user login credentials
+                \item System configurations e.g switch, router configuration, firewall configurations
+\end{enumerate}
+
+This thesis will retain its focus on these cyber asset classification and focuses on identifying and rank them based on vulnerability.
+
+
+%\subsubsection{Identifying Cyber Assets}\label{sec:asset_identify}
+%An Asset could be identified by operating system signature, the environment in which the application is running, the response to network protocol packets like ICMP, TCP, UDP etc.
+%\subsubsection{Attributes of Cyber Assets}\label{sec:asset_attribute}
+%This section details what are the attributes that could be used to identify Vulnerability in a cyber asset.
+%\subsubsection{Enterprise Network Architecture}\label{sec:asset_network_arch}
+%This section details the enterprise network architecture. Cyber assets will be connected to the enterprise network. So a thorough understanding of the enterprise data pipes are essential to locate cyber assets.
+%\subsubsection{Asset Visibility}\label{sec:asset_visibility}
+%This section will detail how the assets connects to the enterprise networks.
+\subsubsection{Asset Vulnerability}\label{sec:asset_vulner}
+Vulnerability is defined as the weakness in a system; the various cyber assets and their weak links which makes the software or hardware vulnerable to hackers. There are two common methods used by organizations to ascertain vulnerability of cyber assets. They are Open Web Application Security Project (OWASP) or Common Vulnerability Scoring System (CVSS) to assign severity of known vulnerabilities. In both these methods the vulnerability of a software program is metered on a scale of 1 to 10, 10 being the highest in terms of severity. This method of assessing software vulnerability works because only a part of a device gets impacted by a bug. The impact of a bug depends on how that software is being used. If the bug is in a database than the system's vulnerability is high because usually database would be maintaining the application or systems data. Though these methods do not take into account the vulnerability of a device, but they are apt to usable as metrics in calculating ranking of asset vulnerability for this thesis.
+%\subsubsection{Asset Security}\label{sec:asset_security}
+%This section would look at how assets can be secured.
+
+\subsection{Ranking Algorithm}\label{sec:ranking}
+Cyber events are unpredictable in nature, but they are happening all the times. It's unpredictable because the modus operandi of the perpetrators are unknown. Visibility of the assets would reduce the response time to react on a cyber event. There could be thousands of cyber assets that needs to be monitored. If the assets are not ranked then monitoring or assets, mitigation techniques to be applied or budgeting of dollars for fixing the vulnerability becomes a humongous task. Hence, there is a need to rank the assets for different process involved in managing cyber security.
+New bugs get detected every day. Zero-day vulnerability are hidden bugs and are present in systems. The security issues are dynamic and ever-changing, to be more specific "random" in nature. So an algorithm to rank these assets should be capable to take into account the continuously changing vulnerability of the assets. \\
+There are multiple mathematical models to explore and derive a ranking algorithm. This thesis takes a cue from the work of ~\cite{Pageetal98}, this thesis would restrict itself to exploring Markov chain for the derivation of the asset ranking algorithm.
+
+% A Brief Comparative Study on Analytical Models of Computer System Dependability and Security ~\cite{1578964} \\
+% Network anomaly detection: A survey and comparative analysis of stochastic and deterministic methods ~\cite{6759879} \\
+% Towards a stochastic model for integrated security and dependability evaluation ~\cite{1625306} \\ 
+% Estimating Potential IT Security Losses: An Alternative Quantitative Approach ~\cite{4042656} \\
+% Markov Process Fundamentals ~\cite{5312000} \\
+% Information Security Risk Assessment Using Markov Models ~\cite{5557362} \\
+% An analyzing method for computer network security based on Markov game model ~\cite{7867253} \\
+% On Efficient Security Modelling of Complex Interconnected Communication Systems based on Markov Processes ~\cite{4689126} \\
+% Availability and Security Assessment of Smart Building Automation Systems: Combining of Attack Tree Analysis and Markov Models ~\cite{7815162} \\
+% Optimal Strategy Selection for Moving Target Defense Based on Markov Game ~\cite{7805250} \\
+\subsubsection{Stochastic Methods and Markov Chain Analysis}\label{sec:markov}
+Processes in nature are random and could most of the times be explained by the laws of probability. Pukite \textit{et al}. ~\cite{5312000}  introduce Markov Chain analysis as \textit{"These processes that include growth and decay of living organisms, spread of epidemics, decay of radioactive material, traffic on freeway, and failure and repair of electronic systems. The study of stochastic process can be defined as the 'dynamic' part of probability theory in which we study a collection of random variables, their interdependence, their change in time, and limiting behavior"~\cite{5312000}}. There are 2 types of stochastic processes, stationary and nonstationary or evolutionary. In a stationary stochastic process the probability of an event happening remains constant over a period of time while in an evolutionary process changes can be found over a period of time.\\
+\textit{Markov process is a random process, whose future probability is determined by the probabilities of the current process} ~\cite{MarkovPr80:online}. To explain it lucidly, we can estimate the probability of a rain tomorrow, from the probability of rain happening today; day after tomorrow's rain probability could be determined by the rain probability of tomorrow. Note there that this is not deterministic. For the fundamentals of Markov process please refer to ~\cite{5312001}. In deriving the algorithm to find out the vulnerability of the asset we will be using this statistical principle. I will review a few contemporary research, in the area of network security, where Markov's Chain analysis or Markov process is being used.\\
+Karras \textit{et al}. proposed an efficient security model based on Markov processes ~\cite{4689126}. Networks are dynamic in nature with compute end points are being attached and removed simultaneously; concurrently the network security policy for the network gets change. The state of the network device and the rate of changes that the network device undergo, with changes of the security configuration is hardly static. This work is of great relevance to this thesis and is an encouragement for choosing Markov process. Markov process has been used by Shing \textit{et al}. in processing information security risk. The researcher uses Markov chain to monitor state changes dynamically in information security which is helpful in making better decision to protect information in organizations.Cheng \textit{et al}. use Markov model in determining the optimal strategy in network security for moving targets (continous attacks in networks). Wang \textit{et al}. uses Markov chain along with game model for analysing network security model. One of the key learnings from this paper is the use of nonlinear programming to achieve equilibrium, so that a defending policy can be effectively applied against the attacker's methods. Abdulmunem \textit{et al}. combine Markov model with attack tree analysis to describe Building Automation System (BAS) availability and security models. They base their research on finding faults causing disruption in building operations. They use Markov model to observe fault behavior during operation time and calculate system availability in the BAS. The domain of this work is not based on the TCP/IP networking stack, but it serves as a good model for BAS security. Note here that BAS have been transitioning to use TCP/IP based networks, so if only the source of the data point are changed in the BAS systems the work is relevant.
+
+A cyber system (enterprise network with assets) state is dynamic; the rate of change of the elements in this system which impacts the current state are dynamic. Prediction of future events could be achieved based on the probability of the current events. The literature review of the research paper on Markov chain overwhelmingly supports the use of stochastic methods and specifically Markov chain. So these algorithms would prove to be very crucial for validation of the asset vulnerability rank algorithm that I intend to develop.
+
+\subsubsection{Asset Vulnerability Equation Derivation}\label{sec:stochs}
+Assets vulnerability changes with time based on a multitude of parameters which are constantly changing. In this scenario a non-deterministic method is more appropriate to use and which would reflect the correct vulnerability of an asset. Let's try to explain this mathematically.\\ 
+\noindent Let's say that Asset, \textbf{A} \eqref{aeq}  has a vulnerability \textbf{V} \eqref{veq1}
+\noindent So the vulnerability of an asset can be expressed as
+\begin{equation}\label{veq1}
+      V_A = \sum_{i=1}^{n} v_i
+\end{equation}
+\noindent Vulnerability of each component in the asset is
+\begin{equation}\label{veq2}
+         v_i = \sum_{i=1}^{n} f(P_i)
+\end{equation}
+\noindent Each component is made up on multiple entity, so the probability of the entity being vulnerable is
+\begin{equation}\label{veq3}
+        f(P) =\prod_{i=1}^n p_{i}
+\end{equation}
+
+\noindent The ranking algorithm would derive the set of vulnerability of assets (\textbf{V} \eqref{veq1})  as defined by
+\begin{equation}\label{aeq}
+        A=\{V_i\mid 0 < i < n\}
+\end{equation}
+
+A Ranking algorithm would use the stochastic methods to create a rank of an asset, based on the vulnerability of the assets. The ranking algorithm is similar to web page ranking used by search engines ~\cite{Pageetal98}. In case of search engines the relevance and weights are based on the web page. In the scenario of cyber assets the ranking algorithm would be based on the vulnerability assessment of the asset. The rank of the asset would not be same always because the threat landscape changes.
+\subsection{Literature Review Conclusion}\label{ref:lit_rev_conclusion}
+A cyber asset's vulnerability is changing constantly, so any method to determine a ranking algorithm based on the static stochastic process would be inaccurate, less reliable and its effectiveness would be questionable. Thus, the obvious choice for the ranking algorithm is evolutionary stochastic process. The key elements that need to be considered, in the evolutionary stochastic process, are the state of the asset and the rate at which the vulnerability changes for the asset. Here again the rate of vulnerability change is a real time function of the changes in the vulnerability of the individual component of the assets. This approach is different from the current practiced method in the industry. The general method of tracking a vulnerability is based on the application. This approach does not encompass the totality of a system. It's possible that a vulnerability may exist in a system however the impact of it may not be relevant at all because the system might not be using the vulnerable part at all.\\ 
+% \subsubsection{Fuzzy Logic}\label{sec:fuzzy}
+% This section will explain how Fuzzy logic analysis can be used to classify a multi-class problem.
+% \subsubsection{Bayesian Statistics}\label{sec:bayesian}
+% This section will explain how Bayesian Statistics analysis can be used to classify a multi-class problem.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%
+
+%Su et al.~\cite{su2014} computed features in two different domains: time and frequency. In the time domain, they calculated mean, max-min, standard deviation, correlation, and signal magnitude area (SMA). In the frequency domain, they calculated energy, entropy, binned distribution, and the time difference between peaks. They tested a number of supervised learning methods for activity recognition, such as using decision tree, na\''{i}ve Bayes, and support vector machine (SVM) classification models.
+%
+
+%\subsection{Where to Find More Information About Literature Reviews}\label{sec:literature_review:more_info}
+
+%This section will contain some relevant references on this topic.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\section{Sections and Headings}\label{sec:sections}
+%A thesis is generally broken down into sections, each section encompassing a different area of the work. For example, the first section in a thesis is generally an ``Introduction'', which lays out what the research is about. The top-level sections in the thesis are called chapters and always start at the top of a page. When referring to a top-level section, one should mention it as Chapter~\ref{sec:introduction}, where the number is the section/chapter number. The numbers, as with all references in the thesis, should never be written out. Rather, use LaTeX reference macros, which will be automatically replaced with appropriate numbers when compiling the thesis document. Chapter~\ref{sec:latex}, as well as the source code of this document, has many examples of references.
+
+%A thesis section can be further broken down into subsections. One should use at most 4 section levels in a thesis. This paragraph is in the 1st section level, ``section''. We will create 3 more subsection levels. The 2nd section level is created using the ``subsection'' macro. The 3rd section level is created using the ``subsubsection'' macro. However, the 4th section level is created using the ``paragraph'' macro. Note that the IEEE paragraph style is slightly different than the section styles, as the paragraph caption will be in-line with the text of the section and will be automatically ended with a colon. Students should note that more than 3 subheadings (4 section levels) becomes confusing to the reader and should thus avoid further breakdown of paragraph sections.
+
+%Note that the section header is written in title case, though it appears in the text as uppercase. Students should not deviate from using title case, as it will change the appearance of the section title in the table of contents. The section title should be written in title case.
+
+%\subsection{Second Section Level}
+%This is an example of the 2nd level of a section. The subsection title should be written in title case.
+
+%\subsubsection{Third Section Level}
+%This is an example of the 3rd level of a section. The subsubsection title should be written in title case.
+
+%\paragraph{Fourth section level}
+%This is an example of the 4th level of a section. Note that the paragraph title should be written in sentence case, unlike the higher level titles.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\section{Example Sections}\label{sec:example_sections}
+
+%In this chapter we discuss a possible set of chapters for a thesis. The example is somewhat specific to the author's field of research (Data Science). Students should, in general, consult with their adviser on the list of chapters that they should include in their thesis.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\section{Mini-introduction to LaTeX}\label{sec:latex}
+
+%This chapter needs to be filled out. For now, it contains some very basic examples.
+
+
+%\subsection{Equations}\label{sec:latex:equations}
+
+%Equations and mathematical formulas can be included in-line, within the text, for example when explaining that $\norm{\vec x}_2$ signifies the $\ell_2$ norm of a vector, as long as the included math formula or symbols are short (less than half a line). For longer formulas, or formulas that need to be referenced later in the text, one should use the \texttt{equation} macro or related macros, e.g., \texttt{align}. For example, the dot-product of two vectors, $\vec x$ and $\vec y$, is defined as
+%\begin{equation}\label{eq:dot-product}
+%    \langle \vec x, \vec y \rangle = \vec{x}^T\vec{y} = \sum_{j=1}^m x_j\times y_j.
+%\end{equation}
+%Note that equations can be assigned labels and referenced throughout the text. However, unlike figures and tables (see next sections), the equation should be defined prior to its reference. Now that we can defined the formula for the vector dot-product, we can now refer to Equation~\ref{eq:dot-product} to remind readers of its definition.
+
+%\subsection{Figures}\label{sec:latex:figures}
+
+%Figures should contain a caption at the bottom. The caption is a sentence or phrase that describes the content of the figure. As such, it should start with a capital letter and end with a period. The caption is not a title, so subsequent words after the first word should not be capitalized unless they are proper names. A figure should be introduced in the text prior to its inclusion in the text. When referring to the figure, make use of the  \texttt{{\textbackslash}figurename} macro, provided by the IEEE style, to ensure style compliance. Additionally, use a non-breaking space character to connect the \figurename~text with the number assigned to the figure reference. This will ensure that \figurename~and the reference will be included on the same line. For example, \figurename~\ref{fig:proj-arch} introduces our project architecture. Note that font sizes in figures and tables may be smaller than the rest of the thesis. However, they should be readable.
+
+%\begin{figure}[!htb]
+%  \centering
+%  \includegraphics[width=0.7\textwidth]{figures/proj-arch.pdf}
+%  \caption{Project architecture.}
+%  \label{fig:proj-arch}
+%\end{figure}
+
+
+%\subsection{Tables}\label{sec:latex:tables}
+
+%Tables should contain a caption at the top. Unlike figures, the caption in the table is the table title, and it should be capitalized accordingly. The table should be presented in the text prior to its inclusion in the text. Moreover, references to tables should follow the same directions as those for figures, except use the \texttt{{\textbackslash}tablename} macro. For example, \tablename~\ref{tbl:dataset} introduces statistics about the dataset used in our analysis.
+
+%\begin{table}[!htb]
+%\caption{Dataset Characteristics}
+%\label{tbl:dataset}
+%\centering
+%\begin{tabular}{c|c|c|c|c|c}
+%\hline
+%\textbf{Name} & \textbf{Duration (h)} & \textbf{Activities} & \textbf{Subjects}  & \textbf{Sensors} & \textbf{Frequency (Hz)} \\ 
+%\hline
+%JSI-ADL & 18.8 & 14 & 10 & 2 & 50\\ 
+%REALDISP & 9 & 33 & 17 & 2 & 50\\ 
+%UCI-HAR & 1.5 & 6 & 30 & 2 & 50\\ 
+%Ours & 1500 & 14 & 24 & 2 & 20\\ 
+%\hline
+%\end{tabular}
+%\end{table}
+
+%\subsection{Algorithms}\label{sec:latex:algorithms}
+
+%LaTeX provides powerful macros for writing algorithms. Note that labels can be included within the algorithm, which allows the writer to refer to specific lines in the algorithm. The algorithm should be introduced first. Note that the label referring to the whole algorithm is placed right after the caption. Similar to a table, the caption is a title and should be capitalized accordingly. For example, Algorithm~\ref{alg:proj-motif} describes the process for producing a normalized 2-hop left-projection of a bipartite graph described by the vertex sets $V^1$ and $V^2$ and the edge set $E$. Long algorithms (greater than half a page) should be relegated to the Appendix.
+%
+%\begin{algorithm}[!htb]
+%\caption{The Normalized 2-hop Left-Projection Algorithm}\label{alg:proj-motif}
+%\small
+%\begin{algorithmic}[1]
+%\Procedure{Project}{$V^1,V^2,E$}\Comment{Construct the left projection $G^1$}
+%%%
+%\item[] \quad\; // Initialize and compute degree vectors.
+%\For {$(v^1_i, v^2_j) \in E$} \Comment{Count neighbors}
+%\State $\lambda_n(i) \gets \lambda_n(i) + 1$
+%\State $\lambda_m(j) \gets \lambda_m(j) + 1$
+%\EndFor
+%\item[] \quad\; // SpGEMM
+%%%
+%\For {$v^1_i \in V^1$} \label{alg:proj-motif-spgemm1}
+%\State $acc(:) \gets 0$ \Comment{Initialize output row accumulator data structure}
+%\For {$v^2_k \in \Gamma(v^1_i)$}
+%\State $l \gets  (1/\lambda_n(i)) \times \times w_{i,k} \times (1/\lambda_m(k))$ \label{alg:proj-motif-lk}
+%\For {$v^1_j \in \Gamma(v^2_k)$}
+%\If {$v^1_j \ne v^1_i$} \Comment{Avoid computing output diagonal}
+%\State $acc(j) \gets acc(j) + l \times w_{j,k}$ \label{alg:proj-motif-accum}
+%\EndIf
+%\EndFor
+%\EndFor
+%\State $C(i,:) = acc(:)$
+%\EndFor\label{alg:proj-motif-spgemm2}
+%\item[] \quad\; // Normalize rows of $C$
+%%%
+%\For {$i = 1, \ldots, |V^1|$}\label{alg:proj-motif-norm1}
+%\State $n_i \gets 0$
+%\For {$j = 1, \ldots, |V^2| \text{ s.t. } C(i,j) > 0$}
+%\State $n_i \gets n_i + \text{abs}(C(i,j))$
+%\EndFor
+%\For {$j = 1, \ldots, |V^2| \text{ s.t. } C(i,j) > 0$}
+%\State $C(i,j) \gets C(i,j) / n_i$
+%\EndFor
+%\EndFor\label{alg:proj-motif-norm2}
+%\State \textbf{return} $C$\Comment{Edge set weight matrix for $G^1$}
+%\EndProcedure
+%\end{algorithmic}
+%\end{algorithm}
+%
+%After introducing the algorithm, one can then refer to sections of the algorithm in the process of describing it in the text. For example, note that line~\ref{alg:proj-motif-accum} denotes the accumulation of projection weights for a vertex $v_i^1$ in $V^1$. For theses that contain many mathematical symbols, it is a good idea to provide the reader with a reference for the meaning of these symbols. This table is generally included in the preliminary chapters, after the introduction. We will include an example here. \tablename~\ref{tbl:notation-g} provides a reference for notation used throughout the paper that the algorithm above is included in.
+%
+%\begin{table}[!htb]
+%\caption {Graph and Projection Notation} \label{tbl:notation-g}
+%\centering
+%\small
+% \begin{tabular}{l l}
+% \hline
+% \textbf{Symbol} & \textbf{Meaning} \\ 
+% \hline
+% $G$ & A graph topology. \\
+% $V^1$, $V^2$ & The left and right node partitions in a bipartite graph. \\
+% $E$ & The set of edges in $G$. \\
+% $|X|$ & The cardinality of set $X$. \\
+% $v^1_i \in V^1$ & A vertex in the left node partition $V^1$. \\
+% $v^2_j \in V^2$ & A vertex in the right node partition $V^2$. \\
+% $(v^1_i, v^2_j, w_{i,j})\in E$ & The edge connecting nodes $v^1_i$ and $v^2_j$ with weight $w_{i,j}$ in graph $G$. \\
+% $\Gamma(v^1_i)$ & The set of vertices in $V^2$ adjacent to $v^1_i$, i.e., its neighborhood. \\
+% $\lambda_n,\lambda_m$ & Node degree vectors for the left and right partitions.\\
+% $A \in \mathbb{R}^{n\times m}$ & The edge weight matrix for the bipartite graph $G$; $A(i,j) = w_{i,j}$. \\
+% $B$ & Weighted adjacency matrix for graph $G$.\\
+% \hline
+% $G^1 = (V^1, E^1)$ & The left projection graph.\\
+% $G^2 = (V^2, E^2)$ & The right projection graph.\\
+% $G^b = (V, E^b)$ & The biprojection graph.\\
+% $(v^1_i, v^1_j, s^1_{i,j})\in E^1$ & The edge connecting $v^1_i$ and $v^1_j$ with weight $s^1_{i,j}$ in the left projection graph. \\
+% $W^1$ & Edge weight matrix for the left projection graph; $W^1(i,j) = s^1_{i,j}$.\\
+% $W^2$ & Edge weight matrix for the right projection graph; $W^2(i,j) = s^2_{i,j}$.\\
+% $W$ & Weighted adjacency matrix for the bi-projection graph of $G$.\\
+% \hline
+% \end{tabular}
+%\end{table}
+%
+%\subsection{Location of Floats}\label{sec:latex:floats}
+%
+%Floats (e.g., algorithms, tables and figures) should not follow the IEEE standard of being placed at the top or bottom of the page. As per the GUP thesis guidelines, they must appear right after their reference and not break any paragraphs, i.e., they should be placed in the text, after the paragraph in question. Use the location hint \texttt{[!htb]} to let LaTeX know the float should be placed in between paragraphs. If the float takes up an entire page and the last paragraph on the current page does not fit in its entirety, it should be moved after the float page to avoid breaking the continuity of the paragraph, leaving some blank lines at the end of the current page.
+%
+%Pages that contain only floats will have floats vertically centered, which will produce additional blank lines between the floats in the page or between a float and the top and bottom of the page. The thesis guidelines specifically prohibit additional white space in the thesis. This case and the one discussed in the previous paragraph are the only acceptable reasons for having extra blank lines in the text.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\section{Writing Advice}\label{sec:writing}
+%
+%This chapter contains a list of common writing mistakes that students tend to make when writing theses. Students should read the list carefully, in addition to the examples provided by GUP in their thesis guidelines, and guard against making these mistakes in their theses.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Algorithms} \label{sec:algo}
+This section will discuss the different algorithm needed for this thesis. Since literature review is the only ask for this assignment, I have left this and the subsequent section in "To Be Done" (\textbf{TBD}) status. I would be writing this section once I start working on this thesis again in the Summer of 2020.
+\subsection{Asset Tracking Crawler}\label{sec:algo_crawl}
+
+\subsection{Vulnerability Ranking Algorithm}\label{sec:algo_vul}
+\textbf{TBD}
+\subsubsection{Mathematics of the Ranking Algorithm}\label{sec:vul_math}
+\textbf{TBD}
+The Mathematics of the Ranking algorithm.
+\subsubsection{Complexity Analysis of the Ranking Algorithm}\label{sec:vul_complex}
+The Complexity analysis of the algorithm. The algorithm will always be running and adjusting the rank table for the vulnerability of the assets. This section will illustrate how the algorithm would behave when different input parameter changes.
+\textbf{TBD}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Future Work}\label{sec:future_work}
+The aim of this thesis has been to develop a coherent solution to identify ranking of assets based on vulnerability. The design of a crawler to look for assets is a never ending process; an optimization calculation needs to be done to ascertain software architecture. The asset tracking is a highly compute intensive process, distributed algorithm has to be devised for high performance. A huge volume of data would be generated on a per minute basis, storing this volume of data needs efficient algorithm for storage. The ranking algorithm is a NP-Hard problem, which means that it will not be complete in polynomial time. So another area of work would be optimized this NP-Hard problem. So with advances in distributed computing another future work would be to fine tune the ranking algorithm using Machine Learning algorithms, so that prediction can also leverage prevous cyber events.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Conclusions}\label{sec:conclusions}
+This thesis intended to develop a cyber asset vulnerability ranking algorithm for security risk management.  I conclude this thesis by listing down the key achievements so far:
+\begin{enumerate}
+        \item I did a literature review of the cyber assets and created a list of preliminary cyber assets ~\ref{ref:cyber_assets} that the crawler program ~\ref{sec:algo_crawl} could work on.
+        \item I did a literature review of the stochastic methods with focus on Markov Process ~\ref{sec:markov} and establish that Markov process is the right mathematical part for the ranking algorithm.
+        \item I derived the base mathematical equations ~\ref{sec:stochs} which can be used as a starting point to develop the asset ranking algorithm.
+\end{enumerate}
+
+%This macro example thesis was written as a guide to CMPE and CoE students for writing quality theses in LaTeX. The provided template, along with this guide, should make the task of complying with GUP formatting requirements much easier for students. The CMPE LaTeX thesis template and this document are a work in progress. The reader is invited to participate in improving both via Git pull requests. The project can be found at \url{https://github.com/davidanastasiu/thesis_template-SJSU_CMPE}.
+%
